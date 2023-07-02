@@ -57,7 +57,7 @@ Route::view('modern-layout', 'multiple.modern-layout')->name('modern-layout');
 
 //final add route for cfms
 Route::get('login', [AuthController::class, 'index'])->name('login');
-Route::post('post-login', [AuthController::class, 'postLogin'])->name('login.post'); 
+Route::post('post-login', [AuthController::class, 'postLogin'])->name('login.post');
 
 Route::group(['middleware' => ['auth']], function() {
     Route::get('logout', [AuthController::class, 'logout'])->name('logout');
@@ -67,9 +67,16 @@ Route::group(['middleware' => ['auth']], function() {
     Route::get('/admin-dashboard',[Dashboard::class, 'index'])->name('dashboard');
 
     // User Route
-    // Route::resource('user', UserController::class); 
+    // Route::resource('user', UserController::class);
 
     // Route::post('/change-password', [AdminController::class, 'updatePassword'])->name('update-password');
     // Route::get('admin/profile', [AdminController::class, 'profile'])->name('admin.profile');
     // Route::post('profile/update', [AdminController::class, 'updateprofile'])->name('profile.update');
+
+    //Temp fix route for user
+    Route::prefix('user')->group( function(){
+        Route::view('list', 'cfms.user.list')->name('list');
+        Route::view('edit-user', 'cfms.user.edit')->name('edit-user');
+        Route::view('create-user', 'cfms.user.create')->name('create-user');
+    });
 });

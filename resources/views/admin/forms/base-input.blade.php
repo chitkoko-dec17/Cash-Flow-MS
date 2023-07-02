@@ -16,7 +16,7 @@
 		<li class="breadcrumb-item">Form Controls</li>
         <li class="breadcrumb-item active">Base inputs</li>
 	@endcomponent
-	
+
 	<div class="container-fluid">
 		<div class="row">
 			<div class="col-sm-12">
@@ -586,8 +586,8 @@
 			</div>
 		</div>
 	</div>
-	
-	
+
+
 	@push('scripts')
 	@endpush
 

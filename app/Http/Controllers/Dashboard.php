@@ -17,9 +17,9 @@ class Dashboard extends Controller
   {
       $this->middleware('auth');
   }
-    
+
   public function index()
   {
-    return view('admin.dashboard.default');
+    return view('cfms.admin.dashboard');
   }
 }
