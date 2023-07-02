@@ -1,6 +1,8 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Auth\AuthController;
+use App\Http\Controllers\Dashboard;
 
 /*
 |--------------------------------------------------------------------------
@@ -24,10 +26,10 @@ Route::get('/login', function () {
 });
 
 // login route setup
-Route::prefix('login')->group(function () {
-    Route::view('/', 'admin.authentication.login')->name('login');
-    Route::view('default', 'admin.authentication.login')->name('login.index');
-});
+// Route::prefix('login')->group(function () {
+//     Route::view('/', 'admin.authentication.login')->name('login');
+//     Route::view('default', 'admin.authentication.login')->name('login.index');
+// });
 
 
 Route::get('/test-db-connection', function () {
@@ -43,11 +45,31 @@ Route::get('/test-db-connection', function () {
 
 Route::view('sample-page', 'admin.pages.sample-page')->name('sample-page');
 
-Route::prefix('dashboard')->group(function () {
-    Route::view('/', 'admin.dashboard.default')->name('index');
-    Route::view('default', 'admin.dashboard.default')->name('dashboard.index');
-});
+// Route::prefix('dashboard')->group(function () {
+//     Route::view('/', 'admin.dashboard.default')->name('index');
+//     Route::view('default', 'admin.dashboard.default')->name('dashboard.index');
+// });
 
 Route::view('default-layout', 'multiple.default-layout')->name('default-layout');
 Route::view('compact-layout', 'multiple.compact-layout')->name('compact-layout');
 Route::view('modern-layout', 'multiple.modern-layout')->name('modern-layout');
+
+
+//final add route for cfms
+Route::get('login', [AuthController::class, 'index'])->name('login');
+Route::post('post-login', [AuthController::class, 'postLogin'])->name('login.post'); 
+
+Route::group(['middleware' => ['auth']], function() {
+    Route::get('logout', [AuthController::class, 'logout'])->name('logout');
+
+    // Dashboard Route
+    Route::get('/', [Dashboard::class, 'index'])->name('index');
+    Route::get('/admin-dashboard',[Dashboard::class, 'index'])->name('dashboard');
+
+    // User Route
+    // Route::resource('user', UserController::class); 
+
+    // Route::post('/change-password', [AdminController::class, 'updatePassword'])->name('update-password');
+    // Route::get('admin/profile', [AdminController::class, 'profile'])->name('admin.profile');
+    // Route::post('profile/update', [AdminController::class, 'updateprofile'])->name('profile.update');
+});
