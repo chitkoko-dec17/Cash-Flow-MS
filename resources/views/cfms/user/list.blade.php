@@ -12,12 +12,33 @@
 
 @section('content')
 	<div class="container-fluid list-products">
+        <!-- User creating alert -->
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="alert alert-primary alert-dismissible fade show" role="alert"><strong>User sucessfully added !</strong>
+                    <button class="btn-close" type="button" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+                <div class="alert alert-danger alert-dismissible fade show" role="alert"><strong>Failed to add new user !</strong>
+                    <button class="btn-close" type="button" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            </div>
+        </div>
 	    <div class="row">
 	        <!-- Individual column searching (text inputs) Starts-->
 	        <div class="col-sm-12">
+                <div class="col-md-12 project-list">
+                    <div class="row">
+                        <div class="col-md-6 p-0">
+                            <h3>User List</h3>
+                        </div>
+                        <div class="col-md-6 p-0">
+                            <div class="form-group mb-0 me-0"></div>
+                            <a class="btn btn-primary" href="{{ route('create-user') }}"> <i data-feather="plus-square"> </i>Create New User</a>
+                        </div>
+                    </div>
+                </div>
 	            <div class="card">
 	                <div class="card-header pb-0">
-	                    <h5>User List</h5>
 	                </div>
 	                <div class="card-body">
 	                    <div class="table-responsive product-table">
@@ -44,8 +65,20 @@
 	                                    <td class="font-success">In Stock</td>
 	                                    <td>2011/04/25</td>
 	                                    <td>
-	                                        <button class="btn btn-danger btn-xs" type="button" data-original-title="btn btn-danger btn-xs" title="">Delete</button>
-	                                        <button class="btn btn-primary btn-xs" type="button" data-original-title="btn btn-danger btn-xs" title="">Edit</button>
+                                            <div class="product-icon">
+                                                <ul class="product-social">
+                                                    <li class="d-inline-block">
+                                                        <a href="javascript:void(0)" title="View User"><i class="fa fa-eye"></i></a>
+                                                    </li>
+                                                    <li class="d-inline-block">
+                                                        <a href="javascript:void(0)" title="Edit user"><i class="fa fa-edit"></i></a>
+                                                    </li>
+                                                    <li class="d-inline-block">
+                                                        <a href="javascript:void(0)" title="Delete user"><i class="fa fa-trash-o"></i></a>
+                                                    </li>
+                                                </ul>
+                                                <form class="d-inline-block f-right"></form>
+                                            </div>
 	                                    </td>
 	                                </tr>
 	                                <tr>
@@ -59,8 +92,20 @@
 	                                    <td class="font-success">In Stock</td>
 	                                    <td>2011/04/25</td>
 	                                    <td>
-	                                        <button class="btn btn-danger btn-xs" type="button" data-original-title="btn btn-danger btn-xs" title="">Delete</button>
-	                                        <button class="btn btn-primary btn-xs" type="button" data-original-title="btn btn-danger btn-xs" title="">Edit</button>
+                                            <div class="product-icon">
+                                                <ul class="product-social">
+                                                    <li class="d-inline-block">
+                                                        <a href="javascript:void(0)" title="View User"><i class="fa fa-eye"></i></a>
+                                                    </li>
+                                                    <li class="d-inline-block">
+                                                        <a href="javascript:void(0)" title="Edit user"><i class="fa fa-edit"></i></a>
+                                                    </li>
+                                                    <li class="d-inline-block">
+                                                        <a href="javascript:void(0)" title="Delete user"><i class="fa fa-trash-o"></i></a>
+                                                    </li>
+                                                </ul>
+                                                <form class="d-inline-block f-right"></form>
+                                            </div>
 	                                    </td>
 	                                </tr>
 	                                <tr>
@@ -74,8 +119,20 @@
 	                                    <td class="font-success">In Stock</td>
 	                                    <td>2011/04/25</td>
 	                                    <td>
-	                                        <button class="btn btn-danger btn-xs" type="button" data-original-title="btn btn-danger btn-xs" title="">Delete</button>
-	                                        <button class="btn btn-primary btn-xs" type="button" data-original-title="btn btn-danger btn-xs" title="">Edit</button>
+                                            <div class="product-icon">
+                                                <ul class="product-social">
+                                                    <li class="d-inline-block">
+                                                        <a href="javascript:void(0)" title="View User"><i class="fa fa-eye"></i></a>
+                                                    </li>
+                                                    <li class="d-inline-block">
+                                                        <a href="javascript:void(0)" title="Edit user"><i class="fa fa-edit"></i></a>
+                                                    </li>
+                                                    <li class="d-inline-block">
+                                                        <a href="javascript:void(0)" title="Delete user"><i class="fa fa-trash-o"></i></a>
+                                                    </li>
+                                                </ul>
+                                                <form class="d-inline-block f-right"></form>
+                                            </div>
 	                                    </td>
 	                                </tr>
 	                                <tr>
@@ -89,8 +146,20 @@
 	                                    <td class="font-success">In Stock</td>
 	                                    <td>2011/04/25</td>
 	                                    <td>
-	                                        <button class="btn btn-danger btn-xs" type="button" data-original-title="btn btn-danger btn-xs" title="">Delete</button>
-	                                        <button class="btn btn-primary btn-xs" type="button" data-original-title="btn btn-danger btn-xs" title="">Edit</button>
+                                            <div class="product-icon">
+                                                <ul class="product-social">
+                                                    <li class="d-inline-block">
+                                                        <a href="javascript:void(0)" title="View User"><i class="fa fa-eye"></i></a>
+                                                    </li>
+                                                    <li class="d-inline-block">
+                                                        <a href="javascript:void(0)" title="Edit user"><i class="fa fa-edit"></i></a>
+                                                    </li>
+                                                    <li class="d-inline-block">
+                                                        <a href="javascript:void(0)" title="Delete user"><i class="fa fa-trash-o"></i></a>
+                                                    </li>
+                                                </ul>
+                                                <form class="d-inline-block f-right"></form>
+                                            </div>
 	                                    </td>
 	                                </tr>
 	                                <tr>
@@ -104,8 +173,20 @@
 	                                    <td class="font-success">In Stock</td>
 	                                    <td>2011/04/25</td>
 	                                    <td>
-	                                        <button class="btn btn-danger btn-xs" type="button" data-original-title="btn btn-danger btn-xs" title="">Delete</button>
-	                                        <button class="btn btn-primary btn-xs" type="button" data-original-title="btn btn-danger btn-xs" title="">Edit</button>
+                                            <div class="product-icon">
+                                                <ul class="product-social">
+                                                    <li class="d-inline-block">
+                                                        <a href="javascript:void(0)" title="View User"><i class="fa fa-eye"></i></a>
+                                                    </li>
+                                                    <li class="d-inline-block">
+                                                        <a href="javascript:void(0)" title="Edit user"><i class="fa fa-edit"></i></a>
+                                                    </li>
+                                                    <li class="d-inline-block">
+                                                        <a href="javascript:void(0)" title="Delete user"><i class="fa fa-trash-o"></i></a>
+                                                    </li>
+                                                </ul>
+                                                <form class="d-inline-block f-right"></form>
+                                            </div>
 	                                    </td>
 	                                </tr>
 	                                <tr>
@@ -119,8 +200,20 @@
 	                                    <td class="font-success">In Stock</td>
 	                                    <td>2011/04/25</td>
 	                                    <td>
-	                                        <button class="btn btn-danger btn-xs" type="button" data-original-title="btn btn-danger btn-xs" title="">Delete</button>
-	                                        <button class="btn btn-primary btn-xs" type="button" data-original-title="btn btn-danger btn-xs" title="">Edit</button>
+                                            <div class="product-icon">
+                                                <ul class="product-social">
+                                                    <li class="d-inline-block">
+                                                        <a href="javascript:void(0)" title="View User"><i class="fa fa-eye"></i></a>
+                                                    </li>
+                                                    <li class="d-inline-block">
+                                                        <a href="javascript:void(0)" title="Edit user"><i class="fa fa-edit"></i></a>
+                                                    </li>
+                                                    <li class="d-inline-block">
+                                                        <a href="javascript:void(0)" title="Delete user"><i class="fa fa-trash-o"></i></a>
+                                                    </li>
+                                                </ul>
+                                                <form class="d-inline-block f-right"></form>
+                                            </div>
 	                                    </td>
 	                                </tr>
 	                                <tr>
@@ -134,8 +227,20 @@
 	                                    <td class="font-success">In Stock</td>
 	                                    <td>2011/04/25</td>
 	                                    <td>
-	                                        <button class="btn btn-danger btn-xs" type="button" data-original-title="btn btn-danger btn-xs" title="">Delete</button>
-	                                        <button class="btn btn-primary btn-xs" type="button" data-original-title="btn btn-danger btn-xs" title="">Edit</button>
+                                            <div class="product-icon">
+                                                <ul class="product-social">
+                                                    <li class="d-inline-block">
+                                                        <a href="javascript:void(0)" title="View User"><i class="fa fa-eye"></i></a>
+                                                    </li>
+                                                    <li class="d-inline-block">
+                                                        <a href="javascript:void(0)" title="Edit user"><i class="fa fa-edit"></i></a>
+                                                    </li>
+                                                    <li class="d-inline-block">
+                                                        <a href="javascript:void(0)" title="Delete user"><i class="fa fa-trash-o"></i></a>
+                                                    </li>
+                                                </ul>
+                                                <form class="d-inline-block f-right"></form>
+                                            </div>
 	                                    </td>
 	                                </tr>
 	                                <tr>
@@ -149,71 +254,23 @@
 	                                    <td class="font-success">In Stock</td>
 	                                    <td>2011/04/25</td>
 	                                    <td>
-	                                        <button class="btn btn-danger btn-xs" type="button" data-original-title="btn btn-danger btn-xs" title="">Delete</button>
-	                                        <button class="btn btn-primary btn-xs" type="button" data-original-title="btn btn-danger btn-xs" title="">Edit</button>
+                                            <div class="product-icon">
+                                                <ul class="product-social">
+                                                    <li class="d-inline-block">
+                                                        <a href="javascript:void(0)" title="View User"><i class="fa fa-eye"></i></a>
+                                                    </li>
+                                                    <li class="d-inline-block">
+                                                        <a href="javascript:void(0)" title="Edit user"><i class="fa fa-edit"></i></a>
+                                                    </li>
+                                                    <li class="d-inline-block">
+                                                        <a href="javascript:void(0)" title="Delete user"><i class="fa fa-trash-o"></i></a>
+                                                    </li>
+                                                </ul>
+                                                <form class="d-inline-block f-right"></form>
+                                            </div>
 	                                    </td>
 	                                </tr>
-	                                <tr>
-	                                    <td>
-	                                        Nyan Lynn Htun
-	                                    </td>
-	                                    <td>
-	                                        <a href="#"> <h6>Red Lipstick</h6></a><span>Interchargebla lens Digital Camera with APS-C-X Trans CMOS Sens</span>
-	                                    </td>
-	                                    <td>$10</td>
-	                                    <td class="font-success">In Stock</td>
-	                                    <td>2011/04/25</td>
-	                                    <td>
-	                                        <button class="btn btn-danger btn-xs" type="button" data-original-title="btn btn-danger btn-xs" title="">Delete</button>
-	                                        <button class="btn btn-primary btn-xs" type="button" data-original-title="btn btn-danger btn-xs" title="">Edit</button>
-	                                    </td>
-	                                </tr>
-	                                <tr>
-	                                    <td>
-	                                        Nyan Lynn Htun
-	                                    </td>
-	                                    <td>
-	                                        <a href="#"> <h6>Red Lipstick</h6></a><span>Interchargebla lens Digital Camera with APS-C-X Trans CMOS Sens</span>
-	                                    </td>
-	                                    <td>$10</td>
-	                                    <td class="font-success">In Stock</td>
-	                                    <td>2011/04/25</td>
-	                                    <td>
-	                                        <button class="btn btn-danger btn-xs" type="button" data-original-title="btn btn-danger btn-xs" title="">Delete</button>
-	                                        <button class="btn btn-primary btn-xs" type="button" data-original-title="btn btn-danger btn-xs" title="">Edit</button>
-	                                    </td>
-	                                </tr>
-	                                <tr>
-	                                    <td>
-	                                        Nyan Lynn Htun
-	                                    </td>
-	                                    <td>
-	                                        <a href="#"> <h6>Red Lipstick</h6></a><span>Interchargebla lens Digital Camera with APS-C-X Trans CMOS Sens</span>
-	                                    </td>
-	                                    <td>$10</td>
-	                                    <td class="font-success">In Stock</td>
-	                                    <td>2011/04/25</td>
-	                                    <td>
-	                                        <button class="btn btn-danger btn-xs" type="button" data-original-title="btn btn-danger btn-xs" title="">Delete</button>
-	                                        <button class="btn btn-primary btn-xs" type="button" data-original-title="btn btn-danger btn-xs" title="">Edit</button>
-	                                    </td>
-	                                </tr>
-	                                <tr>
-	                                    <td>
-	                                        Nyan Lynn Htun
-	                                    </td>
-	                                    <td>
-	                                        <a href="#"> <h6>Red Lipstick</h6></a><span>Interchargebla lens Digital Camera with APS-C-X Trans CMOS Sens</span>
-	                                    </td>
-	                                    <td>$10</td>
-	                                    <td class="font-success">In Stock</td>
-	                                    <td>2011/04/25</td>
-	                                    <td>
-	                                        <button class="btn btn-danger btn-xs" type="button" data-original-title="btn btn-danger btn-xs" title="">Delete</button>
-	                                        <button class="btn btn-primary btn-xs" type="button" data-original-title="btn btn-danger btn-xs" title="">Edit</button>
-	                                    </td>
-	                                </tr>
-	                            </tbody>
+                                </tbody>
 	                        </table>
 	                    </div>
 	                </div>

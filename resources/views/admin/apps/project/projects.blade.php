@@ -16,7 +16,7 @@
 		<li class="breadcrumb-item">Apps</li>
 		<li class="breadcrumb-item active">Project List</li>
 	@endcomponent
-	
+
 	<div class="container-fluid">
 	    <div class="row project-cards">
 	        <div class="col-md-12 project-list">
@@ -785,7 +785,7 @@
 	    </div>
 	</div>
 
-	
+
 	@push('scripts')
 	<script src="{{asset('assets/js/prism/prism.min.js')}}"></script>
     <script src="{{asset('assets/js/clipboard/clipboard.min.js')}}"></script>

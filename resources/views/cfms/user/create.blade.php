@@ -24,10 +24,6 @@
 										<div class="col-sm-9">
 											<div class="form-group m-t-15 m-checkbox-inline mb-0 custom-radio-ml">
                                                 <div class="radio radio-primary">
-                                                  <input id="radioinline1" type="radio" name="radio1" value="option1">
-                                                  <label class="mb-0" for="radioinline1">Admin</label>
-                                                </div>
-                                                <div class="radio radio-primary">
                                                   <input id="radioinline2" type="radio" name="radio1" value="option1">
                                                   <label class="mb-0" for="radioinline2">Manager</label>
                                                 </div>

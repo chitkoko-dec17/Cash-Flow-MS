@@ -116,7 +116,7 @@
           </ul>
         </li> --}}
         <li class="onhover-dropdown p-0">
-          <button class="btn btn-primary-light" type="button"><i data-feather="log-out"></i>Log out</button>
+            <a href="{{ route('logout') }}" class="btn btn-primary-light" type="button"><i data-feather="log-out"></i>Log out</a>
         </li>
       </ul>
     </div>
