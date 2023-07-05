@@ -59,6 +59,12 @@ Route::view('modern-layout', 'multiple.modern-layout')->name('modern-layout');
 Route::get('login', [AuthController::class, 'index'])->name('login');
 Route::post('post-login', [AuthController::class, 'postLogin'])->name('login.post');
 
+
+//live wire test route
+Route::get('/post-test', function () {
+    return view('home');
+});
+
 Route::group(['middleware' => ['auth']], function() {
     Route::get('logout', [AuthController::class, 'logout'])->name('logout');
 
