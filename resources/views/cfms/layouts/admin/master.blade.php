@@ -55,6 +55,8 @@
       </div>
     </div>
     <!-- latest jquery-->
-    @includeIf('cfms.layouts.admin.partials.js')
+    //@includeIf('cfms.layouts.admin.partials.js')
+
+    @livewireScripts
   </body>
 </html>

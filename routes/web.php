@@ -64,6 +64,9 @@ Route::post('post-login', [AuthController::class, 'postLogin'])->name('login.pos
 Route::get('/post-test', function () {
     return view('home');
 });
+Route::get('/user-test', function () {
+    return view('user_index');
+});
 
 Route::group(['middleware' => ['auth']], function() {
     Route::get('logout', [AuthController::class, 'logout'])->name('logout');

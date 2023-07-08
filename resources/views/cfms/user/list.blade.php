@@ -1,17 +1,4 @@
-@extends('cfms.layouts.admin.master')
 
-@section('title')User list
- {{ $title }}
-@endsection
-
-@push('css')
-<link rel="stylesheet" type="text/css" href="{{asset('assets/css/datatables.css')}}">
-<link rel="stylesheet" type="text/css" href="{{asset('assets/css/owlcarousel.css')}}">
-<link rel="stylesheet" type="text/css" href="{{asset('assets/css/rating.css')}}">
-@endpush
-
-@section('content')
-	<div class="container-fluid list-products">
         <!-- User creating alert -->
         <div class="row">
             <div class="col-sm-12">
@@ -29,15 +16,30 @@
                 <div class="col-md-12 project-list">
                     <div class="row">
                         <div class="col-md-6 p-0">
-                            <h3>User List</h3>
+
                         </div>
+                        @if(!$addUser)
                         <div class="col-md-6 p-0">
                             <div class="form-group mb-0 me-0"></div>
-                            <a class="btn btn-primary" href="{{ route('create-user') }}"> <i data-feather="plus-square"> </i>Create New User</a>
+                            <button wire:click="addUser()" class="btn btn-primary" > <i data-feather="plus-square"> </i>Create New User</button>
                         </div>
+                        @endif
                     </div>
                 </div>
+
+                <div class="col-md-8 mb-2">
+                	@if($addUser)
+			            @include('cfms.user.create')
+			        @endif
+			        @if($updateUser)
+			            @include('cfms.user.edit')
+			        @endif
+                </div>
+
 	            <div class="card">
+	            	<div class="card-header pb-0">
+						<h5>User List</h5>
+					</div>
 	                <div class="card-header pb-0">
 	                </div>
 	                <div class="card-body">
@@ -289,4 +291,3 @@
     <script src="{{asset('assets/js/product-list-custom.js')}}"></script>
 	@endpush
 
-@endsection
