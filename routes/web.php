@@ -60,14 +60,6 @@ Route::get('login', [AuthController::class, 'index'])->name('login');
 Route::post('post-login', [AuthController::class, 'postLogin'])->name('login.post');
 
 
-//live wire test route
-Route::get('/post-test', function () {
-    return view('home');
-});
-Route::get('/user-test', function () {
-    return view('user_index');
-});
-
 Route::group(['middleware' => ['auth']], function() {
     Route::get('logout', [AuthController::class, 'logout'])->name('logout');
 
@@ -76,6 +68,12 @@ Route::group(['middleware' => ['auth']], function() {
     Route::get('/dashboard',[Dashboard::class, 'index'])->name('dashboard');
 
     // User Route
+    Route::get('/user', function () {
+        return view('user_index');
+    });
+    Route::get('/role', function () {
+        return view('role_index');
+    });
     // Route::resource('user', UserController::class);
 
     // Route::post('/change-password', [AdminController::class, 'updatePassword'])->name('update-password');

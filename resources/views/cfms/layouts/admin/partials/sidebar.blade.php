@@ -39,9 +39,8 @@
                     <li class="dropdown">
                         <a class="nav-link menu-title {{ prefixActive('/user') }}" href="javascript:void(0)"><i data-feather="users"></i><span>Users</span></a>
                         <ul class="nav-submenu menu-content" style="display: {{ prefixBlock('/user') }};">
-                            <li><a href="{{ route('list') }}" class="{{routeActive('list')}}">User List</a></li>
-                            <li><a href="{{ route('create-user') }}" class="{{routeActive('create-user')}}">Create new User</a></li>
-                            <li><a href="{{ route('edit-user') }}" class="{{routeActive('edit')}}">Edit User (Temp)</a></li>
+                            <li><a href="{{ url('user') }}" class="{{routeActive('user')}}">User List</a></li>
+                            <li><a href="{{ url('role') }}" class="{{routeActive('role')}}">Role List</a></li>
                         </ul>
                     </li>
                     <li class="dropdown">

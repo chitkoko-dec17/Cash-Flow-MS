@@ -80,6 +80,7 @@ class User extends Component
             ]);
             session()->flash('success','User Created Successfully!!');
             $this->resetFields();
+            $this->render();
             $this->addUser = false;
         } catch (\Exception $ex) {
             session()->flash('error','Something goes wrong!!');
@@ -133,6 +134,7 @@ class User extends Component
             ]);
             session()->flash('success','User Updated Successfully!!');
             $this->resetFields();
+            $this->render();
             $this->updateUser = false;
         } catch (\Exception $ex) {
             session()->flash('success','Something goes wrong!!');

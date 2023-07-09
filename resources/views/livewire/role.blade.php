@@ -6,21 +6,21 @@
                         <div class="col-md-6 p-0">
 
                         </div>
-                        @if(!$addUser || !$updateUser)
+                        @if(!$addRole || !$updateRole)
                         <div class="col-md-6 p-0">
                             <div class="form-group mb-0 me-0"></div>
-                            <button wire:click="addUser()" class="btn btn-primary" > <i data-feather="plus-square"> </i>Create New User</button>
+                            <!-- <button wire:click="addRole()" class="btn btn-primary" > <i data-feather="plus-square"> </i>Create New Role</button> -->
                         </div>
                         @endif
                     </div>
                 </div>
 
                 <div class="col-md-12">
-                    @if($addUser)
-                        @include('cfms.user.create')
+                    @if($addRole)
+                        @include('cfms.role.create')
                     @endif
-                    @if($updateUser)
-                        @include('cfms.user.edit')
+                    @if($updateRole)
+                        @include('cfms.role.edit')
                     @endif
                 </div>
 
@@ -42,7 +42,7 @@
                     </div>
 
                     <div class="card-header pb-0">
-                        <h5>User List</h5>
+                        <h5>Role List</h5>
                     </div>
                     <div class="card-header pb-0">
                     </div>
@@ -52,31 +52,23 @@
                                 <thead>
                                     <tr>
                                         <th>Name</th>
-                                        <th>Role</th>
-                                        <th>Email</th>
-                                        <th>Phone</th>
-                                        <th>Address</th>
                                         <th>Action</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @if (count($users) > 0)
-                                        @foreach ($users as $user)
+                                    @if (count($roles) > 0)
+                                        @foreach ($roles as $role)
                                             <tr>
-                                                <td>{{$user->name}}</td>
-                                                <td>{{$user->role->name}}</td>
-                                                <td>{{$user->email}}</td>
-                                                <td class="font-success">{{$user->phone}}</td>
-                                                <td>{{$user->address}}</td>
+                                                <td>{{$role->name}}</td>
                                                 <td>
                                                     <div class="product-icon">
                                                         <ul class="product-social">
                                                             <li class="d-inline-block">
-                                                                <a href="javascript:void(0)" wire:click="editUser({{$user->id}})" title="Edit user"><i class="fa fa-edit"></i></a>
+                                                                <a href="javascript:void(0)" wire:click="editRole({{$role->id}})" title="Edit Role"><i class="fa fa-edit"></i></a>
                                                             </li>
-                                                            <li class="d-inline-block">
-                                                                <a href="javascript:void(0)" wire:click="deleteUser({{$user->id}})" title="Delete user"><i class="fa fa-trash-o"></i></a>
-                                                            </li>
+                                                            <!-- <li class="d-inline-block">
+                                                                <a href="javascript:void(0)" wire:click="deleteRole({{$role->id}})" title="Delete Role"><i class="fa fa-trash-o"></i></a>
+                                                            </li> -->
                                                         </ul>
                                                         <form class="d-inline-block f-right"></form>
                                                     </div>
@@ -85,8 +77,8 @@
                                         @endforeach
                                     @else
                                         <tr>
-                                            <td colspan="6" align="center">
-                                                No User Found.
+                                            <td colspan="2" align="center">
+                                                No Role Found.
                                             </td>
                                         </tr>
                                     @endif
