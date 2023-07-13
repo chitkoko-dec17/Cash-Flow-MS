@@ -74,6 +74,10 @@ Route::group(['middleware' => ['auth']], function() {
     Route::get('/role', function () {
         return view('role_index');
     });
+
+    Route::get('/business-unit', function () {
+        return view('business_index');
+    });
     // Route::resource('user', UserController::class);
 
     // Route::post('/change-password', [AdminController::class, 'updatePassword'])->name('update-password');
@@ -86,4 +90,8 @@ Route::group(['middleware' => ['auth']], function() {
         Route::view('edit-user', 'cfms.user.edit')->name('edit-user');
         Route::view('create-user', 'cfms.user.create')->name('create-user');
     });
+
+    // for BU
+    //Route::view('business-unit', 'livewire.business-unit-crud')->name('business-unit');
+
 });

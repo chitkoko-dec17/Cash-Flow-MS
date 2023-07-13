@@ -23,10 +23,9 @@
                         <a class="nav-link menu-title link-nav" href="{{ route('dashboard') }}"><i data-feather="home"></i><span>Dashboard</span></a>
                     </li>
                     <li class="dropdown">
-                        <a class="nav-link menu-title {{ prefixActive('/project') }}" href="javascript:void(0)"><i data-feather="server"></i><span>Business Unit </span></a>
-                        <ul class="nav-submenu menu-content" style="display: {{ prefixBlock('/project') }};">
-                            <li><a href="{{ route('projects') }}" class="{{routeActive('projects')}}">Project List</a></li>
-                            <li><a href="{{ route('projectcreate') }}" class="{{routeActive('projectcreate')}}">Create new project</a></li>
+                        <a class="nav-link menu-title {{ prefixActive('/business-unit') }}" href="javascript:void(0)"><i data-feather="server"></i><span>Business Units</span></a>
+                        <ul class="nav-submenu menu-content" style="display: {{ prefixBlock('/business-unit') }};">
+                            <li><a href="{{ url('business-unit') }}" class="{{routeActive('business-unit')}}">Business Unit List</a></li>
                         </ul>
                     </li>
                     <li class="dropdown">

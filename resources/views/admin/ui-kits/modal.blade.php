@@ -317,7 +317,7 @@
         </div>
     </div>
 
-    @push('scripts') 
+    @push('scripts')
     <script src="{{ asset('assets/js/tooltip-init.js')}}"></script>
     @endpush
 @endsection
