@@ -3,12 +3,12 @@
 namespace App\Http\Livewire;
 
 use Livewire\Component;
-use App\Models\Role as Roles;
+use App\Models\ItemCategory as ItemCategories;
 
-class Role extends Component
+class ItemCategoryComponent extends Component
 {
-    public $roles, $name, $roleId ;
-    public $updateRole = false, $addRole = false;
+    public $itemcategories, $name, $itemcategoryId ;
+    public $updateItemCategory = false, $addItemCategory = false;
  
     /**
      * delete action listener
@@ -38,55 +38,55 @@ class Role extends Component
      */
     public function render()
     {
-        $this->roles = Roles::all();
-        return view('livewire.role');
+        $this->itemcategories = ItemCategories::all();
+        return view('livewire.item-category');
     }
  
     /**
      * Open Add Post form
      * @return void
      */
-    public function addRole()
+    public function addItemCategory()
     {
         $this->resetFields();
-        $this->addRole = true;
-        $this->updateRole = false;
+        $this->addItemCategory = true;
+        $this->updateItemCategory = false;
     }
      /**
-      * store the Role inputted post data in the roles table
+      * store the Role inputted post data in the itemcategories table
       * @return void
       */
-    public function storeRole()
+    public function storeItemCategory()
     {
         $this->validate();
         try {
-            Roles::create([
+            ItemCategories::create([
                 'name' => $this->name,
             ]);
-            session()->flash('success','Role Created Successfully!!');
+            session()->flash('success','Item Category Created Successfully!!');
             $this->resetFields();
             $this->render();
-            $this->addRole = false;
+            $this->addItemCategory = false;
         } catch (\Exception $ex) {
             session()->flash('error','Something goes wrong!!');
         }
     }
  
     /**
-     * show existing Role data in edit Role form
+     * show existing ItemCategory data in edit ItemCategory form
      * @param mixed $id
      * @return void
      */
-    public function editRole($id){
+    public function editItemCategory($id){
         try {
-            $role = Roles::findOrFail($id);
+            $role = ItemCategories::findOrFail($id);
             if( !$role) {
-                session()->flash('error','Role not found');
+                session()->flash('error','Item Category not found');
             } else {
                 $this->name = $role->name;
-                $this->roleId = $role->id;
-                $this->updateRole = true;
-                $this->addRole = false;
+                $this->itemcategoryId = $role->id;
+                $this->updateItemCategory = true;
+                $this->addItemCategory = false;
             }
         } catch (\Exception $ex) {
             session()->flash('error','Something goes wrong!!');
@@ -98,17 +98,17 @@ class Role extends Component
      * update the post data
      * @return void
      */
-    public function updateRole()
+    public function updateItemCategory()
     {
         $this->validate();
         try {
-            Roles::whereId($this->roleId)->update([
+            ItemCategories::whereId($this->itemcategoryId)->update([
                 'name' => $this->name,
             ]);
             session()->flash('success','Role Updated Successfully!!');
             $this->resetFields();
             $this->render();
-            $this->updateRole = false;
+            $this->updateItemCategory = false;
         } catch (\Exception $ex) {
             session()->flash('success','Something goes wrong!!');
         }
@@ -118,22 +118,22 @@ class Role extends Component
      * Cancel Add/Edit form and redirect to post listing page
      * @return void
      */
-    public function cancelRole()
+    public function cancelItemCategory()
     {
-        $this->addRole = false;
-        $this->updateRole = false;
+        $this->addItemCategory = false;
+        $this->updateItemCategory = false;
         $this->resetFields();
     }
  
     /**
-     * delete specific post data from the Roles table
+     * delete specific post data from the itemcategories table
      * @param mixed $id
      * @return void
      */
-    public function deleteRole($id)
+    public function deleteItemCategory($id)
     {
         try{
-            Roles::find($id)->delete();
+            ItemCategories::find($id)->delete();
             session()->flash('success',"Role Deleted Successfully!!");
         }catch(\Exception $e){
             session()->flash('error',"Something goes wrong!!");

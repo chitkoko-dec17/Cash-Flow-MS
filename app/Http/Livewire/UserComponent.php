@@ -6,7 +6,7 @@ use Livewire\Component;
 use App\Models\User as Users;
 use Illuminate\Support\Facades\Hash;
 
-class User extends Component
+class UserComponent extends Component
 {
 
     public $users, $name, $userId, $role_id, $email, $password, $phone, $address ;

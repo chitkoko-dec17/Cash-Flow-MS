@@ -3,6 +3,11 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\Dashboard;
+use App\Http\Livewire\RoleComponent;
+use App\Http\Livewire\UserComponent;
+use App\Http\Livewire\BusinessUnitCrud;
+use App\Http\Livewire\ItemCategoryComponent;
+use App\Http\Livewire\ItemComponent;
 
 /*
 |--------------------------------------------------------------------------
@@ -68,16 +73,11 @@ Route::group(['middleware' => ['auth']], function() {
     Route::get('/dashboard',[Dashboard::class, 'index'])->name('dashboard');
 
     // User Route
-    Route::get('/user', function () {
-        return view('user_index');
-    });
-    Route::get('/role', function () {
-        return view('role_index');
-    });
-
-    Route::get('/business-unit', function () {
-        return view('business_index');
-    });
+    Route::get('/user',UserComponent::class)->name('user.index');
+    Route::get('/role',RoleComponent::class)->name('role.index');
+    Route::get('/itemcategory',ItemCategoryComponent::class)->name('itemcategory.index');
+    Route::get('/item',ItemComponent::class)->name('item.index');
+    Route::get('/business-unit',BusinessUnitCrud::class)->name('business-unit.index');
     // Route::resource('user', UserController::class);
 
     // Route::post('/change-password', [AdminController::class, 'updatePassword'])->name('update-password');

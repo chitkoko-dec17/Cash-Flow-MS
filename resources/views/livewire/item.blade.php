@@ -6,21 +6,21 @@
                         <div class="col-md-6 p-0">
 
                         </div>
-                        @if(!$addUser || !$updateUser)
+                        @if(!$addItem || !$updateItem)
                         <div class="col-md-6 p-0">
                             <div class="form-group mb-0 me-0"></div>
-                            <button wire:click="addUser()" class="btn btn-primary" > <i data-feather="plus-square"> </i>Create New User</button>
+                            <button wire:click="addItem()" class="btn btn-primary" > <i data-feather="plus-square"> </i>Create New Item</button>
                         </div>
                         @endif
                     </div>
                 </div>
 
                 <div class="col-md-12">
-                    @if($addUser)
-                        @include('cfms.user.create')
+                    @if($addItem)
+                        @include('cfms.item.create')
                     @endif
-                    @if($updateUser)
-                        @include('cfms.user.edit')
+                    @if($updateItem)
+                        @include('cfms.item.edit')
                     @endif
                 </div>
 
@@ -42,7 +42,7 @@
                     </div>
 
                     <div class="card-header pb-0">
-                        <h5>User List</h5>
+                        <h5>Item List</h5>
                     </div>
                     <div class="card-header pb-0">
                     </div>
@@ -53,29 +53,23 @@
                                     <tr>
                                         <th>Name</th>
                                         <th>Role</th>
-                                        <th>Email</th>
-                                        <th>Phone</th>
-                                        <th>Address</th>
                                         <th>Action</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @if (count($users) > 0)
-                                        @foreach ($users as $user)
+                                    @if (count($items) > 0)
+                                        @foreach ($items as $item)
                                             <tr>
-                                                <td>{{$user->name}}</td>
-                                                <td>{{$user->role->name}}</td>
-                                                <td>{{$user->email}}</td>
-                                                <td class="font-success">{{$user->phone}}</td>
-                                                <td>{{$user->address}}</td>
+                                                <td>{{$item->name}}</td>
+                                                <td>{{$item->category->name}}</td>
                                                 <td>
                                                     <div class="product-icon">
                                                         <ul class="product-social">
                                                             <li class="d-inline-block">
-                                                                <a href="javascript:void(0)" wire:click="editUser({{$user->id}})" title="Edit user"><i class="fa fa-edit"></i></a>
+                                                                <a href="javascript:void(0)" wire:click="editItem({{$item->id}})" title="Edit item"><i class="fa fa-edit"></i></a>
                                                             </li>
                                                             <li class="d-inline-block">
-                                                                <a href="javascript:void(0)" wire:click="deleteUser({{$user->id}})" title="Delete user"><i class="fa fa-trash-o"></i></a>
+                                                                <a href="javascript:void(0)" wire:click="deleteItem({{$item->id}})" title="Delete item"><i class="fa fa-trash-o"></i></a>
                                                             </li>
                                                         </ul>
                                                         <form class="d-inline-block f-right"></form>
@@ -85,8 +79,8 @@
                                         @endforeach
                                     @else
                                         <tr>
-                                            <td colspan="6" align="center">
-                                                No User Found.
+                                            <td colspan="3" align="center">
+                                                No Item Found.
                                             </td>
                                         </tr>
                                     @endif
