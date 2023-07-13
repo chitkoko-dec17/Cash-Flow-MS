@@ -4,7 +4,7 @@
     @endif
 
     <div class="mb-3">
-        <button wire:click="create" class="btn btn-primary" type="button" data-bs-toggle="modal" data-bs-target="#businessUnitModal">Create New Business Unit</button>
+        <button wire:click="create" class="btn btn-primary" type="button" data-bs-toggle="modal" data-bs-target="#businessUnitModal"><i class="fa fa-edit"></i>Create New Business Unit</button>
     </div>
 
     <table class="table table-bordered">
