@@ -13,7 +13,7 @@
 									<div class="mb-3 row">
                                         <label class="col-sm-3 col-form-label" for="name">Name</label>
                                         <div class="col-sm-9">
-                                            <input class="form-control @error('name') is-invalid @enderror" type="text" placeholder="Username" aria-describedby="inputGroupPrepend" required="" wire:model="name" id="name"/>
+                                            <input class="form-control @error('name') is-invalid @enderror" type="text" placeholder="Role" aria-describedby="inputGroupPrepend" required="" wire:model="name" id="name"/>
                                             @error('name')
                                             <div class="invalid-feedback">Please enter role name.</div>
                                             @enderror

@@ -47,7 +47,7 @@
                     <div class="card-header pb-0">
                     </div>
                     <div class="card-body">
-                        <div wire:ignore class="table-responsive product-table">
+                        <div class="table">
                             <table class="display" id="basic-1">
                                 <thead>
                                     <tr>

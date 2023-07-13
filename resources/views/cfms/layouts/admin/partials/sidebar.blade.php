@@ -43,6 +43,12 @@
                             <li><a href="{{ url('role') }}" class="{{routeActive('role')}}">Role List</a></li>
                         </ul>
                     </li>
+                    <li>
+                        <a class="nav-link menu-title link-nav " href="{{ url('itemcategory') }}"><i data-feather="dollar-sign"></i><span>Item Category</span></a>
+                    </li>
+                    <li>
+                        <a class="nav-link menu-title link-nav " href="{{ url('item') }}"><i data-feather="dollar-sign"></i><span>Item</span></a>
+                    </li>
                     <li class="dropdown">
                         <a class="nav-link menu-title {{ prefixActive('/user') }}" href="javascript:void(0)"><i data-feather="file"></i><span>Invoices</span></a>
                         <ul class="nav-submenu menu-content" style="display: {{ prefixBlock('/user') }};">

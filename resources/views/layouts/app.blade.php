@@ -1,6 +1,6 @@
 @extends('cfms.layouts.admin.master')
 
-@section('title')User list
+@section('title') Admin Management
  {{ $title }}
 @endsection
 
@@ -13,6 +13,6 @@
 
 @section('content')
     <div class="container-fluid list-products">
-        @livewire('user')
+        {{ $slot }}
     </div>
 @endsection

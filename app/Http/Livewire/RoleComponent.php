@@ -3,18 +3,18 @@
 namespace App\Http\Livewire;
 
 use Livewire\Component;
-use App\Models\Role as Posts;
+use App\Models\Role as Roles;
 
-class Post extends Component
+class RoleComponent extends Component
 {
-
-    public $posts, $name, $postId, $updatePost = false, $addPost = false;
+    public $roles, $name, $roleId ;
+    public $updateRole = false, $addRole = false;
  
     /**
      * delete action listener
      */
     protected $listeners = [
-        'deletePostListner'=>'deletePost'
+        'deleteRoleListner'=>'deleteRole'
     ];
  
     /**
@@ -38,54 +38,55 @@ class Post extends Component
      */
     public function render()
     {
-        $this->posts = Posts::select('id', 'name')->get();
-        return view('livewire.post');
+        $this->roles = Roles::all();
+        return view('livewire.role');
     }
  
     /**
      * Open Add Post form
      * @return void
      */
-    public function addPost()
+    public function addRole()
     {
         $this->resetFields();
-        $this->addPost = true;
-        $this->updatePost = false;
+        $this->addRole = true;
+        $this->updateRole = false;
     }
      /**
-      * store the user inputted post data in the posts table
+      * store the Role inputted post data in the roles table
       * @return void
       */
-    public function storePost()
+    public function storeRole()
     {
         $this->validate();
         try {
-            Posts::create([
+            Roles::create([
                 'name' => $this->name,
             ]);
-            session()->flash('success','Post Created Successfully!!');
+            session()->flash('success','Role Created Successfully!!');
             $this->resetFields();
-            $this->addPost = false;
+            $this->render();
+            $this->addRole = false;
         } catch (\Exception $ex) {
             session()->flash('error','Something goes wrong!!');
         }
     }
  
     /**
-     * show existing post data in edit post form
+     * show existing Role data in edit Role form
      * @param mixed $id
      * @return void
      */
-    public function editPost($id){
+    public function editRole($id){
         try {
-            $post = Posts::findOrFail($id);
-            if( !$post) {
-                session()->flash('error','Post not found');
+            $role = Roles::findOrFail($id);
+            if( !$role) {
+                session()->flash('error','Role not found');
             } else {
-                $this->name = $post->name;
-                $this->postId = $post->id;
-                $this->updatePost = true;
-                $this->addPost = false;
+                $this->name = $role->name;
+                $this->roleId = $role->id;
+                $this->updateRole = true;
+                $this->addRole = false;
             }
         } catch (\Exception $ex) {
             session()->flash('error','Something goes wrong!!');
@@ -97,16 +98,17 @@ class Post extends Component
      * update the post data
      * @return void
      */
-    public function updatePost()
+    public function updateRole()
     {
         $this->validate();
         try {
-            Posts::whereId($this->postId)->update([
+            Roles::whereId($this->roleId)->update([
                 'name' => $this->name,
             ]);
-            session()->flash('success','Post Updated Successfully!!');
+            session()->flash('success','Role Updated Successfully!!');
             $this->resetFields();
-            $this->updatePost = false;
+            $this->render();
+            $this->updateRole = false;
         } catch (\Exception $ex) {
             session()->flash('success','Something goes wrong!!');
         }
@@ -116,23 +118,23 @@ class Post extends Component
      * Cancel Add/Edit form and redirect to post listing page
      * @return void
      */
-    public function cancelPost()
+    public function cancelRole()
     {
-        $this->addPost = false;
-        $this->updatePost = false;
+        $this->addRole = false;
+        $this->updateRole = false;
         $this->resetFields();
     }
  
     /**
-     * delete specific post data from the posts table
+     * delete specific post data from the Roles table
      * @param mixed $id
      * @return void
      */
-    public function deletePost($id)
+    public function deleteRole($id)
     {
         try{
-            Posts::find($id)->delete();
-            session()->flash('success',"Post Deleted Successfully!!");
+            Roles::find($id)->delete();
+            session()->flash('success',"Role Deleted Successfully!!");
         }catch(\Exception $e){
             session()->flash('error',"Something goes wrong!!");
         }
