@@ -9,7 +9,7 @@
                         @if(!$addRole || !$updateRole)
                         <div class="col-md-6 p-0">
                             <div class="form-group mb-0 me-0"></div>
-                            <!-- <button wire:click="addRole()" class="btn btn-primary" > <i data-feather="plus-square"> </i>Create New Role</button> -->
+                            <!-- <button wire:ignore wire:click="addRole()" class="btn btn-primary" > <i data-feather="plus-square"> </i>Create New Role</button> -->
                         </div>
                         @endif
                     </div>
@@ -48,7 +48,7 @@
                     </div>
                     <div class="card-body">
                         <div class="table">
-                            <table class="display" id="basic-1">
+                            <table wire:ignore class="display" id="basic-1">
                                 <thead>
                                     <tr>
                                         <th>Name</th>

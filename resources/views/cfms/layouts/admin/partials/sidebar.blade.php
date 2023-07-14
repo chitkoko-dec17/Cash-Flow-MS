@@ -49,10 +49,10 @@
                         <a class="nav-link menu-title link-nav " href="{{ url('item') }}"><i data-feather="dollar-sign"></i><span>Item</span></a>
                     </li>
                     <li class="dropdown">
-                        <a class="nav-link menu-title {{ prefixActive('/user') }}" href="javascript:void(0)"><i data-feather="file"></i><span>Invoices</span></a>
-                        <ul class="nav-submenu menu-content" style="display: {{ prefixBlock('/user') }};">
+                        <a class="nav-link menu-title {{ prefixActive('/invoice') }}" href="javascript:void(0)"><i data-feather="file"></i><span>Invoices</span></a>
+                        <ul class="nav-submenu menu-content" style="display: {{ prefixBlock('/invoice') }};">
                             <li><a href="{{ route('list') }}" class="{{routeActive('list')}}">User List</a></li>
-                            <li><a href="{{ route('create-user') }}" class="{{routeActive('create-user')}}">Create new User</a></li>
+                            <li><a href="{{ route('invoicetype.index') }}" class="{{routeActive('invoicetype')}}">Invoice Type</a></li>
                         </ul>
                     </li>
                     <li class="dropdown">
