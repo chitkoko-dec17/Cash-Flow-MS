@@ -9,7 +9,7 @@ use Livewire\Component;
 use Livewire\WithFileUploads;
 use Livewire\WithPagination;
 
-class BusinessUnitCrud extends Component
+class BusinessUnitComponent extends Component
 {
     use WithFileUploads;
     use WithPagination;
@@ -45,7 +45,7 @@ class BusinessUnitCrud extends Component
         $managers = User::where('role_id', $role->id)->pluck('name', 'id');
 
 
-        return view('livewire.business-unit-crud',compact('businessUnits','managers'));
+        return view('livewire.business-unit',compact('businessUnits','managers'));
     }
 
     public function create()
