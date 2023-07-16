@@ -67,6 +67,7 @@ class ItemCategoryComponent extends Component
             $this->resetFields();
             $this->render();
             $this->addItemCategory = false;
+            return redirect(request()->header('Referer'));
         } catch (\Exception $ex) {
             session()->flash('error','Something goes wrong!!');
         }
@@ -109,6 +110,7 @@ class ItemCategoryComponent extends Component
             $this->resetFields();
             $this->render();
             $this->updateItemCategory = false;
+            return redirect(request()->header('Referer'));
         } catch (\Exception $ex) {
             session()->flash('success','Something goes wrong!!');
         }

@@ -8,6 +8,7 @@ use App\Http\Livewire\UserComponent;
 use App\Http\Livewire\BusinessUnitCrud;
 use App\Http\Livewire\ItemCategoryComponent;
 use App\Http\Livewire\ItemComponent;
+use App\Http\Livewire\InvoiceTypeComponent;
 
 /*
 |--------------------------------------------------------------------------
@@ -77,6 +78,7 @@ Route::group(['middleware' => ['auth']], function() {
     Route::get('/role',RoleComponent::class)->name('role.index');
     Route::get('/itemcategory',ItemCategoryComponent::class)->name('itemcategory.index');
     Route::get('/item',ItemComponent::class)->name('item.index');
+    Route::get('/invoicetype',InvoiceTypeComponent::class)->name('invoicetype.index');
     Route::get('/business-unit',BusinessUnitCrud::class)->name('business-unit.index');
     // Route::resource('user', UserController::class);
 

@@ -82,6 +82,7 @@ class UserComponent extends Component
             $this->resetFields();
             $this->render();
             $this->addUser = false;
+            return redirect(request()->header('Referer'));
         } catch (\Exception $ex) {
             session()->flash('error','Something goes wrong!!');
         }
@@ -136,6 +137,7 @@ class UserComponent extends Component
             $this->resetFields();
             $this->render();
             $this->updateUser = false;
+            return redirect(request()->header('Referer'));
         } catch (\Exception $ex) {
             session()->flash('success','Something goes wrong!!');
         }

@@ -67,6 +67,7 @@ class RoleComponent extends Component
             $this->resetFields();
             $this->render();
             $this->addRole = false;
+            return redirect(request()->header('Referer'));
         } catch (\Exception $ex) {
             session()->flash('error','Something goes wrong!!');
         }
@@ -109,6 +110,7 @@ class RoleComponent extends Component
             $this->resetFields();
             $this->render();
             $this->updateRole = false;
+            return redirect(request()->header('Referer'));
         } catch (\Exception $ex) {
             session()->flash('success','Something goes wrong!!');
         }
