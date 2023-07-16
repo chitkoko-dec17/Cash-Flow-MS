@@ -1,36 +1,45 @@
 @if ($paginator->hasPages())
-    <ul class="pagination pagination-rounded justify-content-end mt-4">
-        {{-- Previous Page Link --}}
-        @if ($paginator->onFirstPage())
-            <li class="page-item disabled"><a href="javascript:;" wire:click="previousPage" class="page-link">Prev</a></li>
-        @else
-        <li class="page-item"><a href="javascript:;" wire:click="previousPage" rel="prev" class="page-link">Prev</a></li>
-        @endif
-
-        {{-- Pagination Element Here --}}
-        @foreach ($elements as $element)
-            {{-- Make dots here --}}
-            @if (is_string($element))
-                <li class="page-item disabled"><a class="page-link"><span>{{ $element }}</span></a></li>
+    <nav aria-label="..." class="p-0 mt-2">
+        <ul class="pagination justify-content-center pagination-primary">
+            @if ($paginator->onFirstPage())
+                <li class="page-item disabled"><a class="page-link" wire:click="previousPage" href="javascript:void(0)"
+                        tabindex="-1">Previous</a></li>
+            @else
+                <li class="page-item"><a class="page-link" wire:click="previousPage" href="javascript:void(0)"
+                        tabindex="-1">Previous</a></li>
             @endif
 
-            {{-- Links array Here --}}
-            @if (is_array($element))
-                @foreach ($element as $page=>$url)
-                    @if ($page == $paginator->currentPage())
-                        <li class="page-item active" aria-current="page"><a href="javascript:;" wire:click="gotoPage({{$page}})" class="page-link"><span>{{ $page }}</span></a></li>
-                    @else
-                    <li class="page-item"><a href="javascript:;" wire:click="gotoPage({{$page}})" class="page-link">{{$page}}</a></li>
-                    @endif
-                @endforeach
-            @endif
-        @endforeach
+            {{-- Pagination Element Here --}}
+            @foreach ($elements as $element)
+                {{-- Make dots here --}}
+                @if (is_string($element))
+                    <li class="page-item disabled"><a class="page-link"><span>{{ $element }}</span></a></li>
+                @endif
 
-        {{-- Next Page Link --}}
-        @if ($paginator->hasMorePages())
-            <li class="page-item"><a href="javascript:;" wire:click="nextPage" class="page-link">Next</a></li>
-        @else
-          <li class="page-item disabled"><a href="javascript:;" class="page-link">Next</a></li>
-        @endif
-    </ul>
+                {{-- Links array Here --}}
+                @if (is_array($element))
+                    @foreach ($element as $page => $url)
+                        @if ($page == $paginator->currentPage())
+                            <li class="page-item active" aria-current="page">
+                                <a href="javascript:;" wire:click="gotoPage({{ $page }})"
+                                    class="page-link"><span>{{ $page }}</span></a>
+                            </li>
+                        @else
+                            <li class="page-item">
+                                <a href="javascript:;" wire:click="gotoPage({{ $page }})"
+                                    class="page-link">{{ $page }}</a>
+                            </li>
+                        @endif
+                    @endforeach
+                @endif
+            @endforeach
+
+            {{-- Next Page Link --}}
+            @if ($paginator->hasMorePages())
+                <li class="page-item"><a class="page-link" wire:click="nextPage" href="javascript:void(0)">Next</a></li>
+            @else
+                <li class="page-item disabled"><a class="page-link" href="javascript:void(0)">Next</a></li>
+            @endif
+        </ul>
+    </nav>
 @endif

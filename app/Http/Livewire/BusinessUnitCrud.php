@@ -101,8 +101,6 @@ class BusinessUnitCrud extends Component
             'address' => 'required',
         ]);
 
-
-
         if ($this->bu_image) {
             $imagePath = $this->bu_image->store('bu_images', 'public');
         }
@@ -115,10 +113,12 @@ class BusinessUnitCrud extends Component
             'address' => $this->address,
         ]);
 
-        session()->flash(
-            'message',
-            $this->businessUnitId ? 'Business Unit updated successfully.' : 'Business Unit created successfully.'
-        );
+        isset($this->businessUnitId) ?  $this->emit('buCreateOrUpdated','create') : $this->emit('buCreateOrUpdated','edit');
+
+        // session()->flash(
+        //     'message',
+        //     $this->businessUnitId ? 'Business Unit updated successfully.' : 'Business Unit created successfully.'
+        // );
 
         $this->closeModal();
         $this->resetInputFields();
@@ -128,7 +128,7 @@ class BusinessUnitCrud extends Component
     public function edit($id)
     {
         $businessUnit = BusinessUnit::findOrFail($id);
-        $this->businessUnitId = $id;
+        $this->businessUnitId = $businessUnit->$id;
         $this->manager_id = $businessUnit->manager_id;
         $this->name = $businessUnit->name;
         $this->phone = $businessUnit->phone;
@@ -139,8 +139,11 @@ class BusinessUnitCrud extends Component
 
     public function delete($id)
     {
+        // $bu = BusinessUnit::findOrFail($id);
+        // Storage::delete($bu->bu_image);
         BusinessUnit::find($id)->delete();
-        session()->flash('message', 'Business Unit deleted successfully.');
+        $this->emit('buCreateOrUpdated','delete');
+        //session()->flash('message', 'Business Unit deleted successfully.');
     }
 
     public function checkPic(){

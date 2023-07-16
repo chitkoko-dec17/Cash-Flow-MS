@@ -1,9 +1,4 @@
 <div class="row">
-    @if (session()->has('message'))
-        <div class="alert alert-primary alert-dismissible fade show" role="alert">{{ session('message') }}<button
-                class="btn-close" type="button" data-bs-dismiss="alert" aria-label="Close"></button></div>
-    @endif
-
     <div class="card">
         <div class="card-header pb-10">
             <span class="float-start">
@@ -20,7 +15,7 @@
                         <label for="formSelect"> <span>Show </span></label>
                         <select wire:model="perPage" class="p-1 m-2" id="formSelect">
                             <option value="10">10</option>
-                            <option value="2">2</option>
+                            <option value="20">20</option>
                             <option value="50">50</option>
                             <option value="100">100</option>
                         </select>
@@ -92,7 +87,7 @@
                         </tbody>
                     </table>
                 </div>
-                <div class="row">
+                <div class="row p-0">
                     {{ $businessUnits->links('cfms.livewire-pagination-links') }}
                 </div>
             </div>
@@ -104,14 +99,31 @@
 
 @section('customJs')
     <script type="text/javascript">
-        $(document).ready(function(){
+        $(document).ready(function() {
             $('[data-toggle="tooltip"]').tooltip();
         });
-        window.addEventListener('openModal', function(){
+        window.addEventListener('openModal', function() {
             $('.addBusinessUnit').modal('show');
         });
-        window.addEventListener('closeModal', function(){
+        window.addEventListener('closeModal', function() {
             $('.addBusinessUnit').modal('hide');
+        });
+
+        Livewire.on('buCreateOrUpdated', action => {
+            if (action == 'edit') {
+                notifyToUser('Business Unit Updated', 'Success! Your Business Unit is updated successfully!',
+                    'primary');
+            } else if (action == 'delete') {
+                notifyToUser('Business Unit Deleted', 'Success! Your Business Unit is deleted successfully!',
+                    'primary');
+            } else if (action == 'create') {
+                notifyToUser('Business Unit Created', 'Success! Your Business Unit is created successfully!',
+                    'primary');
+            } else if (action == 'store_duplicate_error') {
+                notifyToUser('Business Unit Duplicate Error',
+                    'Error! The Business Unit code is already created! Please provide different Region code!',
+                    'danger');
+            }
         });
     </script>
 @endsection
