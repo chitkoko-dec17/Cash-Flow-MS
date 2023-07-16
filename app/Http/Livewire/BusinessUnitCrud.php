@@ -3,14 +3,18 @@
 namespace App\Http\Livewire;
 
 use App\Models\BusinessUnit;
+use App\Models\Role;
+use App\Models\User;
 use Livewire\Component;
 use Livewire\WithFileUploads;
+use Livewire\WithPagination;
 
 class BusinessUnitCrud extends Component
 {
     use WithFileUploads;
+    use WithPagination;
 
-    public $businessUnits;
+    //public $businessUnits;
     public $manager_id;
     public $name;
     public $bu_image;
@@ -19,15 +23,29 @@ class BusinessUnitCrud extends Component
     public $businessUnitId;
     public $isOpen = false;
     public $imageUrl;
-
+    public $perPage = 10;
+    public $search;
+    public $byManager=null;
+    public $sortDirectionBy='asc';
+    public $sortColumnName= 'name';
     /**
      * render the post data
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View
      */
     public function render()
     {
-        $this->businessUnits = BusinessUnit::all();
-        return view('livewire.business-unit-crud');
+        $businessUnits = BusinessUnit::when($this->byManager, function($query){
+            $query->where('manager_id', $this->byManager);
+        })
+        ->search(trim($this->search))
+        ->orderBy($this->sortColumnName,$this->sortDirectionBy)
+        ->paginate($this->perPage);
+
+        $role = Role::where('name', 'Manager')->first();
+        $managers = User::where('role_id', $role->id)->pluck('name', 'id');
+
+
+        return view('livewire.business-unit-crud',compact('businessUnits','managers'));
     }
 
     public function create()
@@ -39,11 +57,13 @@ class BusinessUnitCrud extends Component
     public function openModal()
     {
         $this->isOpen = true;
+        $this->dispatchBrowserEvent('openModal');
     }
 
     public function closeModal()
     {
         $this->isOpen = false;
+        $this->dispatchBrowserEvent('closeModal');
         $this->resetValidation(); // Reset form validation errors
         $this->resetInputFields(); // Clear input fields
     }
@@ -61,7 +81,7 @@ class BusinessUnitCrud extends Component
     public function updatedBuImage()
     {
         $this->validate([
-            'bu_image' => 'nullable|image|max:1024', // Assuming bu_image is an uploaded image field
+            'bu_image' => 'nullable|image|mimes:jpg,png,jpeg|max:3072', // Assuming bu_image is an uploaded image field
         ]);
 
         if ($this->bu_image) {
@@ -76,10 +96,12 @@ class BusinessUnitCrud extends Component
         $this->validate([
             'manager_id' => 'required',
             'name' => 'required',
-            'bu_image' => 'nullable|image|max:1024', // Assuming bu_image is an uploaded image field
+            'bu_image' => 'nullable|image|mimes:jpg,png,jpeg|max:3072', // Assuming bu_image is an uploaded image field
             'phone' => 'required',
             'address' => 'required',
         ]);
+
+
 
         if ($this->bu_image) {
             $imagePath = $this->bu_image->store('bu_images', 'public');
@@ -121,12 +143,32 @@ class BusinessUnitCrud extends Component
         session()->flash('message', 'Business Unit deleted successfully.');
     }
 
-    public function getBuImageUrlAttribute()
-    {
-        if ($this->bu_image) {
-            return asset('storage/bu_images/' . $this->bu_image);
-        }
+    public function checkPic(){
+        // $book = Book::find($id);
+        // if($request->hasfile('cover_image')) {
+        //     $old_book_cover = $book->cover_image;
 
-        return null;
+        //     if(file_exists(public_path($old_book_cover))){
+        //         unlink(public_path($old_book_cover));
+        //     }
+        //     $file_name = time() . '.' . request()->cover_image->getClientOriginalExtension();
+
+        //     request()->cover_image->move(public_path('images/bookcover'), $file_name);
+        //     $book->cover_image = $image_path.$file_name;
+        // }
+    }
+
+    public function sortBy($columnName){
+
+        if($this->sortColumnName === $columnName){
+            $this->sortDirectionBy = $this->swapSortDirection();
+        } else {
+            $this->sortDirectionBy = 'desc';
+        }
+        $this->sortColumnName = $columnName;
+    }
+
+    public function swapSortDirection()  {
+        return $this->sortDirectionBy === 'desc' ? 'asc' : 'desc';
     }
 }

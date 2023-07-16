@@ -17,6 +17,19 @@
     <link href="https://fonts.googleapis.com/css2?family=Rubik:ital,wght@0,400;0,500;0,600;0,700;0,800;0,900;1,300;1,400;1,500;1,600;1,700;1,800;1,900&amp;display=swap" rel="stylesheet">
     <!-- Font Awesome-->
     @includeIf('cfms.layouts.admin.partials.css')
+    <style>
+        .page-item.active .page-link{
+            background-color: #24695c !important;
+            border-color: #24695c !important;
+            color: #efefef !important;
+        }
+        .page-item .page-link{
+            color: #24695c !important;
+        }
+        .action-btn{
+            padding: 0.375rem 0.575rem;
+        }
+    </style>
   </head>
   <body>
     <!-- Loader starts-->
@@ -55,8 +68,9 @@
       </div>
     </div>
     <!-- latest jquery-->
-    //@includeIf('cfms.layouts.admin.partials.js')
+    @includeIf('cfms.layouts.admin.partials.js')
 
     @livewireScripts
+    @yield('customJs')
   </body>
 </html>

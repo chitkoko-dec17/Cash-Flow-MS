@@ -1,96 +1,117 @@
-<div>
-    @if(session()->has('message'))
-        <div class="alert alert-success">{{ session('message') }}</div>
+<div class="row">
+    @if (session()->has('message'))
+        <div class="alert alert-primary alert-dismissible fade show" role="alert">{{ session('message') }}<button
+                class="btn-close" type="button" data-bs-dismiss="alert" aria-label="Close"></button></div>
     @endif
 
-    <div class="mb-3">
-        <button wire:click="create" class="btn btn-primary" type="button" data-bs-toggle="modal" data-bs-target="#businessUnitModal"><i class="fa fa-edit"></i>Create New Business Unit</button>
-    </div>
-
-    <table class="table table-bordered">
-        <thead>
-            <tr>
-                <th>Image</th>
-                <th>Name</th>
-                <th>Phone</th>
-                <th>Address</th>
-                <th>Manager</th>
-                <th>Action</th>
-            </tr>
-        </thead>
-        <tbody>
-            @if (count($businessUnits) > 0)
-                @foreach($businessUnits as $businessUnit)
-                    <tr>
-                        <td>
-                            @if($businessUnit->bu_image)
-                                <img src="{{ asset('storage/' . $businessUnit->bu_image) }}" alt="Business Unit Image" width="50">
-                            @else
-                                No Image
-                            @endif
-                        </td>
-                        <td>{{ $businessUnit->name }}</td>
-                        <td>{{ $businessUnit->phone }}</td>
-                        <td>{{ $businessUnit->address }}</td>
-                        <td>{{ $businessUnit->manager_id }}</td>
-                        <td>
-                            <button wire:click="edit({{ $businessUnit->id }})" class="btn btn-primary" type="button" data-bs-toggle="modal" data-bs-target="#businessUnitModal">Edit</button>
-                            <button wire:click="delete({{ $businessUnit->id }})" class="btn btn-danger">Delete</button>
-                        </td>
-                    </tr>
-                @endforeach
-            @else
-                <tr>
-                    <td colspan="6" align="center">
-                        No User Found.
-                    </td>
-                </tr>
-            @endif
-        </tbody>
-    </table>
-
-
-    <div wire:ignore.self class="modal fade" id="businessUnitModal" tabindex="-1" role="dialog" aria-labelledby="businessUnitModal" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="businessUnitModalLabel">{{ $businessUnitId ? 'Edit Business Unit' : 'Create Business Unit' }}</h5>
-                    <button class="btn-close" type="button" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <form>
-                        <div class="form-group">
-                            <label for="name">Name</label>
-                            <input wire:model="name" type="text" class="form-control" id="name" placeholder="Enter name">
-                            @error('name') <span class="text-danger">{{ $message }}</span> @enderror
+    <div class="card">
+        <div class="card-header pb-10">
+            <span class="float-start">
+                <h5 class="mb-2">Configuration </h5>
+                <span>Business Unit Configuration -<code>လုပ်ငန်းစာရင်းများကို</code> ပြင်ဆင်မည်။</span>
+            </span>
+            <button wire:click="create" class="btn btn-primary float-end" type="button" data-bs-toggle="modal"
+                data-bs-target="#businessUnitModal"><i class="fa fa-edit"></i> Create New Business Unit</button>
+        </div>
+        <div class="card-body pt-0">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="col-md-4 form-inline m-2">
+                        <label for="formSelect"> <span>Show </span></label>
+                        <select wire:model="perPage" class="p-1 m-2" id="formSelect">
+                            <option value="10">10</option>
+                            <option value="2">2</option>
+                            <option value="50">50</option>
+                            <option value="100">100</option>
+                        </select>
+                        <label class="p-1" for="formSelect"> <span> entries</span></label>
+                    </div>
+                    <div class="col-md-4 form-inline m-2 float-end">
+                        <div class="input-group">
+                            <input wire:model.debounce.350ms="search" type="text" class="form-control"
+                                placeholder="Search...">
                         </div>
-                        <div class="form-group">
-                            <label for="bu_image">Business Unit Image</label>
-                            <input wire:model="bu_image" type="file" class="form-control" id="bu_image">
-                            @error('bu_image') <span class="text-danger">{{ $message }}</span> @enderror
-                        </div>
-                        <div class="form-group">
-                            <label for="phone">Phone</label>
-                            <input wire:model="phone" type="text" class="form-control" id="phone" placeholder="Enter phone number">
-                            @error('phone') <span class="text-danger">{{ $message }}</span> @enderror
-                        </div>
-                        <div class="form-group">
-                            <label for="address">Address</label>
-                            <textarea wire:model="address" class="form-control" id="address" placeholder="Enter address"></textarea>
-                            @error('address') <span class="text-danger">{{ $message }}</span> @enderror
-                        </div>
-                        <div class="form-group">
-                            <label for="manager">Manager Id</label>
-                            <input wire:model="manager_id" type="number" class="form-control" id="manager" placeholder="Enter manager id">
-                            @error('manager_id') <span class="text-danger">{{ $message }}</span> @enderror
-                        </div>
-                    </form>
-                </div>
-                <div class="modal-footer">
-                    <button wire:click="closeModal" class="btn btn-secondary" type="button" data-bs-dismiss="modal">Close</button>
-                    <button wire:click="store" class="btn btn-primary" type="button">{{ $businessUnitId ? 'Save Changes' : 'Create' }}</button>
+                    </div>
                 </div>
             </div>
+
+            <div class="row">
+                <div class="table-responsive">
+                    <table class="table table-hover table-bordered">
+                        <thead>
+                            <tr>
+                                <th scope="col">Image</th>
+                                <th scope="col">
+                                    Name
+                                    <span wire:click="sortBy('name')" class="float-end" style="cursor: pointer;">
+                                        <i class="fa fa-sort text-muted"></i>
+                                    </span>
+                                </th>
+                                <th scope="col">Phone</th>
+                                <th scope="col">Address</th>
+                                <th scope="col">Manager</th>
+                                <th scope="col">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if (count($businessUnits) > 0)
+                                @foreach ($businessUnits as $businessUnit)
+                                    <tr>
+                                        <td>
+                                            @if ($businessUnit->bu_image)
+                                                <img src="{{ asset('storage/' . $businessUnit->bu_image) }}"
+                                                    alt="{{ $businessUnit->bu_image }}" width="50">
+                                            @else
+                                                No Image
+                                            @endif
+                                        </td>
+                                        <td>{{ $businessUnit->name }}</td>
+                                        <td>{{ $businessUnit->phone }}</td>
+                                        <td>{{ $businessUnit->address }}</td>
+                                        <td>{{ $businessUnit->manager->name }}</td>
+                                        <td>
+
+                                            <button wire:click="" class="btn btn-outline-success btn-sm action-btn"
+                                                title="View" data-toggle="tooltip"><i class="fa fa-eye"></i></button>
+                                            <button wire:click="edit({{ $businessUnit->id }})"
+                                                class="btn btn-outline-info btn-sm  action-btn" title="Edit"
+                                                data-toggle="tooltip"><i class="fa fa-pencil"></i></button>
+                                            <button wire:click="delete({{ $businessUnit->id }})"
+                                                class="btn btn-outline-danger btn-sm  action-btn" title="Delete"
+                                                data-toggle="tooltip"><i class="fa fa-trash"></i></button>
+                                        </td>
+                                    </tr>
+                                @endforeach
+                            @else
+                                <tr>
+                                    <td colspan="6" align="center">
+                                        No User Found.
+                                    </td>
+                                </tr>
+                            @endif
+                        </tbody>
+                    </table>
+                </div>
+                <div class="row">
+                    {{ $businessUnits->links('cfms.livewire-pagination-links') }}
+                </div>
+            </div>
+
+            @include('cfms.modals.business-unit-modal')
         </div>
     </div>
 </div>
+
+@section('customJs')
+    <script type="text/javascript">
+        $(document).ready(function(){
+            $('[data-toggle="tooltip"]').tooltip();
+        });
+        window.addEventListener('openModal', function(){
+            $('.addBusinessUnit').modal('show');
+        });
+        window.addEventListener('closeModal', function(){
+            $('.addBusinessUnit').modal('hide');
+        });
+    </script>
+@endsection

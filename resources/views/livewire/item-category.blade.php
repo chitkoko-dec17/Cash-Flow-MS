@@ -90,7 +90,6 @@
             </div>
             <!-- Individual column searching (text inputs) Ends-->
         </div>
-    </div>
 
     @push('scripts')
     <script src="{{asset('assets/js/datatable/datatables/jquery.dataTables.min.js')}}"></script>
