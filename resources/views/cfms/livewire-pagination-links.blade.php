@@ -1,6 +1,6 @@
 @if ($paginator->hasPages())
     <nav aria-label="..." class="p-0 mt-2">
-        <ul class="pagination justify-content-center pagination-primary">
+        <ul class="pagination justify-content-end pagination-primary">
             @if ($paginator->onFirstPage())
                 <li class="page-item disabled"><a class="page-link" wire:click="previousPage" href="javascript:void(0)"
                         tabindex="-1">Previous</a></li>

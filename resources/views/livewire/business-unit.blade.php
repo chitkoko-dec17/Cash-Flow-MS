@@ -21,7 +21,7 @@
                         </select>
                         <label class="p-1" for="formSelect"> <span> entries</span></label>
                     </div>
-                    <div class="col-md-4 form-inline m-2 float-end">
+                    <div class="col-md-3 form-inline float-end">
                         <div class="input-group">
                             <input wire:model.debounce.350ms="search" type="text" class="form-control"
                                 placeholder="Search...">
@@ -88,7 +88,12 @@
                     </table>
                 </div>
                 <div class="row p-0">
-                    {{ $businessUnits->links('cfms.livewire-pagination-links') }}
+                    <div class="col-md-12 clear-fix">
+                        <div class="col-md-6 float-start p-3">Showing {{ $businessUnits->firstItem() }} to {{ $businessUnits->lastItem() }} of {{ $businessUnits->total() }} entries</div>
+                        <div class="col-md-6 float-end">
+                            {{ $businessUnits->links('cfms.livewire-pagination-links') }}
+                        </div>
+                    </div>
                 </div>
             </div>
 
