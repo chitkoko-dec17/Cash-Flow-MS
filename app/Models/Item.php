@@ -23,4 +23,11 @@ class Item extends Model
     {
         return $this->belongsTo('App\Models\ItemCategory');
     }
+
+    public function scopeSearch($query, $term){
+        $term = "%$term%";
+        $query->where(function($query) use ($term){
+            $query->where('name','like',$term);
+        });
+    }
 }

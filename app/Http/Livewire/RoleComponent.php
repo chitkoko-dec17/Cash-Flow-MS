@@ -3,34 +3,18 @@
 namespace App\Http\Livewire;
 
 use Livewire\Component;
-use App\Models\Role as Roles;
+use App\Models\Role;
+use Livewire\WithPagination;
 
 class RoleComponent extends Component
 {
-    public $roles, $name, $roleId ;
-    public $updateRole = false, $addRole = false;
- 
-    /**
-     * delete action listener
-     */
-    protected $listeners = [
-        'deleteRoleListner'=>'deleteRole'
-    ];
- 
-    /**
-     * List of add/edit form rules
-     */
-    protected $rules = [
-        'name' => 'required',
-    ];
- 
-    /**
-     * Reseting all inputted fields
-     * @return void
-     */
-    public function resetFields(){
-        $this->name = '';
-    }
+    use WithPagination;
+    public $name, $roleId ;
+    public $isOpen = false;
+    public $perPage = 10;
+    public $search;
+    public $sortDirectionBy='asc';
+    public $sortColumnName= 'name';
  
     /**
      * render the post data
@@ -38,39 +22,55 @@ class RoleComponent extends Component
      */
     public function render()
     {
-        $this->roles = Roles::all();
-        return view('livewire.role');
+        $roles = Role::search(trim($this->search))
+        ->orderBy($this->sortColumnName,$this->sortDirectionBy)
+        ->paginate($this->perPage);
+
+        return view('livewire.role',compact('roles'));
     }
  
-    /**
-     * Open Add Post form
-     * @return void
-     */
-    public function addRole()
+    public function create()
     {
-        $this->resetFields();
-        $this->addRole = true;
-        $this->updateRole = false;
+        $this->resetInputFields();
+        $this->openModal();
+    }
+
+    public function openModal()
+    {
+        $this->isOpen = true;
+        $this->dispatchBrowserEvent('openModal');
+    }
+
+    public function closeModal()
+    {
+        $this->isOpen = false;
+        $this->dispatchBrowserEvent('closeModal');
+        $this->resetValidation(); // Reset form validation errors
+        $this->resetInputFields(); // Clear input fields
+    }
+
+    private function resetInputFields()
+    {
+        $this->name = '';
+        $this->roleId = '';
     }
      /**
       * store the Role inputted post data in the roles table
       * @return void
       */
-    public function storeRole()
+    public function store()
     {
-        $this->validate();
-        try {
-            Roles::create([
-                'name' => $this->name,
-            ]);
-            session()->flash('success','Role Created Successfully!!');
-            $this->resetFields();
-            $this->render();
-            $this->addRole = false;
-            return redirect(request()->header('Referer'));
-        } catch (\Exception $ex) {
-            session()->flash('error','Something goes wrong!!');
-        }
+        $this->validate([
+            'name' => 'required',
+        ]);
+
+        Role::updateOrCreate(['id' => $this->roleId], [
+            'name' => $this->name,
+        ]);
+
+        isset($this->roleId) ?  $this->emit('btnCreateOrUpdated','create') : $this->emit('btnCreateOrUpdated','edit');
+        $this->closeModal();
+        $this->resetInputFields();
     }
  
     /**
@@ -78,67 +78,35 @@ class RoleComponent extends Component
      * @param mixed $id
      * @return void
      */
-    public function editRole($id){
-        try {
-            $role = Roles::findOrFail($id);
-            if( !$role) {
-                session()->flash('error','Role not found');
-            } else {
-                $this->name = $role->name;
-                $this->roleId = $role->id;
-                $this->updateRole = true;
-                $this->addRole = false;
-            }
-        } catch (\Exception $ex) {
-            session()->flash('error','Something goes wrong!!');
-        }
- 
+    public function edit($id){
+        $role = Role::findOrFail($id);
+        $this->name = $role->name;
+        $this->roleId = $role->id;
+        $this->openModal();
     }
  
     /**
-     * update the post data
-     * @return void
-     */
-    public function updateRole()
-    {
-        $this->validate();
-        try {
-            Roles::whereId($this->roleId)->update([
-                'name' => $this->name,
-            ]);
-            session()->flash('success','Role Updated Successfully!!');
-            $this->resetFields();
-            $this->render();
-            $this->updateRole = false;
-            return redirect(request()->header('Referer'));
-        } catch (\Exception $ex) {
-            session()->flash('success','Something goes wrong!!');
-        }
-    }
- 
-    /**
-     * Cancel Add/Edit form and redirect to post listing page
-     * @return void
-     */
-    public function cancelRole()
-    {
-        $this->addRole = false;
-        $this->updateRole = false;
-        $this->resetFields();
-    }
- 
-    /**
-     * delete specific post data from the Roles table
+     * delete specific post data from the Role table
      * @param mixed $id
      * @return void
      */
-    public function deleteRole($id)
+    public function delete($id)
     {
-        try{
-            Roles::find($id)->delete();
-            session()->flash('success',"Role Deleted Successfully!!");
-        }catch(\Exception $e){
-            session()->flash('error',"Something goes wrong!!");
+        Role::find($id)->delete();
+        $this->emit('btnCreateOrUpdated','delete');
+    }
+
+    public function sortBy($columnName){
+
+        if($this->sortColumnName === $columnName){
+            $this->sortDirectionBy = $this->swapSortDirection();
+        } else {
+            $this->sortDirectionBy = 'desc';
         }
+        $this->sortColumnName = $columnName;
+    }
+
+    public function swapSortDirection()  {
+        return $this->sortDirectionBy === 'desc' ? 'asc' : 'desc';
     }
 }

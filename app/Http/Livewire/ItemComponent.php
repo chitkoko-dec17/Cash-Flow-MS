@@ -3,37 +3,19 @@
 namespace App\Http\Livewire;
 
 use Livewire\Component;
-use App\Models\Item as Items;
-use App\Models\ItemCategory as ItemCategories;
+use App\Models\Item;
+use App\Models\ItemCategory;
+use Livewire\WithPagination;
 
 class ItemComponent extends Component
 {
-    public $itemcategories, $items, $name, $itemId, $category_id ;
-    public $updateItem = false, $addItem = false;
- 
-    /**
-     * delete action listener
-     */
-    protected $listeners = [
-        'deleteUserListner'=>'deleteUser'
-    ];
- 
-    /**
-     * List of add/edit form rules
-     */
-    protected $rules = [
-        'category_id' => 'required',
-        'name' => 'required',
-    ];
- 
-    /**
-     * Reseting all inputted fields
-     * @return void
-     */
-    public function resetFields(){
-        $this->category_id = '';
-        $this->name = '';
-    }
+    use WithPagination;
+    public $name, $itemId, $category_id ;
+    public $isOpen = false;
+    public $perPage = 10;
+    public $search;
+    public $sortDirectionBy='asc';
+    public $sortColumnName= 'name';
  
     /**
      * render the post data
@@ -41,41 +23,59 @@ class ItemComponent extends Component
      */
     public function render()
     {
-        $this->items = Items::all();
-        $this->itemcategories = ItemCategories::all();
-        return view('livewire.item');
+        $items = Item::search(trim($this->search))
+        ->orderBy($this->sortColumnName,$this->sortDirectionBy)
+        ->paginate($this->perPage);
+        $itemcategories = ItemCategory::all();
+        return view('livewire.item',compact('items', 'itemcategories'));
+    }
+
+    public function create()
+    {
+        $this->resetInputFields();
+        $this->openModal();
+    }
+
+    public function openModal()
+    {
+        $this->isOpen = true;
+        $this->dispatchBrowserEvent('openModal');
+    }
+
+    public function closeModal()
+    {
+        $this->isOpen = false;
+        $this->dispatchBrowserEvent('closeModal');
+        $this->resetValidation(); // Reset form validation errors
+        $this->resetInputFields(); // Clear input fields
+    }
+
+    private function resetInputFields()
+    {
+        $this->name = '';
+        $this->category_id = '';
+        $this->itemId = '';
     }
  
-    /**
-     * Open Add Post form
-     * @return void
-     */
-    public function addItem()
-    {
-        $this->resetFields();
-        $this->addItem = true;
-        $this->updateItem = false;
-    }
      /**
       * store the user inputted post data in the items table
       * @return void
       */
-    public function storeItem()
+    public function store()
     {
-        $this->validate();
-        try {
-            Items::create([
-                'category_id' => $this->category_id,
-                'name' => $this->name,
-            ]);
-            session()->flash('success','Item Created Successfully!!');
-            $this->resetFields();
-            $this->render();
-            $this->addItem = false;
-            return redirect(request()->header('Referer'));
-        } catch (\Exception $ex) {
-            session()->flash('error','Something goes wrong!!');
-        }
+        $this->validate([
+            'category_id' => 'required',
+            'name' => 'required',
+        ]);
+
+        Item::updateOrCreate(['id' => $this->itemId], [
+            'category_id' => $this->category_id,
+            'name' => $this->name,
+        ]);
+
+        isset($this->itemId) ?  $this->emit('btnCreateOrUpdated','create') : $this->emit('btnCreateOrUpdated','edit');
+        $this->closeModal();
+        $this->resetInputFields();
     }
  
     /**
@@ -83,56 +83,12 @@ class ItemComponent extends Component
      * @param mixed $id
      * @return void
      */
-    public function editItem($id){
-        try {
-            $item = Items::findOrFail($id);
-            if( !$item) {
-                session()->flash('error','Item not found');
-            } else {
-                $this->category_id = $item->category_id;
-                $this->name = $item->name;
-                $this->itemId = $item->id;
-                $this->updateItem = true;
-                $this->addItem = false;
-            }
-        } catch (\Exception $ex) {
-            session()->flash('error','Something goes wrong!!');
-        }
- 
-    }
- 
-    /**
-     * update the post data
-     * @return void
-     */
-    public function updateItem()
-    {
-        $this->validate();
-
-        try {
-            Items::whereId($this->itemId)->update([
-                'category_id' => $this->category_id,
-                'name' => $this->name,
-            ]);
-            session()->flash('success','Item Updated Successfully!!');
-            $this->resetFields();
-            $this->render();
-            $this->updateItem = false;
-            return redirect(request()->header('Referer'));
-        } catch (\Exception $ex) {
-            session()->flash('success','Something goes wrong!!');
-        }
-    }
- 
-    /**
-     * Cancel Add/Edit form and redirect to post listing page
-     * @return void
-     */
-    public function cancelItem()
-    {
-        $this->addItem = false;
-        $this->updateItem = false;
-        $this->resetFields();
+    public function edit($id){
+        $item = Item::findOrFail($id);
+        $this->category_id = $item->category_id;
+        $this->name = $item->name;
+        $this->itemId = $item->id;
+        $this->openModal();  
     }
  
     /**
@@ -140,13 +96,23 @@ class ItemComponent extends Component
      * @param mixed $id
      * @return void
      */
-    public function deleteItem($id)
+    public function delete($id)
     {
-        try{
-            Items::find($id)->delete();
-            session()->flash('success',"Item Deleted Successfully!!");
-        }catch(\Exception $e){
-            session()->flash('error',"Something goes wrong!!");
+        Item::find($id)->delete();
+        $this->emit('btnCreateOrUpdated','delete');
+    }
+
+    public function sortBy($columnName){
+
+        if($this->sortColumnName === $columnName){
+            $this->sortDirectionBy = $this->swapSortDirection();
+        } else {
+            $this->sortDirectionBy = 'desc';
         }
+        $this->sortColumnName = $columnName;
+    }
+
+    public function swapSortDirection()  {
+        return $this->sortDirectionBy === 'desc' ? 'asc' : 'desc';
     }
 }

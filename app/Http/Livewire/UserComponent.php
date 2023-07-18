@@ -3,44 +3,20 @@
 namespace App\Http\Livewire;
 
 use Livewire\Component;
-use App\Models\User as Users;
+use App\Models\User;
+use App\Models\Role;
 use Illuminate\Support\Facades\Hash;
+use Livewire\WithPagination;
 
 class UserComponent extends Component
 {
-
-    public $users, $name, $userId, $role_id, $email, $password, $phone, $address ;
-    public $updateUser = false, $addUser = false;
- 
-    /**
-     * delete action listener
-     */
-    protected $listeners = [
-        'deleteUserListner'=>'deleteUser'
-    ];
- 
-    /**
-     * List of add/edit form rules
-     */
-    protected $rules = [
-        'role_id' => 'required',
-        'name' => 'required',
-        'email' => 'required',
-        'password' => 'required',
-    ];
- 
-    /**
-     * Reseting all inputted fields
-     * @return void
-     */
-    public function resetFields(){
-        $this->role_id = '';
-        $this->name = '';
-        $this->email = '';
-        $this->password = '';
-        $this->phone = '';
-        $this->address = '';
-    }
+    use WithPagination;
+    public $name, $userId, $role_id, $email, $password, $confirmpassword, $phone, $address;
+    public $isOpen = false;
+    public $perPage = 10;
+    public $search;
+    public $sortDirectionBy='asc';
+    public $sortColumnName= 'name';
  
     /**
      * render the post data
@@ -48,44 +24,84 @@ class UserComponent extends Component
      */
     public function render()
     {
-        $this->users = Users::all();
-        return view('livewire.user');
+        $users = User::search(trim($this->search))
+        ->orderBy($this->sortColumnName,$this->sortDirectionBy)
+        ->paginate($this->perPage);
+        $roles = Role::all();
+        return view('livewire.user',compact('users', 'roles'));
+    }
+
+    public function create()
+    {
+        $this->resetInputFields();
+        $this->openModal();
+    }
+
+    public function openModal()
+    {
+        $this->isOpen = true;
+        $this->dispatchBrowserEvent('openModal');
+    }
+
+    public function closeModal()
+    {
+        $this->isOpen = false;
+        $this->dispatchBrowserEvent('closeModal');
+        $this->resetValidation(); // Reset form validation errors
+        $this->resetInputFields(); // Clear input fields
+    }
+
+    private function resetInputFields()
+    {
+        $this->role_id = '';
+        $this->name = '';
+        $this->email = '';
+        $this->password = '';
+        $this->confirmpassword = '';
+        $this->phone = '';
+        $this->address = '';
+        $this->userId = '';
     }
  
-    /**
-     * Open Add Post form
-     * @return void
-     */
-    public function addUser()
-    {
-        $this->resetFields();
-        $this->addUser = true;
-        $this->updateUser = false;
-    }
      /**
       * store the user inputted post data in the users table
       * @return void
       */
-    public function storeUser()
+    public function store()
     {
-        $this->validate();
-        try {
-            Users::create([
-                'role_id' => $this->role_id,
-                'name' => $this->name,
-                'email' => $this->email,
-                'password' => Hash::make($this->password),
-                'phone' => $this->phone,
-                'address' => $this->address,
+        $toSave = null;
+        if($this->userId){
+            $this->validate([
+                'role_id' => 'required',
+                'name' => 'required',
+                'email' => 'required|email',
             ]);
-            session()->flash('success','User Created Successfully!!');
-            $this->resetFields();
-            $this->render();
-            $this->addUser = false;
-            return redirect(request()->header('Referer'));
-        } catch (\Exception $ex) {
-            session()->flash('error','Something goes wrong!!');
+
+            $toSave = User::find($this->userId);
+        }else{
+            $this->validate([
+                'role_id' => 'required',
+                'name' => 'required',
+                'email' => 'required|email',
+                'password' => 'required|min:6',
+                'confirmpassword' => 'required|same:password',
+            ]);
+
+            $toSave = new User();
+            $toSave->password = Hash::make($this->password);
         }
+
+        $toSave->role_id = $this->role_id;
+        $toSave->name = $this->name;
+        $toSave->email = $this->email;
+        $toSave->phone = $this->phone;
+        $toSave->address = $this->address;
+        $toSave->save();
+        
+
+        isset($this->userId) ?  $this->emit('btnCreateOrUpdated','create') : $this->emit('btnCreateOrUpdated','edit');
+        $this->closeModal();
+        $this->resetInputFields();
     }
  
     /**
@@ -93,65 +109,15 @@ class UserComponent extends Component
      * @param mixed $id
      * @return void
      */
-    public function editUser($id){
-        try {
-            $user = Users::findOrFail($id);
-            if( !$user) {
-                session()->flash('error','User not found');
-            } else {
-                $this->role_id = $user->role_id;
-                $this->name = $user->name;
-                $this->email = $user->email;
-                $this->phone = $user->phone;
-                $this->address = $user->address;
-                $this->userId = $user->id;
-                $this->updateUser = true;
-                $this->addUser = false;
-            }
-        } catch (\Exception $ex) {
-            session()->flash('error','Something goes wrong!!');
-        }
- 
-    }
- 
-    /**
-     * update the post data
-     * @return void
-     */
-    public function updateUser()
-    {
-        $validatedData = $this->validate([
-            'role_id' => 'required',
-            'name' => 'required',
-            'email' => 'required',
-        ]);
-
-        try {
-            Users::whereId($this->userId)->update([
-                'role_id' => $this->role_id,
-                'name' => $this->name,
-                'phone' => $this->phone,
-                'address' => $this->address,
-            ]);
-            session()->flash('success','User Updated Successfully!!');
-            $this->resetFields();
-            $this->render();
-            $this->updateUser = false;
-            return redirect(request()->header('Referer'));
-        } catch (\Exception $ex) {
-            session()->flash('success','Something goes wrong!!');
-        }
-    }
- 
-    /**
-     * Cancel Add/Edit form and redirect to post listing page
-     * @return void
-     */
-    public function cancelUser()
-    {
-        $this->addUser = false;
-        $this->updateUser = false;
-        $this->resetFields();
+    public function edit($id){
+        $user = User::findOrFail($id);
+        $this->role_id = $user->role_id;
+        $this->name = $user->name;
+        $this->email = $user->email;
+        $this->phone = $user->phone;
+        $this->address = $user->address;
+        $this->userId = $user->id;
+        $this->openModal(); 
     }
  
     /**
@@ -159,13 +125,23 @@ class UserComponent extends Component
      * @param mixed $id
      * @return void
      */
-    public function deleteUser($id)
+    public function delete($id)
     {
-        try{
-            Users::find($id)->delete();
-            session()->flash('success',"User Deleted Successfully!!");
-        }catch(\Exception $e){
-            session()->flash('error',"Something goes wrong!!");
+        User::find($id)->delete();
+        $this->emit('btnCreateOrUpdated','delete');
+    }
+
+    public function sortBy($columnName){
+
+        if($this->sortColumnName === $columnName){
+            $this->sortDirectionBy = $this->swapSortDirection();
+        } else {
+            $this->sortDirectionBy = 'desc';
         }
+        $this->sortColumnName = $columnName;
+    }
+
+    public function swapSortDirection()  {
+        return $this->sortDirectionBy === 'desc' ? 'asc' : 'desc';
     }
 }
