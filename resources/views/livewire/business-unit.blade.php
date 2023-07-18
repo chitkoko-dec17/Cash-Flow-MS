@@ -63,7 +63,7 @@
                                         <td>{{ $businessUnit->name }}</td>
                                         <td>{{ $businessUnit->phone }}</td>
                                         <td>{{ $businessUnit->address }}</td>
-                                        <td>{{ $businessUnit->manager->name }}</td>
+                                        <td>{{ isset( $businessUnit->manager->name) ? $businessUnit->manager->name : '' }}</td>
                                         <td>
 
                                             <button wire:click="" class="btn btn-outline-success btn-sm action-btn"
@@ -71,7 +71,7 @@
                                             <button wire:click="edit({{ $businessUnit->id }})"
                                                 class="btn btn-outline-info btn-sm  action-btn" title="Edit"
                                                 data-toggle="tooltip"><i class="fa fa-pencil"></i></button>
-                                            <button wire:click="delete({{ $businessUnit->id }})"
+                                            <button wire:click="confirmDelete({{ $businessUnit->id }}, '{{ $businessUnit->name }}')"
                                                 class="btn btn-outline-danger btn-sm  action-btn" title="Delete"
                                                 data-toggle="tooltip"><i class="fa fa-trash"></i></button>
                                         </td>
@@ -106,6 +106,12 @@
         });
         window.addEventListener('closeModal', function() {
             $('.addBusinessUnit').modal('hide');
+        });
+        window.addEventListener('openConfirmModal', function() {
+            $('#confirmationModal').modal('show');
+        });
+        window.addEventListener('closeConfirmModal', function() {
+            $('#confirmationModal').modal('hide');
         });
 
         Livewire.on('buCreateOrUpdated', action => {

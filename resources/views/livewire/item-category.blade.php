@@ -21,7 +21,7 @@
                         </select>
                         <label class="p-1" for="formSelect"> <span> entries</span></label>
                     </div>
-                    <div class="col-md-4 form-inline m-2 float-end">
+                    <div class="col-md-3 form-inline float-end">
                         <div class="input-group">
                             <input wire:model.debounce.350ms="search" type="text" class="form-control"
                                 placeholder="Search...">
@@ -48,7 +48,7 @@
                                             <button wire:click="edit({{ $itemcategory->id }})"
                                                 class="btn btn-outline-info btn-sm  action-btn" title="Edit"
                                                 data-toggle="tooltip"><i class="fa fa-pencil"></i></button>
-                                            <button wire:click="delete({{ $itemcategory->id }})"
+                                            <button wire:click="confirmDelete({{ $itemcategory->id }}, '{{ $itemcategory->name }}')"
                                                 class="btn btn-outline-danger btn-sm  action-btn" title="Delete"
                                                 data-toggle="tooltip"><i class="fa fa-trash"></i></button>
                                         </td>
@@ -64,9 +64,7 @@
                         </tbody>
                     </table>
                 </div>
-                <div class="row p-0">
-                    {{ $itemcategories->links('cfms.livewire-pagination-links') }}
-                </div>
+                {{ $itemcategories->links('cfms.livewire-pagination-links') }}
             </div>
 
             @include('cfms.modals.item-category-modal')
@@ -84,6 +82,12 @@
         });
         window.addEventListener('closeModal', function() {
             $('.addDataManage').modal('hide');
+        });
+        window.addEventListener('openConfirmModal', function() {
+            $('#confirmationModal').modal('show');
+        });
+        window.addEventListener('closeConfirmModal', function() {
+            $('#confirmationModal').modal('hide');
         });
 
         Livewire.on('btnCreateOrUpdated', action => {

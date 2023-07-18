@@ -28,6 +28,8 @@ class BusinessUnitComponent extends Component
     public $byManager=null;
     public $sortDirectionBy='asc';
     public $sortColumnName= 'name';
+    public $confirmingDelete = false;
+    public $businessUnitIdToDelete , $selectedName;
     /**
      * render the post data
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View
@@ -64,6 +66,8 @@ class BusinessUnitComponent extends Component
     {
         $this->isOpen = false;
         $this->dispatchBrowserEvent('closeModal');
+        $this->dispatchBrowserEvent('closeConfirmModal');
+
         $this->resetValidation(); // Reset form validation errors
         $this->resetInputFields(); // Clear input fields
     }
@@ -137,14 +141,28 @@ class BusinessUnitComponent extends Component
         $this->openModal();
     }
 
-    public function delete($id)
+    public function delete()
     {
         // $bu = BusinessUnit::findOrFail($id);
         // Storage::delete($bu->bu_image);
-        BusinessUnit::find($id)->delete();
+        BusinessUnit::find($this->businessUnitIdToDelete)->delete();
         $this->emit('buCreateOrUpdated','delete');
+
+        $this->confirmingDelete = false;
+        $this->businessUnitIdToDelete = null;
+        $this->selectedName = null;
+        $this->dispatchBrowserEvent('closeConfirmModal');
         //session()->flash('message', 'Business Unit deleted successfully.');
     }
+
+    public function confirmDelete($deleteID,$name)
+    {
+        $this->confirmingDelete = true;
+        $this->businessUnitIdToDelete = $deleteID;
+        $this->selectedName = $name;
+        $this->dispatchBrowserEvent('openConfirmModal');
+    }
+
 
     public function checkPic(){
         // $book = Book::find($id);

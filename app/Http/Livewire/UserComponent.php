@@ -17,7 +17,9 @@ class UserComponent extends Component
     public $search;
     public $sortDirectionBy='asc';
     public $sortColumnName= 'name';
- 
+    public $confirmingDelete = false;
+    public $userIdToDelete , $selectedName;
+
     /**
      * render the post data
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View
@@ -47,6 +49,7 @@ class UserComponent extends Component
     {
         $this->isOpen = false;
         $this->dispatchBrowserEvent('closeModal');
+        $this->dispatchBrowserEvent('closeConfirmModal');
         $this->resetValidation(); // Reset form validation errors
         $this->resetInputFields(); // Clear input fields
     }
@@ -62,7 +65,7 @@ class UserComponent extends Component
         $this->address = '';
         $this->userId = '';
     }
- 
+
      /**
       * store the user inputted post data in the users table
       * @return void
@@ -97,13 +100,13 @@ class UserComponent extends Component
         $toSave->phone = $this->phone;
         $toSave->address = $this->address;
         $toSave->save();
-        
 
-        isset($this->userId) ?  $this->emit('btnCreateOrUpdated','create') : $this->emit('btnCreateOrUpdated','edit');
+
+        isset($this->userId) ?  $this->emit('btnCreateOrUpdated','edit') : $this->emit('btnCreateOrUpdated','create');
         $this->closeModal();
         $this->resetInputFields();
     }
- 
+
     /**
      * show existing user data in edit user form
      * @param mixed $id
@@ -116,19 +119,31 @@ class UserComponent extends Component
         $this->email = $user->email;
         $this->phone = $user->phone;
         $this->address = $user->address;
-        $this->userId = $user->id;
-        $this->openModal(); 
+        $this->userId = $id;
+        $this->openModal();
     }
- 
+
     /**
      * delete specific post data from the users table
      * @param mixed $id
      * @return void
      */
-    public function delete($id)
+    public function delete()
     {
-        User::find($id)->delete();
+        User::find($this->userIdToDelete)->delete();
         $this->emit('btnCreateOrUpdated','delete');
+        $this->confirmingDelete = false;
+        $this->userIdToDelete = null;
+        $this->selectedName = null;
+        $this->dispatchBrowserEvent('closeConfirmModal');
+    }
+
+    public function confirmDelete($deleteID,$name)
+    {
+        $this->confirmingDelete = true;
+        $this->userIdToDelete = $deleteID;
+        $this->selectedName = $name;
+        $this->dispatchBrowserEvent('openConfirmModal');
     }
 
     public function sortBy($columnName){

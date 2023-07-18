@@ -41,9 +41,7 @@
                         </tbody>
                     </table>
                 </div>
-                <div class="row p-0">
-                    {{ $roles->links('cfms.livewire-pagination-links') }}
-                </div>
+                {{ $roles->links('cfms.livewire-pagination-links') }}
             </div>
 
             @include('cfms.modals.role-modal')

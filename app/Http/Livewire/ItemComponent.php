@@ -16,7 +16,9 @@ class ItemComponent extends Component
     public $search;
     public $sortDirectionBy='asc';
     public $sortColumnName= 'name';
- 
+    public $confirmingDelete = false;
+    public $itemIdToDelete , $selectedName;
+
     /**
      * render the post data
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View
@@ -46,6 +48,7 @@ class ItemComponent extends Component
     {
         $this->isOpen = false;
         $this->dispatchBrowserEvent('closeModal');
+        $this->dispatchBrowserEvent('closeConfirmModal');
         $this->resetValidation(); // Reset form validation errors
         $this->resetInputFields(); // Clear input fields
     }
@@ -56,7 +59,7 @@ class ItemComponent extends Component
         $this->category_id = '';
         $this->itemId = '';
     }
- 
+
      /**
       * store the user inputted post data in the items table
       * @return void
@@ -73,11 +76,11 @@ class ItemComponent extends Component
             'name' => $this->name,
         ]);
 
-        isset($this->itemId) ?  $this->emit('btnCreateOrUpdated','create') : $this->emit('btnCreateOrUpdated','edit');
+        isset($this->itemId) ?  $this->emit('btnCreateOrUpdated','edit') : $this->emit('btnCreateOrUpdated','create');
         $this->closeModal();
         $this->resetInputFields();
     }
- 
+
     /**
      * show existing item data in edit item form
      * @param mixed $id
@@ -85,21 +88,35 @@ class ItemComponent extends Component
      */
     public function edit($id){
         $item = Item::findOrFail($id);
-        $this->category_id = $item->category_id;
-        $this->name = $item->name;
-        $this->itemId = $item->id;
-        $this->openModal();  
+        if (isset($item)) {
+            $this->category_id = $item->category_id;
+            $this->name = $item->name;
+            $this->itemId = $item->id;
+            $this->openModal();
+        }
     }
- 
+
     /**
      * delete specific post data from the items table
      * @param mixed $id
      * @return void
      */
-    public function delete($id)
+    public function delete()
     {
-        Item::find($id)->delete();
+        Item::find($this->itemIdToDelete)->delete();
         $this->emit('btnCreateOrUpdated','delete');
+        $this->confirmingDelete = false;
+        $this->itemIdToDelete = null;
+        $this->selectedName = null;
+        $this->dispatchBrowserEvent('closeConfirmModal');
+    }
+
+    public function confirmDelete($deleteID,$name)
+    {
+        $this->confirmingDelete = true;
+        $this->itemIdToDelete = $deleteID;
+        $this->selectedName = $name;
+        $this->dispatchBrowserEvent('openConfirmModal');
     }
 
     public function sortBy($columnName){

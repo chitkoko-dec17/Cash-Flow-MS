@@ -15,7 +15,7 @@ class RoleComponent extends Component
     public $search;
     public $sortDirectionBy='asc';
     public $sortColumnName= 'name';
- 
+
     /**
      * render the post data
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View
@@ -28,7 +28,7 @@ class RoleComponent extends Component
 
         return view('livewire.role',compact('roles'));
     }
- 
+
     public function create()
     {
         $this->resetInputFields();
@@ -72,7 +72,7 @@ class RoleComponent extends Component
         $this->closeModal();
         $this->resetInputFields();
     }
- 
+
     /**
      * show existing Role data in edit Role form
      * @param mixed $id
@@ -84,7 +84,7 @@ class RoleComponent extends Component
         $this->roleId = $role->id;
         $this->openModal();
     }
- 
+
     /**
      * delete specific post data from the Role table
      * @param mixed $id

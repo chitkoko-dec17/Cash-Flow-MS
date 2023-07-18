@@ -15,7 +15,9 @@ class ItemCategoryComponent extends Component
     public $search;
     public $sortDirectionBy='asc';
     public $sortColumnName= 'name';
- 
+    public $confirmingDelete = false;
+    public $itemCategoryIdToDelete , $selectedName;
+
     /**
      * render the post data
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View
@@ -44,6 +46,7 @@ class ItemCategoryComponent extends Component
     {
         $this->isOpen = false;
         $this->dispatchBrowserEvent('closeModal');
+        $this->dispatchBrowserEvent('closeConfirmModal');
         $this->resetValidation(); // Reset form validation errors
         $this->resetInputFields(); // Clear input fields
     }
@@ -53,7 +56,7 @@ class ItemCategoryComponent extends Component
         $this->name = '';
         $this->itemcategoryId = '';
     }
- 
+
      /**
       * store the ItemCategory inputted post data in the ItemCategory table
       * @return void
@@ -68,11 +71,11 @@ class ItemCategoryComponent extends Component
             'name' => $this->name,
         ]);
 
-        isset($this->itemcategoryId) ?  $this->emit('btnCreateOrUpdated','create') : $this->emit('btnCreateOrUpdated','edit');
+        isset($this->itemcategoryId) ?  $this->emit('btnCreateOrUpdated','edit') : $this->emit('btnCreateOrUpdated','create');
         $this->closeModal();
         $this->resetInputFields();
     }
- 
+
     /**
      * show existing ItemCategory data in edit ItemCategory form
      * @param mixed $id
@@ -82,18 +85,30 @@ class ItemCategoryComponent extends Component
         $itemcategory = ItemCategory::findOrFail($id);
         $this->name = $itemcategory->name;
         $this->itemcategoryId = $itemcategory->id;
-        $this->openModal(); 
+        $this->openModal();
     }
- 
+
     /**
      * delete specific post data from the itemcategories table
      * @param mixed $id
      * @return void
      */
-    public function delete($id)
+    public function delete()
     {
-        ItemCategory::find($id)->delete();
+        ItemCategory::find($this->itemCategoryIdToDelete)->delete();
         $this->emit('btnCreateOrUpdated','delete');
+        $this->confirmingDelete = false;
+        $this->itemCategoryIdToDelete = null;
+        $this->selectedName = null;
+        $this->dispatchBrowserEvent('closeConfirmModal');
+    }
+
+    public function confirmDelete($deleteID,$name)
+    {
+        $this->confirmingDelete = true;
+        $this->itemCategoryIdToDelete = $deleteID;
+        $this->selectedName = $name;
+        $this->dispatchBrowserEvent('openConfirmModal');
     }
 
     public function sortBy($columnName){

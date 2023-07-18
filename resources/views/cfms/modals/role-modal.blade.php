@@ -23,7 +23,7 @@
                     <button wire:click="closeModal" class="btn btn-secondary" type="button"
                         data-bs-dismiss="modal">Close</button>
                     <button  class="btn btn-primary"
-                        type="submit">{{ $roleId ? 'Create' : 'Save Changes' }}</button>
+                        type="submit">{{ $roleId ? 'Save Changes' : 'Create' }}</button>
                 </div>
             </div>
         </div>
