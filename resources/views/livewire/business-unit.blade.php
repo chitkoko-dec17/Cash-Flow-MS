@@ -2,7 +2,7 @@
     <div class="card">
         <div class="card-header pb-10">
             <span class="float-start">
-                <h5 class="mb-2">Configuration </h5>
+                <h5 class="mb-2">Business Unit </h5>
                 <span>Business Unit Configuration -<code>လုပ်ငန်းစာရင်းများကို</code> ပြင်ဆင်မည်။</span>
             </span>
             <button wire:click="create" class="btn btn-primary float-end" type="button" data-bs-toggle="modal"
@@ -87,14 +87,8 @@
                         </tbody>
                     </table>
                 </div>
-                <div class="row p-0">
-                    <div class="col-md-12 clear-fix">
-                        <div class="col-md-6 float-start p-3">Showing {{ $businessUnits->firstItem() }} to {{ $businessUnits->lastItem() }} of {{ $businessUnits->total() }} entries</div>
-                        <div class="col-md-6 float-end">
-                            {{ $businessUnits->links('cfms.livewire-pagination-links') }}
-                        </div>
-                    </div>
-                </div>
+                {{ $businessUnits->links('cfms.livewire-pagination-links')}}
+
             </div>
 
             @include('cfms.modals.business-unit-modal')

@@ -113,7 +113,7 @@ class BusinessUnitComponent extends Component
             'address' => $this->address,
         ]);
 
-        isset($this->businessUnitId) ?  $this->emit('buCreateOrUpdated','create') : $this->emit('buCreateOrUpdated','edit');
+        isset($this->businessUnitId) ?  $this->emit('buCreateOrUpdated','edit') : $this->emit('buCreateOrUpdated','create');
 
         // session()->flash(
         //     'message',
@@ -128,7 +128,7 @@ class BusinessUnitComponent extends Component
     public function edit($id)
     {
         $businessUnit = BusinessUnit::findOrFail($id);
-        $this->businessUnitId = $businessUnit->$id;
+        $this->businessUnitId = $id;
         $this->manager_id = $businessUnit->manager_id;
         $this->name = $businessUnit->name;
         $this->phone = $businessUnit->phone;

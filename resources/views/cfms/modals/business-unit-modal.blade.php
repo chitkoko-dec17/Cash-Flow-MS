@@ -57,7 +57,7 @@
                     <button wire:click="closeModal" class="btn btn-secondary" type="button"
                         data-bs-dismiss="modal">Close</button>
                     <button  class="btn btn-primary"
-                        type="submit">{{ isset($businessUnitId) ? 'Create' : 'Save Changes' }}</button>
+                        type="submit">{{ $businessUnitId ? 'Save Changes' : 'Create' }}</button>
                 </div>
             </div>
         </div>
