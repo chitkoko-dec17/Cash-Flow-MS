@@ -49,4 +49,13 @@ class User extends Authenticatable
     {
         return $this->belongsTo('App\Models\Role');
     }
+
+    public function scopeSearch($query, $term){
+        $term = "%$term%";
+        $query->where(function($query) use ($term){
+            $query->where('name','like',$term)
+            ->orWhere('address','like',$term)
+            ->orWhere('phone','like',$term);
+        });
+    }
 }

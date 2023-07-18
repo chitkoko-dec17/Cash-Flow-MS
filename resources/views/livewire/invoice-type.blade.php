@@ -1,103 +1,83 @@
-        <div class="row">
-            <!-- Individual column searching (text inputs) Starts-->
-            <div class="col-sm-12">
-                <div class="col-md-12 project-list">
-                    <div class="row">
-                        <div class="col-md-6 p-0">
+<div class="row">
+    <div class="card">
+        <div class="card-header pb-10">
+            <span class="float-start">
+                <h5 class="mb-2">Configuration </h5>
+                <span>Invoice Type Configuration</span>
+            </span>
+            <!-- <button wire:click="create" class="btn btn-primary float-end" type="button" data-bs-toggle="modal"
+                data-bs-target="#dataprocessModal"><i class="fa fa-edit"></i> Create New Invoice Type</button> -->
+        </div>
+        <div class="card-body pt-0">
 
-                        </div>
-                        @if(!$addInvType || !$updateInvType)
-                        <div class="col-md-6 p-0">
-                            <div class="form-group mb-0 me-0"></div>
-                            <!-- <button wire:ignore wire:click="addInvType()" class="btn btn-primary" > <i data-feather="plus-square"> </i>Create New Invoice Type</button> -->
-                        </div>
-                        @endif
-                    </div>
-                </div>
-
-                <div class="col-md-12">
-                    @if($addInvType)
-                        @include('cfms.invoicetype.create')
-                    @endif
-                    @if($updateInvType)
-                        @include('cfms.invoicetype.edit')
-                    @endif
-                </div>
-
-                <div class="card">
-                    <!-- User creating alert -->
-                    <div class="row">
-                        <div class="col-sm-12">
-                            @if(session()->has('success'))
-                            <div class="alert alert-primary alert-dismissible fade show" role="alert"><strong>{{ session()->get('success') }}</strong>
-                                <button class="btn-close" type="button" data-bs-dismiss="alert" aria-label="Close"></button>
-                            </div>
-                            @endif
-                            @if(session()->has('error'))
-                            <div class="alert alert-danger alert-dismissible fade show" role="alert"><strong>{{ session()->get('error') }}</strong>
-                                <button class="btn-close" type="button" data-bs-dismiss="alert" aria-label="Close"></button>
-                            </div>
-                            @endif
-                        </div>
-                    </div>
-
-                    <div class="card-header pb-0">
-                        <h5>Invoice Type List</h5>
-                    </div>
-                    <div class="card-header pb-0">
-                    </div>
-                    <div class="card-body">
-                        <div class="table">
-                            <table wire:ignore class="display" id="basic-1">
-                                <thead>
+            <div class="row">
+                <div class="table-responsive">
+                    <table class="table table-hover table-bordered">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if (count($invoicetypes) > 0)
+                                @foreach ($invoicetypes as $invtype)
                                     <tr>
-                                        <th>Name</th>
-                                        <th>Action</th>
+                                        <td>{{$invtype->name}}</td>
+                                        <td>
+                                            <button wire:click="edit({{ $invtype->id }})"
+                                                        class="btn btn-outline-info btn-sm  action-btn" title="Edit"
+                                                        data-toggle="tooltip"><i class="fa fa-pencil"></i></button>
+                                        </td>
                                     </tr>
-                                </thead>
-                                <tbody>
-                                    @if (count($invoicetypes) > 0)
-                                        @foreach ($invoicetypes as $invtype)
-                                            <tr>
-                                                <td>{{$invtype->name}}</td>
-                                                <td>
-                                                    <div class="product-icon">
-                                                        <ul class="product-social">
-                                                            <li class="d-inline-block">
-                                                                <a href="javascript:void(0)" wire:click="editInvType({{$invtype->id}})" title="Edit Invoice Type"><i class="fa fa-edit"></i></a>
-                                                            </li>
-                                                            <!-- <li class="d-inline-block">
-                                                                <a href="javascript:void(0)" wire:click="deleteInvType({{$invtype->id}})" title="Delete Invoice Type"><i class="fa fa-trash-o"></i></a>
-                                                            </li> -->
-                                                        </ul>
-                                                        <form class="d-inline-block f-right"></form>
-                                                    </div>
-                                                </td>
-                                            </tr>
-                                        @endforeach
-                                    @else
-                                        <tr>
-                                            <td colspan="2" align="center">
-                                                No Invoice Type Found.
-                                            </td>
-                                        </tr>
-                                    @endif
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
+                                @endforeach
+                            @else
+                                <tr>
+                                    <td colspan="2" align="center">
+                                        No Invoice Type Found.
+                                    </td>
+                                </tr>
+                            @endif
+                        </tbody>
+                    </table>
+                </div>
+                <div class="row p-0">
+                    {{ $invoicetypes->links('cfms.livewire-pagination-links') }}
                 </div>
             </div>
-            <!-- Individual column searching (text inputs) Ends-->
+
+            @include('cfms.modals.invoice-type-modal')
         </div>
     </div>
+</div>
 
-    @push('scripts')
-    <script src="{{asset('assets/js/datatable/datatables/jquery.dataTables.min.js')}}"></script>
-    <script src="{{asset('assets/js/rating/jquery.barrating.js')}}"></script>
-    <script src="{{asset('assets/js/rating/rating-script.js')}}"></script>
-    <script src="{{asset('assets/js/owlcarousel/owl.carousel.js')}}"></script>
-    <script src="{{asset('assets/js/ecommerce.js')}}"></script>
-    <script src="{{asset('assets/js/product-list-custom.js')}}"></script>
-    @endpush
+@section('customJs')
+    <script type="text/javascript">
+        $(document).ready(function() {
+            $('[data-toggle="tooltip"]').tooltip();
+        });
+        window.addEventListener('openModal', function() {
+            $('.addDataManage').modal('show');
+        });
+        window.addEventListener('closeModal', function() {
+            $('.addDataManage').modal('hide');
+        });
 
+        Livewire.on('btnCreateOrUpdated', action => {
+            if (action == 'edit') {
+                notifyToUser('Invoice Type Updated', 'Success! Invoice Type is updated successfully!',
+                    'primary');
+            } else if (action == 'delete') {
+                notifyToUser('Invoice Type Deleted', 'Success! Invoice Type is deleted successfully!',
+                    'primary');
+            } else if (action == 'create') {
+                notifyToUser('Invoice Type Created', 'Success! Invoice Type is created successfully!',
+                    'primary');
+            } else if (action == 'store_duplicate_error') {
+                notifyToUser('Invoice Type Duplicate Error',
+                    'Error! Invoice Type is already created!',
+                    'danger');
+            }
+        });
+    </script>
+@endsection
