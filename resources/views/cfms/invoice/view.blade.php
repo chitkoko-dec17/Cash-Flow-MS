@@ -2,7 +2,7 @@
 
 
 @section('content')
-<div class="container-fluid list-products">  
+<div class="container-fluid list-products">
   <div class="row">
       <div class="col-sm-12">
           <div class="card">
@@ -194,7 +194,7 @@
           </div>
       </div>
   </div>
-  
+
 </div>
 @endsection
 

@@ -15,7 +15,7 @@ class InvoiceTypeComponent extends Component
     public $search;
     public $sortDirectionBy='asc';
     public $sortColumnName= 'name';
- 
+
     /**
      * render the post data
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View
@@ -72,7 +72,7 @@ class InvoiceTypeComponent extends Component
         $this->closeModal();
         $this->resetInputFields();
     }
- 
+
     /**
      * show existing Invoice Type data in edit Invoice Type form
      * @param mixed $id
@@ -82,9 +82,9 @@ class InvoiceTypeComponent extends Component
         $invtype = InvoiceType::findOrFail($id);
         $this->name = $invtype->name;
         $this->invtypeId = $invtype->id;
-        $this->openModal(); 
+        $this->openModal();
     }
- 
+
     /**
      * delete specific post data from the Roles table
      * @param mixed $id
