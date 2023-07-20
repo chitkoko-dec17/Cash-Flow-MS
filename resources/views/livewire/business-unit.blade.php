@@ -63,7 +63,7 @@
                                         <td>{{ $businessUnit->name }}</td>
                                         <td>{{ $businessUnit->phone }}</td>
                                         <td>{{ $businessUnit->address }}</td>
-                                        <td>{{ isset( $businessUnit->manager->name) ? $businessUnit->manager->name : '' }}</td>
+                                        <td><span class="badge badge-primary">{{ isset( $businessUnit->manager->name) ? $businessUnit->manager->name : '' }}</span></td>
                                         <td>
 
                                             <button wire:click="" class="btn btn-outline-success btn-sm action-btn"
