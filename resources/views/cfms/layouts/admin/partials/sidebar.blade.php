@@ -23,9 +23,11 @@
                         <a class="nav-link menu-title link-nav" href="{{ route('dashboard') }}"><i data-feather="home"></i><span>Dashboard</span></a>
                     </li>
                     <li class="dropdown">
-                        <a class="nav-link menu-title {{ prefixActive('/business-unit') }}" href="javascript:void(0)"><i data-feather="server"></i><span>Business Units</span></a>
+                        <a class="nav-link menu-title {{ prefixActive('business-unit') }}" href="javascript:void(0)"><i data-feather="server"></i><span>Business Units</span></a>
                         <ul class="nav-submenu menu-content" style="display: {{ prefixBlock('/business-unit') }};">
                             <li><a href="{{ url('business-unit') }}" class="{{routeActive('business-unit')}}">Business Unit List</a></li>
+                            <li><a href="{{ url('branch') }}" class="{{routeActive('branch')}}">Branch List</a></li>
+                            <li><a href="{{ url('project') }}" class="{{routeActive('project')}}">Project List</a></li>
                         </ul>
                     </li>
                     <li class="dropdown">
@@ -36,7 +38,7 @@
                         </ul>
                     </li>
                     <li class="dropdown">
-                        <a class="nav-link menu-title {{ prefixActive('/user') }}" href="javascript:void(0)"><i data-feather="users"></i><span>Users</span></a>
+                        <a class="nav-link menu-title {{ routeActive('/user') }}" href="javascript:void(0)"><i data-feather="users"></i><span>Users</span></a>
                         <ul class="nav-submenu menu-content" style="display: {{ prefixBlock('/user') }};">
                             <li><a href="{{ url('user') }}" class="{{routeActive('user')}}">User List</a></li>
                             <li><a href="{{ url('role') }}" class="{{routeActive('role')}}">Role List</a></li>

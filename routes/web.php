@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\Dashboard;
+use App\Http\Livewire\BranchComponent;
 use App\Http\Livewire\BusinessUnitComponent;
 use App\Http\Livewire\RoleComponent;
 use App\Http\Livewire\UserComponent;
@@ -10,6 +11,7 @@ use App\Http\Livewire\ItemCategoryComponent;
 use App\Http\Livewire\ItemComponent;
 use App\Http\Livewire\InvoiceTypeComponent;
 use App\Http\Controllers\InvoiceController;
+use App\Http\Livewire\ProjectComponent;
 
 /*
 |--------------------------------------------------------------------------
@@ -74,16 +76,18 @@ Route::group(['middleware' => ['auth']], function() {
     Route::get('/', [Dashboard::class, 'index'])->name('index');
     Route::get('/dashboard',[Dashboard::class, 'index'])->name('dashboard');
 
-    // User Route
     Route::get('/user',UserComponent::class)->name('user.index');
     Route::get('/role',RoleComponent::class)->name('role.index');
     Route::get('/itemcategory',ItemCategoryComponent::class)->name('itemcategory.index');
     Route::get('/item',ItemComponent::class)->name('item.index');
     Route::get('/invoicetype',InvoiceTypeComponent::class)->name('invoicetype.index');
     Route::get('/business-unit',BusinessUnitComponent::class)->name('business-unit.index');
+    Route::get('/branch',BranchComponent::class)->name('branch.index');
+    Route::get('/project',ProjectComponent::class)->name('project.index');
 
-    // User Route
     Route::resource('invoice', InvoiceController::class); 
+    
+    // Route::resource('user', UserController::class);
 
     // Route::post('/change-password', [AdminController::class, 'updatePassword'])->name('update-password');
     // Route::get('admin/profile', [AdminController::class, 'profile'])->name('admin.profile');
@@ -95,8 +99,5 @@ Route::group(['middleware' => ['auth']], function() {
         Route::view('edit-user', 'cfms.user.edit')->name('edit-user');
         Route::view('create-user', 'cfms.user.create')->name('create-user');
     });
-
-    // for BU
-    //Route::view('business-unit', 'livewire.business-unit-crud')->name('business-unit');
 
 });

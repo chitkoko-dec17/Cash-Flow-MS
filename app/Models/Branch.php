@@ -20,4 +20,20 @@ class Branch extends Model
         'phone',
         'address',
     ];
+
+    public function businessUnit(){
+        return $this->belongsTo(BusinessUnit::class,'business_unit_id');
+    }
+
+    public function scopeSearch($query, $term){
+        $term = "%$term%";
+        $query->where(function($query) use ($term){
+            $query->where('name','like',$term)
+            ->orWhere('address','like',$term)
+            ->orWhere('phone','like',$term)
+            ->orWhereHas('businessUnit', function ($query) use ($term) {
+                $query->where('name','like',$term);
+            });
+        });
+    }
 }

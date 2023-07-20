@@ -20,4 +20,20 @@ class Project extends Model
         'phone',
         'address',
     ];
+
+    public function branch(){
+        return $this->belongsTo(Branch::class,'branch_id');
+    }
+
+    public function scopeSearch($query, $term){
+        $term = "%$term%";
+        $query->where(function($query) use ($term){
+            $query->where('name','like',$term)
+            ->orWhere('address','like',$term)
+            ->orWhere('phone','like',$term)
+            ->orWhereHas('branch', function ($query) use ($term) {
+                $query->where('name','like',$term);
+            });
+        });
+    }
 }
