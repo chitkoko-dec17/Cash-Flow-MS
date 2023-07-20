@@ -9,6 +9,7 @@ use App\Http\Livewire\UserComponent;
 use App\Http\Livewire\ItemCategoryComponent;
 use App\Http\Livewire\ItemComponent;
 use App\Http\Livewire\InvoiceTypeComponent;
+use App\Http\Controllers\InvoiceController;
 
 /*
 |--------------------------------------------------------------------------
@@ -80,7 +81,9 @@ Route::group(['middleware' => ['auth']], function() {
     Route::get('/item',ItemComponent::class)->name('item.index');
     Route::get('/invoicetype',InvoiceTypeComponent::class)->name('invoicetype.index');
     Route::get('/business-unit',BusinessUnitComponent::class)->name('business-unit.index');
-    // Route::resource('user', UserController::class);
+
+    // User Route
+    Route::resource('invoice', InvoiceController::class); 
 
     // Route::post('/change-password', [AdminController::class, 'updatePassword'])->name('update-password');
     // Route::get('admin/profile', [AdminController::class, 'profile'])->name('admin.profile');
