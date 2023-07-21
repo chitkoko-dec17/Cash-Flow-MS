@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class InvoiceNote extends Model
+class IncomeInvoice extends Model
 {
     use HasFactory;
 
@@ -16,7 +16,13 @@ class InvoiceNote extends Model
      */
     protected $fillable = [
         'invoice_no',
+        'invoice_date',
+        'total_amount',
         'description',
-        'status',
+        'upload_user_id',
+        'appoved_manager_id',
+        'manager_status',
+        'appoved_admin_id',
+        'admin_status',
     ];
 }

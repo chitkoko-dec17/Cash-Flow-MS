@@ -16,6 +16,7 @@ class Item extends Model
      */
     protected $fillable = [
         'category_id',
+        'invoice_type_id',
         'name',
     ];
 

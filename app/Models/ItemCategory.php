@@ -15,6 +15,7 @@ class ItemCategory extends Model
      * @var array<int, string>
      */
     protected $fillable = [
+        'business_unit_id',
         'name',
     ];
 

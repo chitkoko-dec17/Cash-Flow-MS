@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Invoice extends Model
+class ExpenseInvoiceItem extends Model
 {
     use HasFactory;
 
@@ -15,11 +15,10 @@ class Invoice extends Model
      * @var array<int, string>
      */
     protected $fillable = [
-        'branch_id',
-        'project_id',
-        'name',
-        'total_amount',
-        'start_date',
-        'end_date',
+        'category_id',
+        'invoice_id',
+        'item_id',
+        'qty',
+        'amount',
     ];
 }

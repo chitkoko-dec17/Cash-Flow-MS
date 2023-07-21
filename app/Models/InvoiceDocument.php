@@ -15,7 +15,7 @@ class InvoiceDocument extends Model
      * @var array<int, string>
      */
     protected $fillable = [
-        'invoice_id',
+        'invoice_no',
         'title',
         'inv_file',
     ];
