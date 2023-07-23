@@ -53,7 +53,7 @@
                     <li class="dropdown">
                         <a class="nav-link menu-title {{ prefixActive('/invoice') }}" href="javascript:void(0)"><i data-feather="file"></i><span>Invoices</span></a>
                         <ul class="nav-submenu menu-content" style="display: {{ prefixBlock('/invoice') }};">
-                            <li><a href="{{ route('invoice.index') }}" class="{{routeActive('invoice.index')}}">Invoice</a></li>
+                            <li><a href="{{ route('expense-invoice.index') }}" class="{{routeActive('expense-invoice.index')}}">Expense Invoice</a></li>
                             <li><a href="{{ route('invoicetype.index') }}" class="{{routeActive('invoicetype')}}">Invoice Type</a></li>
                         </ul>
                     </li>

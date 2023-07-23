@@ -4,13 +4,16 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\File;
-use App\Models\Invoice;
-use App\Models\InvoiceItem;
+use App\Models\ExpenseInvoice;
+use App\Models\ExpenseInvoiceItem;
 use App\Models\InvoiceNote;
-use App\Models\InvoiceType;
+use App\Models\Item;
+use App\Models\InvoiceDocument;
+use Auth;
 
-class InvoiceController extends Controller
+class ExpenseInvoiceController extends Controller
 {
+    private $statuses = array("processing" => "Processing","reject" => "Reject","complete" => "Complete");
     /**
      * Check authentication in the constructor
      *
@@ -28,8 +31,8 @@ class InvoiceController extends Controller
      */
     public function index(Request $request)
     {
-        $invoices = Invoice::paginate(25); 
-        return view('cfms.invoice.index', compact('invoices'));
+        $expense_invoices = ExpenseInvoice::paginate(25); 
+        return view('cfms.expense-invoice.index', compact('expense_invoices'));
     }
 
     /**
@@ -39,7 +42,10 @@ class InvoiceController extends Controller
      */
     public function create()
     {
-        return view('cfms.invoice.create');
+        $items = Item::where('invoice_type_id', 0)->get();
+        $statuses = $this->statuses;
+
+        return view('cfms.expense-invoice.create', compact('items','statuses'));
     }
 
     /**
@@ -50,37 +56,73 @@ class InvoiceController extends Controller
      */
     public function store(Request $request)
     {
-        // $request->validate([
-        //     'title'                 =>  'required',
-        //     'total_chapter_des'     =>  'required',
-        //     'coin'                  =>  'required|integer',
-        //     'cover_image'           =>  'required|image|mimes:jpg,png,jpeg|max:3072'
-        // ]); 
+        $request->validate([
+            'invoice_date'  =>  'required',
+            'total_amount'  =>  'required'
+        ]);
 
-        // //dimension check
-        // //required|image|mimes:jpg,png,jpeg,gif,svg|max:2048|dimensions:min_width=100,min_height=100,max_width=1000,max_height=1000
+        //creating invoice no
+        $latestInv = ExpenseInvoice::orderBy('invoice_no','DESC')->first(); 
+        if(isset($latestInv->invoice_no)){
+            $invoice_no = str_pad($latestInv->invoice_no + 1, 10, "0", STR_PAD_LEFT);
+        }else{
+            $invoice_no = str_pad('0000000000' + 1, 10, "0", STR_PAD_LEFT);
+        }
 
-        // $file_name = time() . '.' . request()->cover_image->getClientOriginalExtension();
+        $item_quantity = $request->quantity;
+        $item_amount = $request->amount;
 
-        // request()->cover_image->move(public_path('images/bookcover'), $file_name);
-        // $image_path = 'images/bookcover/';
+        $exp_invoice= ExpenseInvoice::create([
+                'invoice_no' => $invoice_no,
+                'invoice_date' => $request->invoice_date,
+                'total_amount' => $request->total_amount,
+                'return_total_amount' => 0,
+                'description' => $request->description,
+                'upload_user_id' => Auth::id(),
+                'appoved_manager_id' => 0,
+                'manager_status' => 'processing',
+                'appoved_admin_id' => 0,
+                'admin_status' => 'processing',
+            ]);
 
-        // $book = new Book;
-        // $book->title = $request->title;
-        // $book->total_chapter_des = $request->total_chapter_des;
-        // $book->description = $request->description;
-        // $book->cover_image = $image_path.$file_name;
-        // $book->book_type = $request->book_type;
-        // $book->rating = $request->rating;
-        // $book->book_level = $request->book_level;
-        // $book->parent_id = ($request->parent_id) ? $request->parent_id : 0;
-        // $book->book_status = $request->book_status;
-        // $book->coin = $request->coin;
-        // $book->is_slider = $request->is_slider;
-        // $book->status = $request->status;
-        // $book->save();
+        foreach($request->items as $itind => $item){
+            $item_cate = Item::where('id',$item)->first();
 
-        // return redirect()->route('book.index')->with('success', 'New Book Added successfully.');
+            ExpenseInvoiceItem::create([
+                'category_id' => $item_cate->category_id,
+                'invoice_id' => $exp_invoice->id,
+                'item_id' => $item,
+                'qty' => $item_quantity[$itind],
+                'amount' => $item_amount[$itind],
+            ]);
+        }
+
+        if($request->hasfile('docs')) {
+            
+            $i=1;
+            foreach($request->file('docs') as $file){
+
+                $upload_path = 'expense_docs/'.$exp_invoice->id;
+                if (!file_exists($upload_path)) {
+                    mkdir($upload_path, 0775, true);  //create directory if not exist
+                }
+
+                $file_name = time(). '_'. $i . '.' . $file->getClientOriginalExtension();
+                $org_file_name = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME);
+                $file->move(public_path($upload_path), $file_name);
+
+                InvoiceDocument::create([
+                    'invoice_no' => 'EXINV-'.$exp_invoice->invoice_no,
+                    'title' => $org_file_name,
+                    'inv_file' => $upload_path.'/'.$file_name
+                ]);  
+
+                $i++;
+            }
+            return redirect('/expense-invoice')->with('success', 'New Expense Invoice Added successfully.');
+        }
+
+        return redirect('/expense-invoice')->with('error', 'Failed to add Expense Invoice!');
     }
 
     /**
