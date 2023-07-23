@@ -19,10 +19,17 @@ class ItemCategory extends Model
         'name',
     ];
 
+    public function businessUnit(){
+        return $this->belongsTo(BusinessUnit::class, 'business_unit_id');
+    }
+
     public function scopeSearch($query, $term){
         $term = "%$term%";
         $query->where(function($query) use ($term){
-            $query->where('name','like',$term);
+            $query->where('name','like',$term)
+            ->orWhereHas('businessUnit', function ($query) use ($term) {
+                $query->where('name','like',$term);
+            });
         });
     }
 }

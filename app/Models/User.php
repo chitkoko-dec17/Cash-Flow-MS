@@ -58,4 +58,14 @@ class User extends Authenticatable
             ->orWhere('phone','like',$term);
         });
     }
+
+    public function branchUser()
+    {
+        return $this->hasOne(BranchUser::class);
+    }
+
+    public function projectUser()
+    {
+        return $this->hasOne(ProjectUser::class);
+    }
 }

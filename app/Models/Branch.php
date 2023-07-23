@@ -22,7 +22,7 @@ class Branch extends Model
     ];
 
     public function businessUnit(){
-        return $this->belongsTo(BusinessUnit::class,'business_unit_id');
+        return $this->belongsTo(BusinessUnit::class, 'business_unit_id');
     }
 
     public function scopeSearch($query, $term){

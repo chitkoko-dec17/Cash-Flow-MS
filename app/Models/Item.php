@@ -25,10 +25,21 @@ class Item extends Model
         return $this->belongsTo('App\Models\ItemCategory');
     }
 
+    public function invoiceType()
+    {
+        return $this->belongsTo(InvoiceType::class,'invoice_type_id');
+    }
+
     public function scopeSearch($query, $term){
         $term = "%$term%";
         $query->where(function($query) use ($term){
-            $query->where('name','like',$term);
+            $query->where('name','like',$term)
+            ->orWhereHas('businessUnit', function ($query) use ($term) {
+                $query->where('name','like',$term);
+            })
+            ->orWhereHas('businessUnit', function ($query) use ($term) {
+                $query->where('name','like',$term);
+            });
         });
     }
 }

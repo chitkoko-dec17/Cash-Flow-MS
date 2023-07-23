@@ -18,4 +18,9 @@ class BranchUser extends Model
         'user_id',
         'branch_id',
     ];
+
+    public function branch()
+    {
+        return $this->belongsTo(Branch::class);
+    }
 }

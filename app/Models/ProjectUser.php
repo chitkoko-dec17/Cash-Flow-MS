@@ -18,4 +18,9 @@ class ProjectUser extends Model
         'user_id',
         'project_id',
     ];
+
+    public function project()
+    {
+        return $this->belongsTo(Project::class);
+    }
 }
