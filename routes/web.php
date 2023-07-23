@@ -10,7 +10,7 @@ use App\Http\Livewire\UserComponent;
 use App\Http\Livewire\ItemCategoryComponent;
 use App\Http\Livewire\ItemComponent;
 use App\Http\Livewire\InvoiceTypeComponent;
-use App\Http\Controllers\InvoiceController;
+use App\Http\Controllers\ExpenseInvoiceController;
 use App\Http\Livewire\ProjectComponent;
 
 /*
@@ -85,7 +85,7 @@ Route::group(['middleware' => ['auth']], function() {
     Route::get('/branch',BranchComponent::class)->name('branch.index');
     Route::get('/project',ProjectComponent::class)->name('project.index');
 
-    Route::resource('invoice', InvoiceController::class); 
+    Route::resource('expense-invoice', ExpenseInvoiceController::class); 
     
     // Route::resource('user', UserController::class);
 

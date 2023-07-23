@@ -18,6 +18,7 @@ class ExpenseInvoice extends Model
         'invoice_no',
         'invoice_date',
         'total_amount',
+        'return_total_amount',
         'description',
         'upload_user_id',
         'appoved_manager_id',
