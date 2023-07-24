@@ -36,9 +36,10 @@
                                             <table class="table table-bordered" id="invoiceItems">
                                                 <thead>
                                                     <tr>
+                                                        <th>Category</th>
                                                         <th>Item</th>
-                                                        <th>Quantity</th>
-                                                        <th>Unit Price (MMK)</th>
+                                                        <th width="60">Quantity</th>
+                                                        <th width="100">Unit Price (MMK)</th>
                                                         <th>Total</th>
                                                         <th></th>
                                                     </tr>
@@ -46,11 +47,16 @@
                                                 <tbody>
                                                     <tr>
                                                         <td>
-                                                            <select class="form-select" name="items[]">
-                                                                <option value="">Select Item</option>
-                                                                @foreach($items as $item)
-                                                                    <option value="{{ $item->id }}">{{ $item->name }}</option>
+                                                            <select class="form-select category_id" name="category_ids[]" id="category_id">
+                                                                <option value="">Select Category</option>
+                                                                @foreach($itemcategories as $cate)
+                                                                    <option value="{{ $cate->id }}">{{ $cate->name }}</option>
                                                                 @endforeach
+                                                            </select>
+                                                        </td>
+                                                        <td>
+                                                            <select class="form-select item_id" name="items[]">
+                                                                <option value="">Select Item</option>
                                                             </select>
                                                         </td>
                                                         <td><input type="number" class="form-control quantity"
@@ -67,7 +73,7 @@
                                                 </tbody>
                                                 <tfoot>
                                                     <tr>
-                                                        <td colspan="3" class="text-right"><strong>Total:</strong></td>
+                                                        <td colspan="4" class="text-right"><strong>Total:</strong></td>
                                                         <td colspan="2" class="totalAmount">0.00 MMK</td>
                                                         <input type="hidden" name="total_amount" id="total_amount" value="">
                                                         @error('total_amount')
@@ -106,9 +112,9 @@
     <script src="{{ asset('assets/js/dropzone/dropzone.js') }}"></script>
     <script src="{{ asset('assets/js/dropzone/dropzone-script.js') }}"></script>
     <script>
-        let jitems = '';
-        @foreach($items as $item)
-            jitems += '<option value="{{ $item->id }}">{{ $item->name }}</option>';
+        let jcates = '';
+        @foreach($itemcategories as $cate)
+            jcates += '<option value="{{ $cate->id }}">{{ $cate->name }}</option>';
         @endforeach
         $(document).ready(function() {
             // Add new invoice item row
@@ -116,9 +122,14 @@
                 const newRow = `
                     <tr>
                         <td>
-                            <select class="form-select" name="items[]">
+                            <select class="form-select category_id" name="category_ids[]">
+                                <option value="">Select Category</option>
+                                `+jcates+`
+                            </select>
+                        </td>
+                        <td>
+                            <select class="form-select item_id" name="items[]">
                                 <option value="">Select Item</option>
-                                `+jitems+`
                             </select>
                         </td>
                         <td><input type="number" class="form-control quantity" name="quantity[]" min="1" value="1"></td>
@@ -155,5 +166,33 @@
                 $("#total_amount").val(totalAmount.toFixed(0));
             }
         });
+
+
+        $(document).on('change','.category_id',function(){
+            get_items($(this));
+        });
+
+        function get_items(main){
+            var cate_id = main.val();
+            var token = $("input[name='_token']").val();
+            if(cate_id){
+                $.ajax({
+                    url: "<?php echo route('expense.items') ?>",
+                    method: 'POST',
+                    data: {cate_id:cate_id, _token:token},
+                    success: function(data) {
+                        // $('.item_id').find('option').remove();  
+                        main.closest('tr').find('select.item_id option').remove();
+                        var selectbox = main.closest('tr').find('select.item_id');
+
+                        selectbox.append('<option selected="selected">Select Item</option>');
+                        $.each(data.array_data, function(value, text){   
+                            // console.log(text);                  
+                          selectbox.append('<option value="' + text.id + '">' + text.name + '</option>');
+                        });
+                    }
+                });
+            }
+        }
     </script>
 @endpush

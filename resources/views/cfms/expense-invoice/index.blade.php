@@ -85,3 +85,18 @@
 	</div>
 </div>
 @endsection
+
+@section('customJs')
+	<script type="text/javascript">
+		@if ($message = Session::get('success'))
+			notifyToUser('Expense Invoice Action', '{{ $message }}',
+                    'primary');
+		@endif
+
+		@if ($message = Session::get('error'))
+			notifyToUser('Expense Invoice Error',
+                    'Error! {{ $message }}',
+                    'danger');
+		@endif
+	</script>
+@endsection

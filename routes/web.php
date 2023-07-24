@@ -86,6 +86,8 @@ Route::group(['middleware' => ['auth']], function() {
     Route::get('/project',ProjectComponent::class)->name('project.index');
 
     Route::resource('expense-invoice', ExpenseInvoiceController::class); 
+
+    Route::post('expense-invoice/get_items', [ExpenseInvoiceController::class, 'get_items'])->name('expense.items');
     
     // Route::resource('user', UserController::class);
 

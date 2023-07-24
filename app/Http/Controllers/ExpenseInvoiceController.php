@@ -8,8 +8,10 @@ use App\Models\ExpenseInvoice;
 use App\Models\ExpenseInvoiceItem;
 use App\Models\InvoiceNote;
 use App\Models\Item;
+use App\Models\ItemCategory;
 use App\Models\InvoiceDocument;
 use Auth;
+use DB;
 
 class ExpenseInvoiceController extends Controller
 {
@@ -42,10 +44,11 @@ class ExpenseInvoiceController extends Controller
      */
     public function create()
     {
+        $itemcategories = ItemCategory::where('business_unit_id', 0)->get();
         $items = Item::where('invoice_type_id', 0)->get();
         $statuses = $this->statuses;
 
-        return view('cfms.expense-invoice.create', compact('items','statuses'));
+        return view('cfms.expense-invoice.create', compact('itemcategories','items','statuses'));
     }
 
     /**
@@ -211,5 +214,14 @@ class ExpenseInvoiceController extends Controller
         // $book = Book::find($id);
         // $book->delete();
         // return redirect()->route('book.index')->with('success', 'Book has been deleted successfully!');
+    }
+
+    public function get_items(Request $request)
+    {
+        if($request->ajax()){
+            $states = DB::table('items')->where('category_id',$request->cate_id)->get();
+            // $data = view('ajax-select',compact('states'))->render();
+            return response()->json(['array_data'=>$states]);
+        }
     }
 }
