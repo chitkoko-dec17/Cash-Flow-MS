@@ -2,6 +2,7 @@
 
 namespace App\Http\Livewire;
 
+use App\Models\BusinessUnit;
 use Livewire\Component;
 use App\Models\ItemCategory;
 use Livewire\WithPagination;
@@ -9,7 +10,7 @@ use Livewire\WithPagination;
 class ItemCategoryComponent extends Component
 {
     use WithPagination;
-    public $name, $itemcategoryId ;
+    public $name, $itemcategoryId , $business_unit_id;
     public $isOpen = false;
     public $perPage = 10;
     public $search;
@@ -24,10 +25,12 @@ class ItemCategoryComponent extends Component
      */
     public function render()
     {
-        $itemcategories = ItemCategory::search(trim($this->search))
+        $itemcategories = ItemCategory::with('businessUnit')
+        ->search(trim($this->search))
         ->orderBy($this->sortColumnName,$this->sortDirectionBy)
         ->paginate($this->perPage);
-        return view('livewire.item-category',compact('itemcategories'));
+        $businessUnits = BusinessUnit::all();
+        return view('livewire.item-category',compact('itemcategories','businessUnits'));
     }
 
     public function create()
@@ -64,14 +67,16 @@ class ItemCategoryComponent extends Component
     public function store()
     {
         $this->validate([
+            'business_unit_id' => 'required',
             'name' => 'required',
         ]);
 
         ItemCategory::updateOrCreate(['id' => $this->itemcategoryId], [
+            'business_unit_id' => $this->business_unit_id,
             'name' => $this->name,
         ]);
 
-        isset($this->itemcategoryId) ?  $this->emit('btnCreateOrUpdated','edit') : $this->emit('btnCreateOrUpdated','create');
+        ($this->itemcategoryId) ?  $this->emit('btnCreateOrUpdated','edit') : $this->emit('btnCreateOrUpdated','create');
         $this->closeModal();
         $this->resetInputFields();
     }
@@ -83,6 +88,7 @@ class ItemCategoryComponent extends Component
      */
     public function edit($id){
         $itemcategory = ItemCategory::findOrFail($id);
+        $this->business_unit_id = $itemcategory->business_unit_id;
         $this->name = $itemcategory->name;
         $this->itemcategoryId = $itemcategory->id;
         $this->openModal();

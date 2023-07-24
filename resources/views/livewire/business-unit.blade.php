@@ -2,8 +2,8 @@
     <div class="card">
         <div class="card-header pb-10">
             <span class="float-start">
-                <h5 class="mb-2">Business Unit </h5>
-                <span>Business Unit Configuration -<code>လုပ်ငန်းစာရင်းများကို</code> ပြင်ဆင်မည်။</span>
+                <h6 class="mb-2">Business Unit </h6>
+                <code>လုပ်ငန်းစာရင်းများ</code>
             </span>
             <button wire:click="create" class="btn btn-primary float-end" type="button" data-bs-toggle="modal"
                 data-bs-target="#businessUnitModal"><i class="fa fa-edit"></i> Create New Business Unit</button>

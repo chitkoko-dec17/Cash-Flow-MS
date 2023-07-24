@@ -35,7 +35,16 @@
                     <table class="table table-hover table-bordered">
                         <thead>
                             <tr>
-                                <th>Name</th>
+                                <th>Name
+                                    <span wire:click="sortBy('name')" class="float-end" style="cursor: pointer;">
+                                        <i class="fa fa-sort text-muted"></i>
+                                    </span>
+                                </th>
+                                <th>Business Unit
+                                    <span wire:click="sortBy('business_unit_id')" class="float-end" style="cursor: pointer;">
+                                        <i class="fa fa-sort text-muted"></i>
+                                    </span>
+                                </th>
                                 <th>Action</th>
                             </tr>
                         </thead>
@@ -44,6 +53,7 @@
                                 @foreach ($itemcategories as $itemcategory)
                                     <tr>
                                         <td>{{$itemcategory->name}}</td>
+                                        <td><span class="badge badge-primary">{{ isset($itemcategory->businessUnit->name) ? $itemcategory->businessUnit->name : "" }}</span></td>
                                         <td>
                                             <button wire:click="edit({{ $itemcategory->id }})"
                                                 class="btn btn-outline-info btn-sm  action-btn" title="Edit"
@@ -56,7 +66,7 @@
                                 @endforeach
                             @else
                                 <tr>
-                                    <td colspan="2" align="center">
+                                    <td colspan="3" align="center">
                                         No Item Category Found.
                                     </td>
                                 </tr>

@@ -11,6 +11,18 @@
                 </div>
                 <div class="modal-body">
                     <div class="form-group">
+                        <label for="business_unit_id">Business Unit</label>
+                        <select wire:model="business_unit_id" class="js-example-basic-single col-sm-12 form-select" id="business_unit_id">
+                            <option value="">Select a Business Unit</option>
+                            @foreach ($businessUnits as $businessUnit)
+                                <option value="{{ $businessUnit->id }}">{{$businessUnit->name}}</option>
+                            @endforeach
+                        </select>
+                        @error('business_unit_id')
+                            <span class="text-danger">{{ $message }}</span>
+                        @enderror
+                    </div>
+                    <div class="form-group">
                         <label for="name">Name</label>
                         <input wire:model="name" type="text" class="form-control" id="name"
                             placeholder="Enter item category name">

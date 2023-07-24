@@ -38,8 +38,8 @@
                                 <th>Name</th>
                                 <th>Role</th>
                                 <th>Email</th>
-                                <th>Phone</th>
-                                <th>Address</th>
+                                <th>Branch</th>
+                                <th>Project</th>
                                 <th>Action</th>
                             </tr>
                         </thead>
@@ -48,10 +48,10 @@
                                 @foreach ($users as $user)
                                     <tr>
                                         <td>{{$user->name}}</td>
-                                        <td>{{$user->role->name}}</td>
+                                        <td>{{$user->role->name}} - {{$user->role_id}}</td>
                                         <td>{{$user->email}}</td>
-                                        <td class="font-success">{{$user->phone}}</td>
-                                        <td>{{$user->address}}</td>
+                                        <td>{{$user->branchUser ? $user->branchUser->branch->name : ''}} - {{$user->branchUser ? $user->branchUser->branch->id : ''}} </td>
+                                        <td>{{$user->projectUser ? $user->projectUser->project->name : ''}} - {{$user->projectUser ? $user->projectUser->project->id : ''}}</td>
                                         <td>
                                             <button wire:click="" class="btn btn-outline-success btn-sm action-btn"
                                                 title="View" data-toggle="tooltip"><i class="fa fa-eye"></i></button>

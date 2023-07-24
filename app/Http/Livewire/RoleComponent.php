@@ -68,7 +68,7 @@ class RoleComponent extends Component
             'name' => $this->name,
         ]);
 
-        isset($this->roleId) ?  $this->emit('btnCreateOrUpdated','create') : $this->emit('btnCreateOrUpdated','edit');
+        ($this->roleId) ?  $this->emit('btnCreateOrUpdated','create') : $this->emit('btnCreateOrUpdated','edit');
         $this->closeModal();
         $this->resetInputFields();
     }

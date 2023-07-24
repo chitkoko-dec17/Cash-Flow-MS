@@ -31,24 +31,18 @@
                         </ul>
                     </li>
                     <li class="dropdown">
-                        <a class="nav-link menu-title {{ prefixActive('/project') }}" href="javascript:void(0)"><i data-feather="box"></i><span>Project </span></a>
-                        <ul class="nav-submenu menu-content" style="display: {{ prefixBlock('/project') }};">
-                            <li><a href="{{ route('projects') }}" class="{{routeActive('projects')}}">Project List</a></li>
-                            <li><a href="{{ route('projectcreate') }}" class="{{routeActive('projectcreate')}}">Create new project</a></li>
-                        </ul>
-                    </li>
-                    <li class="dropdown">
                         <a class="nav-link menu-title {{ routeActive('/user') }}" href="javascript:void(0)"><i data-feather="users"></i><span>Users</span></a>
                         <ul class="nav-submenu menu-content" style="display: {{ prefixBlock('/user') }};">
                             <li><a href="{{ url('user') }}" class="{{routeActive('user')}}">User List</a></li>
                             <li><a href="{{ url('role') }}" class="{{routeActive('role')}}">Role List</a></li>
                         </ul>
                     </li>
-                    <li>
-                        <a class="nav-link menu-title link-nav " href="{{ url('itemcategory') }}"><i data-feather="dollar-sign"></i><span>Item Category</span></a>
-                    </li>
-                    <li>
-                        <a class="nav-link menu-title link-nav " href="{{ url('item') }}"><i data-feather="dollar-sign"></i><span>Item</span></a>
+                    <li class="dropdown">
+                        <a class="nav-link menu-title {{ prefixActive('/item') }}" href="javascript:void(0)"><i data-feather="file-text"></i><span>Items</span></a>
+                        <ul class="nav-submenu menu-content" style="display: {{ prefixBlock('/item') }};">
+                            <li><a href="{{ url('itemcategory') }}" class="{{routeActive('itemcategory')}}">Item Category</a></li>
+                            <li><a href="{{ url('item') }}" class="{{routeActive('item')}}">Item list</a></li>
+                        </ul>
                     </li>
                     <li class="dropdown">
                         <a class="nav-link menu-title {{ prefixActive('/invoice') }}" href="javascript:void(0)"><i data-feather="file"></i><span>Invoices</span></a>
@@ -66,22 +60,22 @@
                     </li>
 
                     <li>
-                        <a class="nav-link menu-title link-nav "><i data-feather="dollar-sign"></i><span>Budget</span></a>
+                        <a class="nav-link menu-title link-nav " href="{{ url('budget') }}"><i data-feather="dollar-sign"></i><span>Budget</span></a>
                     </li>
-                    <li class="sidebar-main-title">
+                    {{-- <li class="sidebar-main-title">
                         <div>
                             <h6>Quick Action</h6>
                         </div>
                     </li>
                     <li>
-                        {{-- <a class="nav-link menu-title link-nav" href="{{ route('landing-page') }}" class="{{routeActive('landing-page')}}"><i data-feather="navigation-2"></i><span>Landing page</span></a> --}}
+                        <a class="nav-link menu-title link-nav" href="{{ route('landing-page') }}" class="{{routeActive('landing-page')}}"><i data-feather="navigation-2"></i><span>Landing page</span></a>
                     </li>
                     <li>
                         <a class="nav-link menu-title link-nav {{routeActive('create-user')}}" href="{{ route('create-user') }}"><i data-feather="user-plus"></i><span>Create user</span></a>
                     </li>
                     <li class="dropdown">
                         <a class="nav-link menu-title link-nav {{routeActive('internationalization')}}" href="{{ route('internationalization') }}"><i data-feather="file-plus"></i><span>Create invoice</span></a>
-                    </li>
+                    </li> --}}
                 </ul>
             </div>
             <div class="right-arrow" id="right-arrow"><i data-feather="arrow-right"></i></div>

@@ -4,6 +4,7 @@ namespace App\Http\Livewire;
 
 use Livewire\Component;
 use App\Models\InvoiceType;
+use App\Models\ItemCategory;
 use Livewire\WithPagination;
 
 class InvoiceTypeComponent extends Component
@@ -68,7 +69,7 @@ class InvoiceTypeComponent extends Component
             'name' => $this->name,
         ]);
 
-        isset($this->invtypeId) ?  $this->emit('btnCreateOrUpdated','create') : $this->emit('btnCreateOrUpdated','edit');
+        ($this->invtypeId) ?  $this->emit('btnCreateOrUpdated','create') : $this->emit('btnCreateOrUpdated','edit');
         $this->closeModal();
         $this->resetInputFields();
     }

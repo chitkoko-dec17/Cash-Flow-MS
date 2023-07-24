@@ -31,47 +31,67 @@ class BranchComponent extends Component
 
     public function create()
     {
-        $validatedData = $this->validate([
+        $this->resetInputFields();
+        $this->openModal();
+    }
+
+    public function openModal()
+    {
+        $this->isOpen = true;
+        $this->dispatchBrowserEvent('openModal');
+    }
+
+    public function closeModal()
+    {
+        $this->isOpen = false;
+        $this->dispatchBrowserEvent('closeModal');
+        $this->dispatchBrowserEvent('closeConfirmModal');
+        $this->resetValidation(); // Reset form validation errors
+        $this->resetInputFields(); // Clear input fields
+    }
+
+    public function resetInputFields()
+    {
+        $this->branchId = '';
+        $this->business_unit_id = '';
+        $this->name = '';
+        $this->phone = '';
+        $this->address = '';
+    }
+
+    public function store()
+    {
+        $this->validate([
             'business_unit_id' => 'required',
             'name' => 'required',
-            'phone' => 'nullable',
-            'address' => 'nullable'
+            'phone' => 'required',
+            'address' => 'required',
         ]);
 
-        Branch::create([
-            'business_unit_id' => $validatedData['business_unit_id'],
-            'name' => $validatedData['name'],
-            'phone' => $validatedData['phone'],
-            'address' => $validatedData['address'],
+        Branch::updateOrCreate(['id' => $this->branchId], [
+            'business_unit_id' => $this->business_unit_id,
+            'name' => $this->name,
+            'phone' => $this->phone,
+            'address' => $this->address,
         ]);
 
-        $this->resetForm();
-        $this->emit('btnCreateOrUpdated','create');
+        ($this->branchId) ?  $this->emit('btnCreateOrUpdated','edit') : $this->emit('btnCreateOrUpdated','create');
+        $this->closeModal();
+        $this->resetInputFields();
     }
 
     public function edit($id)
     {
         $branch = Branch::findOrFail($id);
+        if(isset($branch)){
+            $this->branchId = $branch->id;
+            $this->business_unit_id = $branch->business_unit_id;
+            $this->name = $branch->name;
+            $this->phone = $branch->phone;
+            $this->address = $branch->address;
 
-        $this->branchId = $branch->id;
-        $this->business_unit_id = $branch->business_unit_id;
-        $this->name = $branch->name;
-        $this->phone = $branch->phone;
-        $this->address = $branch->address;
-    }
-
-    public function update()
-    {
-        $validatedData = $this->validate([
-            'business_unit_id' => 'required',
-            'name' => 'required',
-            'phone' => 'nullable',
-            'address' => 'nullable'
-        ]);
-
-        Branch::findOrFail($this->branchId)->update($validatedData);
-        $this->resetForm();
-        $this->emit('btnCreateOrUpdated','edit');
+            $this->openModal();
+        }
     }
 
     public function delete()
@@ -84,15 +104,6 @@ class BranchComponent extends Component
         $this->dispatchBrowserEvent('closeConfirmModal');
     }
 
-    public function resetForm()
-    {
-        $this->branchId = null;
-        $this->business_unit_id = null;
-        $this->name = '';
-        $this->phone = '';
-        $this->address = '';
-    }
-
     public function confirmDelete($deleteID,$name)
     {
         $this->confirmingDelete = true;
@@ -101,17 +112,8 @@ class BranchComponent extends Component
         $this->dispatchBrowserEvent('openConfirmModal');
     }
 
-    public function closeModal()
+    public function sortBy($columnName)
     {
-        $this->isOpen = false;
-        $this->dispatchBrowserEvent('closeModal');
-        $this->dispatchBrowserEvent('closeConfirmModal');
-        $this->resetValidation(); // Reset form validation errors
-        $this->resetForm(); // Clear input fields
-    }
-
-    public function sortBy($columnName){
-
         if($this->sortColumnName === $columnName){
             $this->sortDirectionBy = $this->swapSortDirection();
         } else {
@@ -120,7 +122,8 @@ class BranchComponent extends Component
         $this->sortColumnName = $columnName;
     }
 
-    public function swapSortDirection()  {
+    public function swapSortDirection()
+    {
         return $this->sortDirectionBy === 'desc' ? 'asc' : 'desc';
     }
 

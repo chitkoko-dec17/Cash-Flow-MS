@@ -31,7 +31,7 @@ class BusinessUnit extends Model
             ->orWhereHas('manager', function ($query) use ($term) {
                 $query->where('name', 'like', $term)
                       ->whereHas('role', function ($query) {
-                          $query->where('role_id', 1);
+                          $query->where('role_id', 2);
                       });
             });
         });

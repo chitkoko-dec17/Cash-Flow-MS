@@ -2,6 +2,8 @@
 
 namespace App\Http\Livewire;
 
+use App\Models\BusinessUnit;
+use App\Models\InvoiceType;
 use Livewire\Component;
 use App\Models\Item;
 use App\Models\ItemCategory;
@@ -10,7 +12,7 @@ use Livewire\WithPagination;
 class ItemComponent extends Component
 {
     use WithPagination;
-    public $name, $itemId, $category_id ;
+    public $name, $itemId, $category_id,$invoice_type_id,$businessUnit_id ;
     public $isOpen = false;
     public $perPage = 10;
     public $search;
@@ -18,6 +20,7 @@ class ItemComponent extends Component
     public $sortColumnName= 'name';
     public $confirmingDelete = false;
     public $itemIdToDelete , $selectedName;
+    public $itemcategories = [];
 
     /**
      * render the post data
@@ -28,8 +31,10 @@ class ItemComponent extends Component
         $items = Item::search(trim($this->search))
         ->orderBy($this->sortColumnName,$this->sortDirectionBy)
         ->paginate($this->perPage);
-        $itemcategories = ItemCategory::all();
-        return view('livewire.item',compact('items', 'itemcategories'));
+        $invoiceTypes = InvoiceType::all();
+        $businessUnits = BusinessUnit::all();
+
+        return view('livewire.item',compact('items','invoiceTypes','businessUnits'));
     }
 
     public function create()
@@ -60,6 +65,16 @@ class ItemComponent extends Component
         $this->itemId = '';
     }
 
+    public function updatedBusinessUnitId($value)
+    {
+        if ($value) {
+            // Fetch item_category based on the selected bu
+            $this->itemcategories = ItemCategory::where('business_unit_id', $value)->get();
+        } else {
+            $this->itemcategories = [];
+        }
+    }
+
      /**
       * store the user inputted post data in the items table
       * @return void
@@ -68,15 +83,18 @@ class ItemComponent extends Component
     {
         $this->validate([
             'category_id' => 'required',
+            'invoice_type_id' => 'required',
+            'businessUnit_id'=> 'required',
             'name' => 'required',
         ]);
 
         Item::updateOrCreate(['id' => $this->itemId], [
             'category_id' => $this->category_id,
+            'invoice_type_id' => $this->invoice_type_id,
             'name' => $this->name,
         ]);
 
-        isset($this->itemId) ?  $this->emit('btnCreateOrUpdated','edit') : $this->emit('btnCreateOrUpdated','create');
+        ($this->itemId) ?  $this->emit('btnCreateOrUpdated','edit') : $this->emit('btnCreateOrUpdated','create');
         $this->closeModal();
         $this->resetInputFields();
     }
@@ -86,12 +104,16 @@ class ItemComponent extends Component
      * @param mixed $id
      * @return void
      */
-    public function edit($id){
+    public function edit($id)
+    {
         $item = Item::findOrFail($id);
         if (isset($item)) {
             $this->category_id = $item->category_id;
+            $this->invoice_type_id = $item->invoice_type_id;
+            $this->businessUnit_id = $item->category->businessUnit->id;
             $this->name = $item->name;
             $this->itemId = $item->id;
+            $this->updatedBusinessUnitId($item->category->businessUnit->id);
             $this->openModal();
         }
     }
@@ -119,7 +141,8 @@ class ItemComponent extends Component
         $this->dispatchBrowserEvent('openConfirmModal');
     }
 
-    public function sortBy($columnName){
+    public function sortBy($columnName)
+    {
 
         if($this->sortColumnName === $columnName){
             $this->sortDirectionBy = $this->swapSortDirection();
@@ -129,7 +152,8 @@ class ItemComponent extends Component
         $this->sortColumnName = $columnName;
     }
 
-    public function swapSortDirection()  {
+    public function swapSortDirection()
+    {
         return $this->sortDirectionBy === 'desc' ? 'asc' : 'desc';
     }
 }

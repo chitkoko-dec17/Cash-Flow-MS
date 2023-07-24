@@ -117,7 +117,7 @@ class BusinessUnitComponent extends Component
             'address' => $this->address,
         ]);
 
-        isset($this->businessUnitId) ?  $this->emit('buCreateOrUpdated','edit') : $this->emit('buCreateOrUpdated','create');
+        ($this->businessUnitId) ?  $this->emit('buCreateOrUpdated','edit') : $this->emit('buCreateOrUpdated','create');
 
         // session()->flash(
         //     'message',

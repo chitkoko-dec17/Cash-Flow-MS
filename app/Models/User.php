@@ -47,7 +47,7 @@ class User extends Authenticatable
 
     public function role()
     {
-        return $this->belongsTo('App\Models\Role');
+        return $this->belongsTo(Role::class);
     }
 
     public function scopeSearch($query, $term){
@@ -55,7 +55,30 @@ class User extends Authenticatable
         $query->where(function($query) use ($term){
             $query->where('name','like',$term)
             ->orWhere('address','like',$term)
-            ->orWhere('phone','like',$term);
+            ->orWhere('phone','like',$term)
+            ->orWhereHas('role', function ($query) use ($term) {
+                $query->where('name','like',$term);
+            });
         });
+    }
+
+    public function branch()
+    {
+        return $this->hasOne(Branch::class);
+    }
+
+    public function project()
+    {
+        return $this->hasOne(Branch::class);
+    }
+
+    public function branchUser()
+    {
+        return $this->hasOne(BranchUser::class);
+    }
+
+    public function projectUser()
+    {
+        return $this->hasOne(ProjectUser::class);
     }
 }

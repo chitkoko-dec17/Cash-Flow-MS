@@ -31,47 +31,68 @@ class ProjectComponent extends Component
 
     public function create()
     {
-        $validatedData = $this->validate([
+        $this->resetInputFields();
+        $this->openModal();
+    }
+
+    public function openModal()
+    {
+        $this->isOpen = true;
+        $this->dispatchBrowserEvent('openModal');
+    }
+
+    public function closeModal()
+    {
+        $this->isOpen = false;
+        $this->dispatchBrowserEvent('closeModal');
+        $this->dispatchBrowserEvent('closeConfirmModal');
+        $this->resetValidation(); // Reset form validation errors
+        $this->resetInputFields(); // Clear input fields
+    }
+
+    public function resetInputFields()
+    {
+        $this->projectId = '';
+        $this->branch_id = '';
+        $this->name = '';
+        $this->phone = '';
+        $this->address = '';
+    }
+
+    public function store()
+    {
+        $this->validate([
             'branch_id' => 'required',
             'name' => 'required',
-            'phone' => 'nullable',
-            'address' => 'nullable'
+            'phone' => 'required',
+            'address' => 'required',
         ]);
 
-        Project::create([
-            'branch_id' => $validatedData['branch_id'],
-            'name' => $validatedData['name'],
-            'phone' => $validatedData['phone'],
-            'address' => $validatedData['address'],
+        Project::updateOrCreate(['id' => $this->projectId], [
+            'branch_id' => $this->branch_id,
+            'name' => $this->name,
+            'phone' => $this->phone,
+            'address' => $this->address,
         ]);
 
-        $this->resetForm();
-        $this->emit('btnCreateOrUpdated','create');
+        ($this->projectId) ?  $this->emit('btnCreateOrUpdated','edit') : $this->emit('btnCreateOrUpdated','create');
+        $this->closeModal();
+        $this->resetInputFields();
     }
+
 
     public function edit($id)
     {
         $project = Project::findOrFail($id);
+        if(isset($project)){
+            $this->projectId = $project->id;
+            $this->branch_id = $project->branch_id;
+            $this->name = $project->name;
+            $this->phone = $project->phone;
+            $this->address = $project->address;
 
-        $this->projectId = $project->id;
-        $this->branch_id = $project->branch_id;
-        $this->name = $project->name;
-        $this->phone = $project->phone;
-        $this->address = $project->address;
-    }
-
-    public function update()
-    {
-        $validatedData = $this->validate([
-            'branch_id' => 'required',
-            'name' => 'required',
-            'phone' => 'nullable',
-            'address' => 'nullable'
-        ]);
-
-        Project::findOrFail($this->projectId)->update($validatedData);
-        $this->resetForm();
-        $this->emit('btnCreateOrUpdated','edit');
+            $this->openModal();
+        }
     }
 
     public function delete()
@@ -84,30 +105,12 @@ class ProjectComponent extends Component
         $this->dispatchBrowserEvent('closeConfirmModal');
     }
 
-    public function resetForm()
-    {
-        $this->projectId = null;
-        $this->branch_id = null;
-        $this->name = '';
-        $this->phone = '';
-        $this->address = '';
-    }
-
     public function confirmDelete($deleteID,$name)
     {
         $this->confirmingDelete = true;
         $this->projectIdToDelete = $deleteID;
         $this->selectedName = $name;
         $this->dispatchBrowserEvent('openConfirmModal');
-    }
-
-    public function closeModal()
-    {
-        $this->isOpen = false;
-        $this->dispatchBrowserEvent('closeModal');
-        $this->dispatchBrowserEvent('closeConfirmModal');
-        $this->resetValidation(); // Reset form validation errors
-        $this->resetForm(); // Clear input fields
     }
 
     public function sortBy($columnName){
