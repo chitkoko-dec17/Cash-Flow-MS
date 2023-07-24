@@ -60,7 +60,7 @@
                     </li>
 
                     <li>
-                        <a class="nav-link menu-title link-nav "><i data-feather="dollar-sign"></i><span>Budget</span></a>
+                        <a class="nav-link menu-title link-nav " href="{{ url('budget') }}"><i data-feather="dollar-sign"></i><span>Budget</span></a>
                     </li>
                     {{-- <li class="sidebar-main-title">
                         <div>

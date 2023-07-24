@@ -11,6 +11,7 @@ use App\Http\Livewire\ItemCategoryComponent;
 use App\Http\Livewire\ItemComponent;
 use App\Http\Livewire\InvoiceTypeComponent;
 use App\Http\Controllers\ExpenseInvoiceController;
+use App\Http\Livewire\EstimateBudgetComponent;
 use App\Http\Livewire\ProjectComponent;
 
 /*
@@ -84,9 +85,10 @@ Route::group(['middleware' => ['auth']], function() {
     Route::get('/business-unit',BusinessUnitComponent::class)->name('business-unit.index');
     Route::get('/branch',BranchComponent::class)->name('branch.index');
     Route::get('/project',ProjectComponent::class)->name('project.index');
+    Route::get('/budget',EstimateBudgetComponent::class)->name('budget.index');
 
-    Route::resource('expense-invoice', ExpenseInvoiceController::class); 
-    
+    Route::resource('expense-invoice', ExpenseInvoiceController::class);
+
     // Route::resource('user', UserController::class);
 
     // Route::post('/change-password', [AdminController::class, 'updatePassword'])->name('update-password');
