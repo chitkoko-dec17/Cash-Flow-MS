@@ -76,7 +76,7 @@ class ItemCategoryComponent extends Component
             'name' => $this->name,
         ]);
 
-        isset($this->itemcategoryId) ?  $this->emit('btnCreateOrUpdated','edit') : $this->emit('btnCreateOrUpdated','create');
+        ($this->itemcategoryId) ?  $this->emit('btnCreateOrUpdated','edit') : $this->emit('btnCreateOrUpdated','create');
         $this->closeModal();
         $this->resetInputFields();
     }

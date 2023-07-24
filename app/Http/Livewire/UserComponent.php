@@ -172,7 +172,7 @@ class UserComponent extends Component
         //     $toSave->projectUser->delete();
         // }
 
-        isset($this->userId) ?  $this->emit('btnCreateOrUpdated','edit') : $this->emit('btnCreateOrUpdated','create');
+        ($this->userId) ?  $this->emit('btnCreateOrUpdated','edit') : $this->emit('btnCreateOrUpdated','create');
         $this->closeModal();
         $this->resetInputFields();
     }
@@ -184,16 +184,19 @@ class UserComponent extends Component
      */
     public function edit($id){
         $user = User::findOrFail($id);
-        $branch = BranchUser::findOrFail($user->id);
-        $project = ProjectUser::findOrFail($user->id);
-        $this->role_id = $user->role_id;
+        //$project =$user->projectUser ? Project::findorFail($user->projectUser->project_id) : null;
+        $this->role_id = $user->role->id;
         $this->name = $user->name;
         $this->email = $user->email;
         $this->phone = $user->phone;
         $this->address = $user->address;
         $this->userId = $id;
-        // $this->selectedBranch = $branch->user_id;
-        // $this->selectedProject = $project->user_id;
+        $this->selectedBranch = $user->branchUser ? $user->branchUser->branch->id : '';
+        $this->selectedProject = $user->projectUser ? $user->projectUser->project->id : '';
+
+        $this->updatedRoleId($user->role->id);
+        $this->updatedSelectedBranch( $user->branchUser ? $user->branchUser->branch->id : '');
+
         $this->openModal();
     }
 

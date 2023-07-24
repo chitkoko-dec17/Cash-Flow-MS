@@ -2,8 +2,8 @@
     <div class="card">
         <div class="card-header pb-10">
             <span class="float-start">
-                <h5 class="mb-2">Configuration </h5>
-                <span>Item Configuration</span>
+                <h6 class="mb-2">Configuration </h6>
+                <code class="p-0">Item Configuration</code>
             </span>
             <button wire:click="create" class="btn btn-primary float-end" type="button" data-bs-toggle="modal"
                 data-bs-target="#businessUnitModal"><i class="fa fa-edit"></i> Create New Item</button>
@@ -35,8 +35,23 @@
                     <table class="table table-hover table-bordered">
                         <thead>
                             <tr>
-                                <th>Name</th>
-                                <th>Category Name</th>
+                                <th>Name
+                                    <span wire:click="sortBy('name')" class="float-end" style="cursor: pointer;">
+                                        <i class="fa fa-sort text-muted"></i>
+                                    </span>
+                                </th>
+                                <th>Invoice Type
+                                    <span wire:click="sortBy('invoice_type_id')" class="float-end" style="cursor: pointer;">
+                                        <i class="fa fa-sort text-muted"></i>
+                                    </span>
+                                </th>
+                                <th>Business Unit
+                                </th>
+                                <th>Category Name
+                                    <span wire:click="sortBy('category_id')" class="float-end" style="cursor: pointer;">
+                                        <i class="fa fa-sort text-muted"></i>
+                                    </span>
+                                </th>
                                 <th>Action</th>
                             </tr>
                         </thead>
@@ -45,6 +60,8 @@
                                 @foreach ($items as $item)
                                     <tr>
                                         <td>{{$item->name}}</td>
+                                        <td>{{ isset($item->invoiceType->name) ? $item->invoiceType->name : ''}}</td>
+                                        <td>{{ isset($item->category->businessUnit->name) ? $item->category->businessUnit->name : ''}}</td>
                                         <td>{{ isset($item->category->name) ? $item->category->name : ''}}</td>
                                         <td>
                                             <button wire:click="edit({{ $item->id }})"
@@ -58,7 +75,7 @@
                                 @endforeach
                             @else
                                 <tr>
-                                    <td colspan="3" align="center">
+                                    <td colspan="5" align="center">
                                         No Item Found.
                                     </td>
                                 </tr>

@@ -1,70 +1,36 @@
 <div class="container-fluid">
     <div class="row">
-        <div class="col-md-4">
-            <div class="card">
-                <div class="card-header pb-0">
-                    <span class="float-start">
-                        <h6 class="mb-2">Project Configuration</h6>
-                        <span><code>ပရောဂျက် စာရင်းများကို</code> ပြင်ဆင်မည်။</span>
-                    </span>
-                </div>
-                <div class="card-body">
-                    <form wire:submit.prevent="{{ $projectId ? 'update' : 'create' }}">
-                        <div wire:ignore class="form-group">
-                            <label for="branch_id" class="mb-2">
-                                Branch <span wire:click="" class="badge rounded-pill badge-info"> <i class="icon"><i class="icon-plus"></i></i></span>
-                            </label>
-                            <select wire:model="branch_id" class="js-example-basic-single col-sm-12 form-select" id="branch_id">
-                                <option value="">Select a Branch</option>
-                                @foreach ($branches as $branch)
-                                    <option value="{{ $branch->id }}">{{$branch->name}}</option>
-                                @endforeach
-                            </select>
-                            @error('branch_id')
-                                <span class="text-danger">{{ $message }}</span>
-                            @enderror
-                        </div>
-                        <div class="form-group">
-                            <label for="name">Name</label>
-                            <input wire:model="name" type="text" class="form-control" id="name" placeholder="Enter name">
-                            @error('name')
-                                <span class="text-danger">{{ $message }}</span>
-                            @enderror
-                        </div>
-                        <div class="form-group">
-                            <label for="phone">Phone</label>
-                            <input wire:model="phone" type="phone" class="form-control" id="phone" placeholder="Enter phone">
-                            @error('phone')
-                                <span class="text-danger">{{ $message }}</span>
-                            @enderror
-                        </div>
-                        <div class="form-group">
-                            <label for="address">Address</label>
-                            <textarea wire:model="address" class="form-control" id="address" placeholder="Enter address"></textarea>
-                            @error('address')
-                                <span class="text-danger">{{ $message }}</span>
-                            @enderror
-                        </div>
-                        @if ($projectId)
-                            <button wire:click="resetForm" type="button" class="btn btn-secondary">Cancel</button>
-                        @endif
-                        <button type="submit" class="btn btn-primary">{{ $projectId ? 'Save Changes' : 'Create' }}</button>
-                    </form>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-8">
+        <div class="col-md">
             <div class="card">
                 <div class="card-header pb-4">
                     <span class="float-start">
                         <h6 class="mb-2">Project List</h6>
                         <code class="p-0">ပရောဂျက်စာရင်းများ</code>
                     </span>
-                    <div class="col-md-4 pe-0 float-end">
-                        <input wire:model.debounce.350ms="search" class="form-control" type="text" name="search" placeholder="Search..." />
-                    </div>
+                    <button wire:click="create" class="btn btn-primary float-end" type="button" data-bs-toggle="modal"
+                        data-bs-target="#dataprocessModal"><i class="fa fa-edit"></i> Create New Project</button>
                 </div>
                 <div class="card-body pt-0">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="col-md-4 form-inline m-2">
+                                <label for="formSelect"> <span>Show</span></label>
+                                <select wire:model="perPage" class="p-1 m-2" id="formSelect">
+                                    <option value="10">10</option>
+                                    <option value="20">20</option>
+                                    <option value="50">50</option>
+                                    <option value="100">100</option>
+                                </select>
+                                <label class="p-1" for="formSelect"> <span> entries</span></label>
+                            </div>
+                            <div class="col-md-3 form-inline float-end">
+                                <div class="input-group">
+                                    <input wire:model.debounce.350ms="search" type="text" class="form-control"
+                                        placeholder="Search...">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                     <div class="row">
                         <div class="table-responsive ">
                             <table class="table table-hover table-bordered">
@@ -116,7 +82,7 @@
                                     @else
                                         <tr>
                                             <td colspan="5" align="center">
-                                                No Branches Found.
+                                                No Projects Found.
                                             </td>
                                         </tr>
                                     @endif
@@ -126,28 +92,8 @@
                         </div>
                         {{ $projects->links('cfms.livewire-pagination-links')}}
                     </div>
+                    @include('cfms.modals.project-modal')
                 </div>
-            </div>
-
-            <!-- Confirmation Modal -->
-            <div wire:ignore.self class="modal fade" id="confirmationModal" tabindex="-1"role="dialog"
-            aria-labelledby="confirmationModal" aria-hidden="true">
-            <div class="modal-dialog modal-dialog-centered" role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="confirmationModalLabel">Confirm Deletion</h5>
-                        <button class="btn-close" type="button" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    <div class="modal-body">
-                        Are you sure you want to delete <code>{{ $selectedName }}</code>?
-                    </div>
-                    <div class="modal-footer">
-                        <button wire:click="closeModal" class="btn btn-secondary" type="button"
-                            data-bs-dismiss="modal">Close</button>
-                        <button wire:click="delete" class="btn btn-danger">Delete</button>
-                    </div>
-                </div>
-            </div>
             </div>
         </div>
     </div>

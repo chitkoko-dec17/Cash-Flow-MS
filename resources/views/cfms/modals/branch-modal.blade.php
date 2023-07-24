@@ -5,44 +5,20 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="businessUnitModalLabel">
-                        {{ $itemId ? 'Edit' : 'Create' }} Item
+                        {{ $branchId ? 'Edit' : 'Create' }} Branch
                     </h5>
                     <button class="btn-close" type="button" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
                     <div class="form-group">
-                        <label for="invoice_type_id">Invoice Type</label>
-                        <select wire:model="invoice_type_id" class="form-select" id="invoice_type_id">
-                            <option value="">Select a invoice type</option>
-                            @foreach ($invoiceTypes as $invoiceType)
-                                <option value="{{ $invoiceType->id }}">{{ $invoiceType->name }}</option>
-                            @endforeach
-                        </select>
-                        @error('invoice_type_id')
-                            <span class="text-danger">{{ $message }}</span>
-                        @enderror
-                    </div>
-                    <div class="form-group">
-                        <label for="businessUnit_id">Business Unit</label>
-                        <select wire:model="businessUnit_id" class="form-select" id="businessUnit_id">
+                        <label for="business_unit_id">Business Unit</label>
+                        <select wire:model="business_unit_id" class="form-select" id="business_unit_id">
                             <option value="">Select a business unit</option>
                             @foreach ($businessUnits as $businessUnit)
                                 <option value="{{ $businessUnit->id }}">{{ $businessUnit->name }}</option>
                             @endforeach
                         </select>
-                        @error('businessUnit_id')
-                            <span class="text-danger">{{ $message }}</span>
-                        @enderror
-                    </div>
-                    <div class="form-group">
-                        <label for="category_id">Category</label>
-                        <select wire:model="category_id" class="form-select" id="category_id">
-                            <option value="">Select a item category</option>
-                            @foreach ($itemcategories as $itemcategory)
-                                <option value="{{ $itemcategory->id }}">{{ $itemcategory->name }}</option>
-                            @endforeach
-                        </select>
-                        @error('category_id')
+                        @error('business_unit_id')
                             <span class="text-danger">{{ $message }}</span>
                         @enderror
                     </div>
@@ -54,12 +30,26 @@
                             <span class="text-danger">{{ $message }}</span>
                         @enderror
                     </div>
+                    <div class="form-group">
+                        <label for="phone">Phone</label>
+                        <input wire:model="phone" type="phone" class="form-control" id="phone" placeholder="Enter phone">
+                        @error('phone')
+                            <span class="text-danger">{{ $message }}</span>
+                        @enderror
+                    </div>
+                    <div class="form-group">
+                        <label for="address">Address</label>
+                        <textarea wire:model="address" class="form-control" id="address" placeholder="Enter address"></textarea>
+                        @error('address')
+                            <span class="text-danger">{{ $message }}</span>
+                        @enderror
+                    </div>
                 </div>
                 <div class="modal-footer">
                     <button wire:click="closeModal" class="btn btn-secondary" type="button"
                         data-bs-dismiss="modal">Close</button>
                     <button  class="btn btn-primary"
-                        type="submit">{{ $itemId ? 'Save Changes' : 'Create' }}</button>
+                        type="submit">{{ $branchId ? 'Save Changes' : 'Create' }}</button>
                 </div>
             </div>
         </div>

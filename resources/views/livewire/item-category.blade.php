@@ -66,7 +66,7 @@
                                 @endforeach
                             @else
                                 <tr>
-                                    <td colspan="2" align="center">
+                                    <td colspan="3" align="center">
                                         No Item Category Found.
                                     </td>
                                 </tr>
