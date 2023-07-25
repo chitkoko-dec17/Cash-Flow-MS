@@ -8,9 +8,9 @@
 	        <div class="card-header pb-10">
 	            <span class="float-start">
 	                <h5 class="mb-2">Configuration </h5>
-	                <span>Expense Invoice Configuration</span>
+	                <span>Income Invoice Configuration</span>
 	            </span>
-	            <a href="{{ route('expense-invoice.create') }}" class="btn btn-primary float-end" type="button"><i class="fa fa-edit"></i> Create New Expense Invoice</a>
+	            <a href="{{ route('income-invoice.create') }}" class="btn btn-primary float-end" type="button"><i class="fa fa-edit"></i> Create New Income Invoice</a>
 	        </div>
 	        <div class="card-body pt-0">
 	            <div class="row">
@@ -48,8 +48,8 @@
 	                            </tr>
 	                        </thead>
 	                        <tbody>
-	                            @if (count($expense_invoices) > 0)
-	                                @foreach ($expense_invoices as $inv)
+	                            @if (count($income_invoices) > 0)
+	                                @foreach ($income_invoices as $inv)
 	                                    <tr>
 	                                        <td>{{$inv->invoice_no}}</td>
 	                                        <td>{{$inv->invoice_date}}</td>
@@ -70,15 +70,15 @@
 	                                @endforeach
 	                            @else
 	                                <tr>
-	                                    <td colspan="4" align="center">
-	                                        No Expense Invoice Found.
+	                                    <td colspan="6" align="center">
+	                                        No Income Invoice Found.
 	                                    </td>
 	                                </tr>
 	                            @endif
 	                        </tbody>
 	                    </table>
 	                </div>
-	                {{ $expense_invoices->links('cfms.livewire-pagination-links') }}
+	                {{ $income_invoices->links('cfms.livewire-pagination-links') }}
 	            </div>
 	        </div>
 	    </div>
@@ -89,12 +89,12 @@
 @section('customJs')
 	<script type="text/javascript">
 		@if ($message = Session::get('success'))
-			notifyToUser('Expense Invoice Action', '{{ $message }}',
+			notifyToUser('Income Invoice Action', '{{ $message }}',
                     'primary');
 		@endif
 
 		@if ($message = Session::get('error'))
-			notifyToUser('Expense Invoice Error',
+			notifyToUser('Income Invoice Error',
                     'Error! {{ $message }}',
                     'danger');
 		@endif

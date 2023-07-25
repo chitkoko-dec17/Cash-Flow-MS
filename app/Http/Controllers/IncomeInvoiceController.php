@@ -4,8 +4,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\File;
-use App\Models\ExpenseInvoice;
-use App\Models\ExpenseInvoiceItem;
+use App\Models\IncomeInvoice;
+use App\Models\IncomeInvoiceItem;
 use App\Models\InvoiceNote;
 use App\Models\Item;
 use App\Models\ItemCategory;
@@ -15,7 +15,7 @@ use App\Models\BusinessUnit;
 use Auth;
 use DB;
 
-class ExpenseInvoiceController extends Controller
+class IncomeInvoiceController extends Controller
 {
     private $statuses = array("processing" => "Processing","reject" => "Reject","complete" => "Complete");
     /**
@@ -35,8 +35,8 @@ class ExpenseInvoiceController extends Controller
      */
     public function index(Request $request)
     {
-        $expense_invoices = ExpenseInvoice::paginate(25); 
-        return view('cfms.expense-invoice.index', compact('expense_invoices'));
+        $income_invoices = IncomeInvoice::paginate(25); 
+        return view('cfms.income-invoice.index', compact('income_invoices'));
     }
 
     /**
@@ -60,7 +60,7 @@ class ExpenseInvoiceController extends Controller
         }
         // var_dump($branches);exit;
 
-        return view('cfms.expense-invoice.create', compact('itemcategories','items','statuses','branches'));
+        return view('cfms.income-invoice.create', compact('itemcategories','items','statuses','branches'));
     }
 
     /**
@@ -78,7 +78,7 @@ class ExpenseInvoiceController extends Controller
         ]);
 
         //creating invoice no
-        $latestInv = ExpenseInvoice::orderBy('invoice_no','DESC')->first(); 
+        $latestInv = IncomeInvoice::orderBy('invoice_no','DESC')->first(); 
         if(isset($latestInv->invoice_no)){
             $invoice_no = str_pad($latestInv->invoice_no + 1, 10, "0", STR_PAD_LEFT);
         }else{
@@ -88,7 +88,7 @@ class ExpenseInvoiceController extends Controller
         $item_quantity = $request->quantity;
         $item_amount = $request->amount;
 
-        $exp_invoice= ExpenseInvoice::create([
+        $exp_invoice= IncomeInvoice::create([
                 'business_unit_id' => 0,
                 'branch_id' => $request->branch_id,
                 'project_id' => ($request->branch_id) ? $request->branch_id : 0,
@@ -107,7 +107,7 @@ class ExpenseInvoiceController extends Controller
         foreach($request->items as $itind => $item){
             $item_cate = Item::where('id',$item)->first();
 
-            ExpenseInvoiceItem::create([
+            IncomeInvoiceItem::create([
                 'category_id' => $item_cate->category_id,
                 'invoice_id' => $exp_invoice->id,
                 'item_id' => $item,
@@ -121,7 +121,7 @@ class ExpenseInvoiceController extends Controller
             $i=1;
             foreach($request->file('docs') as $file){
 
-                $upload_path = 'expense_docs/'.$exp_invoice->id;
+                $upload_path = 'income_docs/'.$exp_invoice->id;
                 if (!file_exists($upload_path)) {
                     mkdir($upload_path, 0775, true);  //create directory if not exist
                 }
@@ -131,17 +131,17 @@ class ExpenseInvoiceController extends Controller
                 $file->move(public_path($upload_path), $file_name);
 
                 InvoiceDocument::create([
-                    'invoice_no' => 'EXINV-'.$exp_invoice->invoice_no,
+                    'invoice_no' => 'INCINV-'.$exp_invoice->invoice_no,
                     'title' => $org_file_name,
                     'inv_file' => $upload_path.'/'.$file_name
                 ]);  
 
                 $i++;
             }
-            return redirect('/expense-invoice')->with('success', 'New Expense Invoice Added successfully.');
+            return redirect('/income-invoice')->with('success', 'New Expense Invoice Added successfully.');
         }
 
-        return redirect('/expense-invoice')->with('error', 'Failed to add Expense Invoice!');
+        return redirect('/income-invoice')->with('error', 'Failed to add Expense Invoice!');
     }
 
     /**

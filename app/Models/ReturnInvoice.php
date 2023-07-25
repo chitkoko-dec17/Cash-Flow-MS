@@ -15,6 +15,9 @@ class ReturnInvoice extends Model
      * @var array<int, string>
      */
     protected $fillable = [
+        'business_unit_id',
+        'branch_id',
+        'project_id',
         'invoice_no',
         'invoice_date',
         'total_amount',
