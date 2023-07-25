@@ -69,7 +69,7 @@ class User extends Authenticatable
 
     public function project()
     {
-        return $this->hasOne(Branch::class);
+        return $this->hasOne(Project::class);
     }
 
     public function branchUser()

@@ -50,8 +50,8 @@
                                         <td>{{$user->name}}</td>
                                         <td>{{$user->role->name}} - {{$user->role_id}}</td>
                                         <td>{{$user->email}}</td>
-                                        <td>{{$user->branchUser ? $user->branchUser->branch->name : ''}} - {{$user->branchUser ? $user->branchUser->branch->id : ''}} </td>
-                                        <td>{{$user->projectUser ? $user->projectUser->project->name : ''}} - {{$user->projectUser ? $user->projectUser->project->id : ''}}</td>
+                                        <td>{{isset($user->branchUser->branch->name) ? $user->branchUser->branch->name : ''}} </td>
+                                        <td>{{isset($user->projectUser->project->name) ? $user->projectUser->project->name : ''}}</td>
                                         <td>
                                             <button wire:click="" class="btn btn-outline-success btn-sm action-btn"
                                                 title="View" data-toggle="tooltip"><i class="fa fa-eye"></i></button>
