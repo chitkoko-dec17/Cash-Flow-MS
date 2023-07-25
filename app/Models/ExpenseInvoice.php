@@ -15,7 +15,10 @@ class ExpenseInvoice extends Model
      * @var array<int, string>
      */
     protected $fillable = [
-        'invoice_no',
+        'business_unit_id',
+        'branch_id',
+        'project_id',
+        'invoice_no', 
         'invoice_date',
         'total_amount',
         'return_total_amount',
