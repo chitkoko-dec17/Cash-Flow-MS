@@ -35,7 +35,7 @@ class ExpenseInvoiceController extends Controller
      */
     public function index(Request $request)
     {
-        $expense_invoices = ExpenseInvoice::paginate(25); 
+        $expense_invoices = ExpenseInvoice::paginate(25);
         return view('cfms.expense-invoice.index', compact('expense_invoices'));
     }
 
@@ -46,7 +46,7 @@ class ExpenseInvoiceController extends Controller
      */
     public function create()
     {
-        $itemcategories = ItemCategory::where('business_unit_id', 0)->get();
+        $itemcategories = ItemCategory::where('business_unit_id', 1)->get();
         $items = Item::where('invoice_type_id', 0)->get();
         $statuses = $this->statuses;
 
@@ -78,7 +78,7 @@ class ExpenseInvoiceController extends Controller
         ]);
 
         //creating invoice no
-        $latestInv = ExpenseInvoice::orderBy('invoice_no','DESC')->first(); 
+        $latestInv = ExpenseInvoice::orderBy('invoice_no','DESC')->first();
         if(isset($latestInv->invoice_no)){
             $invoice_no = str_pad($latestInv->invoice_no + 1, 10, "0", STR_PAD_LEFT);
         }else{
@@ -117,7 +117,7 @@ class ExpenseInvoiceController extends Controller
         }
 
         if($request->hasfile('docs')) {
-            
+
             $i=1;
             foreach($request->file('docs') as $file){
 
@@ -134,7 +134,7 @@ class ExpenseInvoiceController extends Controller
                     'invoice_no' => 'EXINV-'.$exp_invoice->invoice_no,
                     'title' => $org_file_name,
                     'inv_file' => $upload_path.'/'.$file_name
-                ]);  
+                ]);
 
                 $i++;
             }
@@ -186,7 +186,7 @@ class ExpenseInvoiceController extends Controller
         //     'total_chapter_des'     =>  'required',
         //     'coin'                  =>  'required|integer',
         //     'cover_image'           =>  'image|mimes:jpg,png,jpeg|max:3072'
-        // ]); 
+        // ]);
 
         // $image_path = 'images/bookcover/';
 
@@ -205,7 +205,7 @@ class ExpenseInvoiceController extends Controller
         //     request()->cover_image->move(public_path('images/bookcover'), $file_name);
         //     $book->cover_image = $image_path.$file_name;
         // }
-        
+
         // $book->book_type = $request->book_type;
         // $book->rating = $request->rating;
         // $book->book_level = $request->book_level;

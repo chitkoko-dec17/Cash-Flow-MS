@@ -15,6 +15,7 @@ class EstimateBudget extends Model
      * @var array<int, string>
      */
     protected $fillable = [
+        'business_unit_id',
         'branch_id',
         'project_id',
         'name',
@@ -22,4 +23,35 @@ class EstimateBudget extends Model
         'start_date',
         'end_date',
     ];
+
+    public function businessUnit()
+    {
+        return $this->belongsTo(BusinessUnit::class);
+    }
+
+    public function branch()
+    {
+        return $this->belongsTo(Branch::class);
+    }
+
+    public function project()
+    {
+        return $this->belongsTo(Project::class);
+    }
+
+    public function scopeSearch($query, $term){
+        $term = "%$term%";
+        $query->where(function($query) use ($term){
+            $query->where('name','like',$term)
+            ->orWhereHas('businessUnit', function ($query) use ($term) {
+                $query->where('name','like',$term);
+            })
+            ->orWhereHas('branch', function ($query) use ($term) {
+                $query->where('name','like',$term);
+            })
+            ->orWhereHas('project', function ($query) use ($term) {
+                $query->where('name','like',$term);
+            });
+        });
+    }
 }

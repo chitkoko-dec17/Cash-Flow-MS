@@ -55,8 +55,7 @@
                     <li class="dropdown">
                         <a class="nav-link menu-title {{ prefixActive('/user') }}" href="javascript:void(0)"><i data-feather="pie-chart"></i><span>Report</span></a>
                         <ul class="nav-submenu menu-content" style="display: {{ prefixBlock('/user') }};">
-                            <li><a href="{{ route('list') }}" class="{{routeActive('')}}">User List</a></li>
-                            <li><a href="{{ route('create-user') }}" class="{{routeActive('')}}">Create new User</a></li>
+                            <li><a href="{{ route('chart-widget') }}" class="{{routeActive('')}}">Report List</a></li>
                         </ul>
                     </li>
 
