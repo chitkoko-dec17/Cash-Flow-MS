@@ -22,10 +22,10 @@
                             <span class="text-danger">{{ $message }}</span>
                         @enderror
                     </div>
-                    @if ($selected_budget_type == 'Business Unit')
+                    @if ($selected_budget_type == 'Business Unit' || $selected_budget_type == 'Branch' || $selected_budget_type == 'Project')
                         <div class="form-group">
                             <label for="business_unit_id">Business Unit</label>
-                            <select wire:model="business_unit_id" class="form-select" id="business_unit_id">
+                            <select wire:model="selectedBusinessUnit" class="form-select" id="business_unit_id">
                                 <option value="">Select a business unit</option>
                                 @foreach ($businessUnits as $businessUnit)
                                     <option value="{{ $businessUnit->id }}">{{ $businessUnit->name }}</option>
@@ -35,7 +35,37 @@
                                 <span class="text-danger">{{ $message }}</span>
                             @enderror
                         </div>
+                    @endif
+                    @if ($selected_budget_type == 'Branch' || $selected_budget_type == 'Project')
                         <div class="form-group">
+                            <label for="branch_id">Branch</label>
+                            <select wire:model="selectedBranch" class="form-select" id="branch_id">
+                                <option value="">Select a branch</option>
+                                @foreach ($branches as $branch)
+                                    <option value="{{ $branch->id }}">{{ $branch->name }}</option>
+                                @endforeach
+                            </select>
+                            @error('branch_id')
+                                <span class="text-danger">{{ $message }}</span>
+                            @enderror
+                        </div>
+                    @endif
+                    @if ($selected_budget_type == 'Project')
+                        <div class="form-group">
+                            <label for="project_id">Project</label>
+                            <select wire:model="selectedProject" class="form-select" id="project_id">
+                                <option value="">Select a project</option>
+                                @foreach ($projects as $project)
+                                    <option value="{{ $project->id }}">{{ $project->name }}</option>
+                                @endforeach
+                            </select>
+                            @error('project_id')
+                                <span class="text-danger">{{ $message }}</span>
+                            @enderror
+                        </div>
+                    @endif
+                    <div class="row">
+                        <div class="col-md form-group">
                             <label for="start_date">Start Date</label>
                             <input wire:model="start_date" type="date" class="form-control" id="start_date"
                                 placeholder="Enter start date">
@@ -43,7 +73,7 @@
                                 <span class="text-danger">{{ $message }}</span>
                             @enderror
                         </div>
-                        <div class="form-group">
+                        <div class="col-md form-group">
                             <label for="end_date">End Date</label>
                             <input wire:model="end_date" type="date" class="form-control" id="end_date"
                                 placeholder="Enter end date">
@@ -51,21 +81,15 @@
                                 <span class="text-danger">{{ $message }}</span>
                             @enderror
                         </div>
-                        <div class="form-group">
-                            <label for="total_amount">Estimated Budget Amount</label>
-                            <input wire:model="total_amount" type="number" class="form-control" id="total_amount"
-                                placeholder="Enter total amount">
-                            @error('total_amount')
-                                <span class="text-danger">{{ $message }}</span>
-                            @enderror
-                        </div>
-                    @endif
-                    @if ($selected_budget_type == 'Branch')
-
-                    @endif
-                    @if ($selected_budget_type == 'Project')
-
-                    @endif
+                    </div>
+                    <div class="form-group">
+                        <label for="total_amount">Estimated Budget Amount</label>
+                        <input wire:model="total_amount" type="number" class="form-control" id="total_amount"
+                            placeholder="Enter total amount">
+                        @error('total_amount')
+                            <span class="text-danger">{{ $message }}</span>
+                        @enderror
+                    </div>
                     {{-- <div class="form-group">
                         <label for="businessUnit_id">Business Unit</label>
                         <select wire:model="businessUnit_id" class="form-select" id="businessUnit_id">

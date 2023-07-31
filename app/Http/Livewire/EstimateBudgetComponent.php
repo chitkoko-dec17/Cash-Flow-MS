@@ -22,6 +22,10 @@ class EstimateBudgetComponent extends Component
     public $itemIdToDelete , $selectedName;
     public $budget_type = ['Business Unit','Branch','Project'];
     public $selected_budget_type;
+    public $selectedBusinessUnit,$selectedBranch,$selectedProject;
+    public $branches = [];
+    public $projects = [];
+
     public function render()
     {
         $budgets = EstimateBudget::search(trim($this->search))
@@ -29,10 +33,32 @@ class EstimateBudgetComponent extends Component
         ->paginate($this->perPage);
 
         $businessUnits = BusinessUnit::all();
-        $branches = Branch::all();
-        $projects = Project::all();
 
-        return view('livewire.estimate-budget-component',compact('budgets','businessUnits','branches','projects'));
+        return view('livewire.estimate-budget',compact('budgets','businessUnits'));
+    }
+
+    public function updatedSelectedBudgetType($value){
+        $this->reset(['branches', 'projects','selectedBranch', 'selectedProject','selectedBusinessUnit']);
+    }
+
+    public function updatedSelectedBusinessUnit($value){
+        $this->reset(['branches', 'projects','selectedBranch', 'selectedProject']);
+        if ($value) {
+            // Fetch item_category based on the selected bu
+            $this->branches = Branch::where('business_unit_id', $value)->get();
+        } else {
+            $this->branches = [];
+        }
+    }
+
+    public function updatedSelectedBranch($value){
+        $this->reset(['projects', 'selectedProject']);
+        if ($value) {
+            // Fetch item_category based on the selected bu
+            $this->projects = Project::where('branch_id', $value)->get();
+        } else {
+            $this->projects = [];
+        }
     }
 
     public function create()
