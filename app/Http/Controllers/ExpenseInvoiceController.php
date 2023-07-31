@@ -91,7 +91,7 @@ class ExpenseInvoiceController extends Controller
         $exp_invoice= ExpenseInvoice::create([
                 'business_unit_id' => 0,
                 'branch_id' => $request->branch_id,
-                'project_id' => ($request->branch_id) ? $request->branch_id : 0,
+                'project_id' => ($request->project_id) ? $request->project_id : 0,
                 'invoice_no' => $invoice_no,
                 'invoice_date' => $request->invoice_date,
                 'total_amount' => $request->total_amount,
@@ -152,11 +152,12 @@ class ExpenseInvoiceController extends Controller
      */
     public function show($id)
     {
-        // $book = Book::find($id);
-        // $child_books = Book::where('parent_id', $id)->where('status', 'active')->get();
+        $invoice = ExpenseInvoice::find($id);
+        $invoice_no = 'EXINV-'.$invoice->invoice_no;
+        $invoice_items = ExpenseInvoiceItem::where('invoice_id', $id)->get();
+        $invoice_docs = InvoiceDocument::where('invoice_no', $invoice_no)->get();
 
-        // $book_chapters = BookChapter::where('book_id', $id)->paginate(40);
-        // return view('lazycomic.book.view', compact('book', 'book_chapters','child_books'));
+        return view('cfms.expense-invoice.view', compact('invoice', 'invoice_items','invoice_docs','invoice_no'));
     }
 
     /**
@@ -167,9 +168,24 @@ class ExpenseInvoiceController extends Controller
      */
     public function edit($id)
     {
-        // $book = Book::find($id);
-        // $hasmultibook = Book::where('book_level', 'hasBooks')->get();
-        // return view('lazycomic.book.edit', compact('book','hasmultibook'));
+        $itemcategories = ItemCategory::where('business_unit_id', 0)->get();
+        $statuses = $this->statuses;
+
+        $businessUnits = BusinessUnit::all();
+        $branches = array();
+
+        foreach ($businessUnits as $businessUnit) {
+            $optgroupLabel = $businessUnit->name;
+            $branchOptions = Branch::where('business_unit_id', $businessUnit->id)->pluck('name', 'id')->toArray();
+            $branches[$optgroupLabel] = $branchOptions;
+        }
+
+        $invoice = ExpenseInvoice::find($id);
+        $invoice_no = 'EXINV-'.$invoice->invoice_no;
+        $invoice_items = ExpenseInvoiceItem::where('invoice_id', $id)->get();
+        $invoice_docs = InvoiceDocument::where('invoice_no', $invoice_no)->get();
+
+        return view('cfms.expense-invoice.edit', compact('invoice', 'invoice_items','invoice_docs','invoice_no','itemcategories','branches', 'statuses'));
     }
 
     /**
@@ -181,42 +197,65 @@ class ExpenseInvoiceController extends Controller
      */
     public function update(Request $request, $id)
     {
-        // $request->validate([
-        //     'title'                 =>  'required',
-        //     'total_chapter_des'     =>  'required',
-        //     'coin'                  =>  'required|integer',
-        //     'cover_image'           =>  'image|mimes:jpg,png,jpeg|max:3072'
-        // ]); 
+        $request->validate([
+            'branch_id'  =>  'required',
+            'invoice_date'  =>  'required',
+            'total_amount'  =>  'required'
+        ]); 
 
-        // $image_path = 'images/bookcover/';
+        $item_quantity = $request->quantity;
+        $item_amount = $request->amount;
 
-        // $book = Book::find($id);
-        // $book->title = $request->title;
-        // $book->total_chapter_des = $request->total_chapter_des;
-        // $book->description = $request->description;
-        // if($request->hasfile('cover_image')) {
-        //     $old_book_cover = $book->cover_image;
+        $exp_invoice = ExpenseInvoice::find($id);
+        $exp_invoice->invoice_date = $request->invoice_date;
+        $exp_invoice->total_amount = $request->total_amount;
+        $exp_invoice->description = $request->description;
+        $exp_invoice->save();
 
-        //     if(file_exists(public_path($old_book_cover))){
-        //         unlink(public_path($old_book_cover));
-        //     }
-        //     $file_name = time() . '.' . request()->cover_image->getClientOriginalExtension();
+        foreach($request->invitem as $itind => $item){
 
-        //     request()->cover_image->move(public_path('images/bookcover'), $file_name);
-        //     $book->cover_image = $image_path.$file_name;
-        // }
-        
-        // $book->book_type = $request->book_type;
-        // $book->rating = $request->rating;
-        // $book->book_level = $request->book_level;
-        // $book->parent_id = ($request->book_level == "default" || $request->book_level == "hasBooks") ? 0 : $request->parent_id;
-        // $book->book_status = $request->book_status;
-        // $book->coin = $request->coin;
-        // $book->is_slider = $request->is_slider;
-        // $book->status = $request->status;
-        // $book->save();
+            $exp_invoice_item = ExpenseInvoiceItem::find($item);
+            $exp_invoice_item->qty = $item_quantity[$itind];
+            $exp_invoice_item->amount = $item_amount[$itind];
+            $exp_invoice_item->save();
 
-        // return redirect()->route('book.index')->with('success', 'New Book Edited successfully.');
+            // $item_cate = Item::where('id',$item)->first();
+            // ExpenseInvoiceItem::create([
+            //     'category_id' => $item_cate->category_id,
+            //     'invoice_id' => $exp_invoice->id,
+            //     'item_id' => $item,
+            //     'qty' => $item_quantity[$itind],
+            //     'amount' => $item_amount[$itind],
+            // ]);
+        }
+
+        if($request->hasfile('docs')) {
+            
+            $i=1;
+            foreach($request->file('docs') as $file){
+
+                $upload_path = 'expense_docs/'.$exp_invoice->id;
+                if (!file_exists($upload_path)) {
+                    mkdir($upload_path, 0775, true);  //create directory if not exist
+                }
+
+                $file_name = time(). '_'. $i . '.' . $file->getClientOriginalExtension();
+                $org_file_name = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME);
+                $file->move(public_path($upload_path), $file_name);
+
+                InvoiceDocument::create([
+                    'invoice_no' => 'EXINV-'.$exp_invoice->invoice_no,
+                    'title' => $org_file_name,
+                    'inv_file' => $upload_path.'/'.$file_name
+                ]);  
+
+                $i++;
+            }
+            
+        }
+        return redirect('/expense-invoice')->with('success', 'Expense Invoice updated successfully.');
+
+        // return redirect('/expense-invoice')->with('error', 'Failed to update Expense Invoice!');
     }
 
     /**

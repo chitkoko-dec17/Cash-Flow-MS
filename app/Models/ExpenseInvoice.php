@@ -28,5 +28,31 @@ class ExpenseInvoice extends Model
         'manager_status',
         'appoved_admin_id',
         'admin_status',
+        'edit_by',
     ];
+
+    public function branch()
+    {
+        return $this->belongsTo(Branch::class, 'branch_id');
+    }
+
+    public function project()
+    {
+        return $this->belongsTo(Project::class, 'project_id');
+    }
+
+    public function admin()
+    {
+        return $this->belongsTo(User::class, 'appoved_admin_id');
+    }
+
+    public function staff()
+    {
+        return $this->belongsTo(User::class, 'upload_user_id');
+    }
+
+    public function manager()
+    {
+        return $this->belongsTo(User::class, 'appoved_manager_id');
+    }
 }

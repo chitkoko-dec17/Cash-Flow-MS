@@ -53,15 +53,15 @@
 	                                    <tr>
 	                                        <td>{{$inv->invoice_no}}</td>
 	                                        <td>{{$inv->invoice_date}}</td>
-	                                        <td>{{$inv->upload_user_id}}</td>
+	                                        <td>{{$inv->staff->name}}</td>
 	                                        <td>{{$inv->total_amount}}</td>
 	                                        <td>{{$inv->admin_status}}</td>
 	                                        <td>
-	                                            <button  class="btn btn-outline-success btn-sm action-btn"
-	                                                title="View" data-toggle="tooltip"><i class="fa fa-eye"></i></button>
-	                                            <button 
+	                                            <a href="{{ route('expense-invoice.show',$inv->id) }}"  class="btn btn-outline-success btn-sm action-btn"
+	                                                title="View" data-toggle="tooltip"><i class="fa fa-eye"></i></a>
+	                                            <a href="{{ route('expense-invoice.edit',$inv->id) }}"
 	                                                class="btn btn-outline-info btn-sm  action-btn" title="Edit"
-	                                                data-toggle="tooltip"><i class="fa fa-pencil"></i></button>
+	                                                data-toggle="tooltip"><i class="fa fa-pencil"></i></a>
 	                                            <!-- <button
 	                                                class="btn btn-outline-danger btn-sm  action-btn" title="Delete"
 	                                                data-toggle="tooltip"><i class="fa fa-trash"></i></button> -->
