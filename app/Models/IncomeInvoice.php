@@ -27,5 +27,6 @@ class IncomeInvoice extends Model
         'manager_status',
         'appoved_admin_id',
         'admin_status',
+        'edit_by',
     ];
 }
