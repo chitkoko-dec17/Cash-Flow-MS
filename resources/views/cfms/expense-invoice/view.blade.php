@@ -117,7 +117,19 @@
                                                             <label>{{ $invitem->category->name }}</label>
                                                         </td>
                                                         <td>
-                                                            <label>{{ $invitem->item->name }}</label>
+                                                            <label>
+                                                                <a  href="javascript:void(0)"
+                                                                    class="item-history-inv"
+                                                                    data-toggle="modal"
+                                                                    data-target="#itemHistoryModal"
+                                                                    data-attr=""
+                                                                    data-id=""
+                                                                    style="pointer:hand;">
+                                                                    <span class="badge badge-primary">
+                                                                        {{ $invitem->item->name }}
+                                                                    </span>
+                                                                </a>
+                                                            </label>
                                                         </td>
                                                         <td>
                                                             <p class="itemtext digits">{{ $invitem->qty }}</p>
@@ -285,6 +297,60 @@
             </div>
         </div>
     </div>
+
+    <!-- Item History Modal Box -->
+    <div class="modal fade" id="itemHistoryModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-sm" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel2">Item History</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="list-group">
+                        <a class="list-group-item list-group-item-action flex-column align-items-start mt-2"
+                            href="javascript:void(0)">
+                            <div class="d-flex">
+                                <div class="file-bottom w-100 p-2">
+                                    <h6>Invoice Number</h6>
+                                    <p class="mb-1">Item Name</p>
+                                    <p class="mb-1"> <b>Qty : </b>2</p>
+                                    <p class="mb-1"> <b>Unit Price : </b>20000</p>
+                                </div>
+                            </div>
+                        </a>
+                        <a class="list-group-item list-group-item-action flex-column align-items-start mt-2"
+                            href="javascript:void(0)">
+                            <div class="d-flex">
+                                <div class="file-bottom w-100 p-2">
+                                    <h6>Invoice Number</h6>
+                                    <p class="mb-1">Item Name</p>
+                                    <p class="mb-1"> <b>Qty : </b>2</p>
+                                    <p class="mb-1"> <b>Unit Price : </b>20000</p>
+                                </div>
+                            </div>
+                        </a>
+                        <a class="list-group-item list-group-item-action flex-column align-items-start mt-2"
+                            href="javascript:void(0)">
+                            <div class="d-flex">
+                                <div class="file-bottom w-100 p-2">
+                                    <h6>Invoice Number</h6>
+                                    <p class="mb-1">Item Name</p>
+                                    <p class="mb-1"> <b>Qty : </b>2</p>
+                                    <p class="mb-1"> <b>Unit Price : </b>20000</p>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Close</button>
+                    {{-- <button type="submit" id="delete-it" class="btn btn-danger">Delete</button> --}}
+                </div>
+                </form>
+            </div>
+        </div>
+    </div>
 @endsection
 
 @push('scripts')
@@ -293,3 +359,13 @@
     <script src="{{ asset('assets/js/counter/counter-custom.js') }}"></script>
     <script src="{{ asset('assets/js/print.js') }}"></script>
 @endpush
+
+@section('customJs')
+    <script type="text/javascript">
+        $(document).on('click', '.item-history-inv', function() {
+            $('#itemHistoryModal').modal('show');
+            // let href = $(this).attr('data-attr');
+            // $('#item-history-inv').attr('action', href);
+        });
+    </script>
+@endsection
