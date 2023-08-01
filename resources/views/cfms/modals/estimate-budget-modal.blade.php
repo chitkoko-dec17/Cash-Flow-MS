@@ -11,21 +11,21 @@
                 </div>
                 <div class="modal-body">
                     <div class="form-group">
-                        <label for="selected_budget_type">Set Budget for</label>
-                        <select wire:model="selected_budget_type" class="form-select" id="selected_budget_type">
+                        <label for="org_id">Set Budget for</label>
+                        <select wire:model="org_id" class="form-select" id="org_id">
                             <option value="">Select budget type</option>
-                            @foreach ($budget_type as $type)
-                                <option value="{{ $type }}">{{ $type }}</option>
+                            @foreach ($orgs as $org)
+                                <option value="{{ $org->id }}">{{ $org->name }}</option>
                             @endforeach
                         </select>
-                        @error('budget_type')
+                        @error('org_id')
                             <span class="text-danger">{{ $message }}</span>
                         @enderror
                     </div>
-                    @if ($selected_budget_type == 'Business Unit' || $selected_budget_type == 'Branch' || $selected_budget_type == 'Project')
+                    @if ($org_id == 1 || $org_id == 2 || $org_id == 3)
                         <div class="form-group">
                             <label for="business_unit_id">Business Unit</label>
-                            <select wire:model="selectedBusinessUnit" class="form-select" id="business_unit_id">
+                            <select wire:model="business_unit_id" class="form-select" id="business_unit_id">
                                 <option value="">Select a business unit</option>
                                 @foreach ($businessUnits as $businessUnit)
                                     <option value="{{ $businessUnit->id }}">{{ $businessUnit->name }}</option>
@@ -36,10 +36,10 @@
                             @enderror
                         </div>
                     @endif
-                    @if ($selected_budget_type == 'Branch' || $selected_budget_type == 'Project')
+                    @if ($org_id == 2 || $org_id == 3)
                         <div class="form-group">
                             <label for="branch_id">Branch</label>
-                            <select wire:model="selectedBranch" class="form-select" id="branch_id">
+                            <select wire:model="branch_id" class="form-select" id="branch_id">
                                 <option value="">Select a branch</option>
                                 @foreach ($branches as $branch)
                                     <option value="{{ $branch->id }}">{{ $branch->name }}</option>
@@ -50,10 +50,10 @@
                             @enderror
                         </div>
                     @endif
-                    @if ($selected_budget_type == 'Project')
+                    @if ($org_id == 3)
                         <div class="form-group">
                             <label for="project_id">Project</label>
-                            <select wire:model="selectedProject" class="form-select" id="project_id">
+                            <select wire:model="project_id" class="form-select" id="project_id">
                                 <option value="">Select a project</option>
                                 @foreach ($projects as $project)
                                     <option value="{{ $project->id }}">{{ $project->name }}</option>
@@ -90,38 +90,6 @@
                             <span class="text-danger">{{ $message }}</span>
                         @enderror
                     </div>
-                    {{-- <div class="form-group">
-                        <label for="businessUnit_id">Business Unit</label>
-                        <select wire:model="businessUnit_id" class="form-select" id="businessUnit_id">
-                            <option value="">Select a business unit</option>
-                            @foreach ($businessUnits as $businessUnit)
-                                <option value="{{ $businessUnit->id }}">{{ $businessUnit->name }}</option>
-                            @endforeach
-                        </select>
-                        @error('businessUnit_id')
-                            <span class="text-danger">{{ $message }}</span>
-                        @enderror
-                    </div>
-                    <div class="form-group">
-                        <label for="category_id">Category</label>
-                        <select wire:model="category_id" class="form-select" id="category_id">
-                            <option value="">Select a item category</option>
-                            @foreach ($itemcategories as $itemcategory)
-                                <option value="{{ $itemcategory->id }}">{{ $itemcategory->name }}</option>
-                            @endforeach
-                        </select>
-                        @error('category_id')
-                            <span class="text-danger">{{ $message }}</span>
-                        @enderror
-                    </div>
-                    <div class="form-group">
-                        <label for="name">Name</label>
-                        <input wire:model="name" type="text" class="form-control" id="name"
-                            placeholder="Enter name">
-                        @error('name')
-                            <span class="text-danger">{{ $message }}</span>
-                        @enderror
-                    </div> --}}
                 </div>
                 <div class="modal-footer">
                     <button wire:click="closeModal" class="btn btn-secondary" type="button"

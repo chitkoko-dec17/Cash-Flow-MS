@@ -5,6 +5,7 @@ namespace App\Http\Livewire;
 use App\Models\Branch;
 use App\Models\BusinessUnit;
 use App\Models\EstimateBudget;
+use App\Models\OrgStructure;
 use App\Models\Project;
 use Livewire\Component;
 use Livewire\WithPagination;
@@ -12,15 +13,14 @@ use Livewire\WithPagination;
 class EstimateBudgetComponent extends Component
 {
     use WithPagination;
-    public $name,$est_budget_id,$project_id,$branch_id,$business_unit_id,$total_amount,$start_date,$end_date;
+    public $name,$est_budget_id,$org_id,$project_id,$branch_id,$business_unit_id,$total_amount,$start_date,$end_date;
     public $isOpen = false;
     public $perPage = 10;
     public $search;
     public $sortDirectionBy='asc';
     public $sortColumnName= 'name';
     public $confirmingDelete = false;
-    public $itemIdToDelete , $selectedName;
-    public $budget_type = ['Business Unit','Branch','Project'];
+    public $idToDelete , $selectedName;
     public $selected_budget_type;
     public $selectedBusinessUnit,$selectedBranch,$selectedProject;
     public $branches = [];
@@ -33,16 +33,17 @@ class EstimateBudgetComponent extends Component
         ->paginate($this->perPage);
 
         $businessUnits = BusinessUnit::all();
+        $orgs = OrgStructure::all();
 
-        return view('livewire.estimate-budget',compact('budgets','businessUnits'));
+        return view('livewire.estimate-budget',compact('budgets','businessUnits','orgs'));
     }
 
-    public function updatedSelectedBudgetType($value){
-        $this->reset(['branches', 'projects','selectedBranch', 'selectedProject','selectedBusinessUnit']);
+    public function updatedOrgId($value){
+        $this->reset(['branches', 'projects','branch_id', 'project_id','business_unit_id']);
     }
 
-    public function updatedSelectedBusinessUnit($value){
-        $this->reset(['branches', 'projects','selectedBranch', 'selectedProject']);
+    public function updatedBusinessUnitId($value){
+        $this->reset(['branches', 'projects','branch_id', 'project_id']);
         if ($value) {
             // Fetch item_category based on the selected bu
             $this->branches = Branch::where('business_unit_id', $value)->get();
@@ -51,8 +52,8 @@ class EstimateBudgetComponent extends Component
         }
     }
 
-    public function updatedSelectedBranch($value){
-        $this->reset(['projects', 'selectedProject']);
+    public function updatedBranchId($value){
+        $this->reset(['projects', 'project_id']);
         if ($value) {
             // Fetch item_category based on the selected bu
             $this->projects = Project::where('branch_id', $value)->get();
@@ -84,19 +85,15 @@ class EstimateBudgetComponent extends Component
 
     private function resetInputFields()
     {
-        // $this->name = '';
-        // $this->category_id = '';
-        // $this->itemId = '';
-    }
-
-    public function updatedBusinessUnitId($value)
-    {
-        // if ($value) {
-        //     // Fetch item_category based on the selected bu
-        //     $this->itemcategories = ItemCategory::where('business_unit_id', $value)->get();
-        // } else {
-        //     $this->itemcategories = [];
-        // }
+        $this->name = '';
+        $this->est_budget_id = '';
+        $this->org_id = '';
+        $this->project_id = '';
+        $this->branch_id = '';
+        $this->business_unit_id = '';
+        $this->total_amount = '';
+        $this->start_date = '';
+        $this->end_date = '';
     }
 
      /**
@@ -105,22 +102,43 @@ class EstimateBudgetComponent extends Component
       */
     public function store()
     {
-        // $this->validate([
-        //     'category_id' => 'required',
-        //     'invoice_type_id' => 'required',
-        //     'businessUnit_id'=> 'required',
-        //     'name' => 'required',
-        // ]);
+        $this->validate([
+            'org_id' => 'required',
+            'business_unit_id' => 'required',
+            'branch_id'=> 'required',
+            'project_id'=> 'required',
+            'name' => 'required',
+            'total_amount' => 'required',
+            'start_date' => 'required',
+            'end_date' => 'required',
+        ]);
 
-        // Item::updateOrCreate(['id' => $this->itemId], [
-        //     'category_id' => $this->category_id,
-        //     'invoice_type_id' => $this->invoice_type_id,
+        // EstimateBudget::updateOrCreate(['id' => $this->est_budget_id], [
+        //     'org_id' => $this->org_id,
+        //     'business_unit_id' => $this->business_unit_id,
+        //     'branch_id' => $this->branch_id,
+        //     'project_id' => $this->project_id,
         //     'name' => $this->name,
+        //     'total_amount' => $this->total_amount,
+        //     'start_date' => $this->start_date,
+        //     'end_date' => $this->end_date,
         // ]);
 
-        // ($this->itemId) ?  $this->emit('btnCreateOrUpdated','edit') : $this->emit('btnCreateOrUpdated','create');
-        // $this->closeModal();
-        // $this->resetInputFields();
+        var_dump([
+            'org_id' => $this->org_id,
+            'business_unit_id' => $this->business_unit_id,
+            'branch_id' => $this->branch_id,
+            'project_id' => $this->project_id,
+            'name' => $this->name,
+            'total_amount' => $this->total_amount,
+            'start_date' => $this->start_date,
+            'end_date' => $this->end_date,
+        ]);
+        exit();
+
+        ($this->est_budget_id) ?  $this->emit('btnCreateOrUpdated','edit') : $this->emit('btnCreateOrUpdated','create');
+        $this->closeModal();
+        $this->resetInputFields();
     }
 
     /**
@@ -130,16 +148,22 @@ class EstimateBudgetComponent extends Component
      */
     public function edit($id)
     {
-        // $item = Item::findOrFail($id);
-        // if (isset($item)) {
-        //     $this->category_id = $item->category_id;
-        //     $this->invoice_type_id = $item->invoice_type_id;
-        //     $this->businessUnit_id = $item->category->businessUnit->id;
-        //     $this->name = $item->name;
-        //     $this->itemId = $item->id;
-        //     $this->updatedBusinessUnitId($item->category->businessUnit->id);
-        //     $this->openModal();
-        // }
+        $est_budget = EstimateBudget::findOrFail($id);
+        if (isset($est_budget)) {
+            $this->org_id = $est_budget->org_id;
+            $this->business_unit_id = $est_budget->business_unit_id;
+            $this->branch_id = $est_budget->branch_id;
+            $this->project_id = $est_budget->project_id;
+            $this->name = $est_budget->name;
+            $this->total_amount = $est_budget->total_amount;
+            $this->start_date = $est_budget->start_date;
+            $this->end_date = $est_budget->end_date;
+            $this->est_budget_id = $est_budget->id;
+            $this->updatedOrgId($est_budget->org_id);
+            $this->updatedBusinessUnitId($est_budget->business_unit_id);
+            $this->updatedBranchId($est_budget->branch_id);
+            $this->openModal();
+        }
     }
 
     /**
@@ -149,18 +173,18 @@ class EstimateBudgetComponent extends Component
      */
     public function delete()
     {
-        // Item::find($this->itemIdToDelete)->delete();
-        // $this->emit('btnCreateOrUpdated','delete');
-        // $this->confirmingDelete = false;
-        // $this->itemIdToDelete = null;
-        // $this->selectedName = null;
-        // $this->dispatchBrowserEvent('closeConfirmModal');
+        EstimateBudget::find($this->idToDelete)->delete();
+        $this->emit('btnCreateOrUpdated','delete');
+        $this->confirmingDelete = false;
+        $this->idToDelete = null;
+        $this->selectedName = null;
+        $this->dispatchBrowserEvent('closeConfirmModal');
     }
 
     public function confirmDelete($deleteID,$name)
     {
         $this->confirmingDelete = true;
-        $this->itemIdToDelete = $deleteID;
+        $this->idToDelete = $deleteID;
         $this->selectedName = $name;
         $this->dispatchBrowserEvent('openConfirmModal');
     }

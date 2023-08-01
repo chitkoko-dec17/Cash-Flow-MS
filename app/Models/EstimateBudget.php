@@ -15,6 +15,7 @@ class EstimateBudget extends Model
      * @var array<int, string>
      */
     protected $fillable = [
+        'org_id',
         'business_unit_id',
         'branch_id',
         'project_id',
@@ -39,6 +40,11 @@ class EstimateBudget extends Model
         return $this->belongsTo(Project::class);
     }
 
+    public function org()
+    {
+        return $this->belongsTo(OrgStructure::class);
+    }
+
     public function scopeSearch($query, $term){
         $term = "%$term%";
         $query->where(function($query) use ($term){
@@ -47,6 +53,9 @@ class EstimateBudget extends Model
                 $query->where('name','like',$term);
             })
             ->orWhereHas('branch', function ($query) use ($term) {
+                $query->where('name','like',$term);
+            })
+            ->orWhereHas('org', function ($query) use ($term) {
                 $query->where('name','like',$term);
             })
             ->orWhereHas('project', function ($query) use ($term) {

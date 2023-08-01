@@ -48,11 +48,11 @@
                             </tr>
                         </thead>
                         <tbody>
-                            {{-- @if (count($budgets) > 0) --}}
-                                {{-- @foreach ($budgets as $budget) --}}
+                            @if (count($budgets) > 0)
+                                @foreach ($budgets as $budget)
                                     <tr>
                                         <td>Business Unit</td>
-                                        <td>Equal Fc</td>
+                                        <td><code>business unit > branch </code>Equal Fc</td>
                                         <td>12/2/2023</td>
                                         <td>12/2/2024</td>
                                         <td>100000</td>
@@ -65,14 +65,14 @@
                                                 data-toggle="tooltip"><i class="fa fa-trash"></i></button>
                                         </td>
                                     </tr>
-                                {{-- @endforeach --}}
-                            {{-- @else
+                                @endforeach
+                            @else
                                 <tr>
                                     <td colspan="6" align="center">
                                         No Budget Found.
                                     </td>
                                 </tr>
-                            @endif --}}
+                            @endif
                         </tbody>
                     </table>
                 </div>
