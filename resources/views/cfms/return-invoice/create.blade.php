@@ -10,15 +10,15 @@
         <div class="row">
             <div class="card">
                 <div class="card-header pb-0">
-                    <h5>Expense Invoice <code>Configuration</code></h5>
+                    <h5>Income Invoice <code>Configuration</code></h5>
                 </div>
                 <div class="card-body">
                     <div class="tab-content pt-4" id="pills-tabContent">
                         <div class="tab-pane fade show active" id="pills-home" role="tabpanel"
-                            aria-labelledby="expense-form">
+                            aria-labelledby="income-form">
                             <div class="row">
                                 <div class="col-xl-12 col-sm-12">
-                                    <form method="post" action="{{ route('expense-invoice.store') }}" enctype="multipart/form-data">
+                                    <form method="post" action="{{ route('income-invoice.store') }}" enctype="multipart/form-data">
                                         @csrf
                                         <div class="row">
                                             <div class="mb-3 col-sm-4">
@@ -66,7 +66,7 @@
                                                         <th>Category</th>
                                                         <th>Item</th>
                                                         <th width="60">Quantity</th>
-                                                        <th >Unit Price (MMK)</th>
+                                                        <th width="100">Unit Price (MMK)</th>
                                                         <th>Total</th>
                                                         <th></th>
                                                     </tr>
@@ -208,13 +208,13 @@
                     method: 'POST',
                     data: {cate_id:cate_id, _token:token},
                     success: function(data) {
-                        // $('.item_id').find('option').remove();
+                        // $('.item_id').find('option').remove();  
                         main.closest('tr').find('select.item_id option').remove();
                         var selectbox = main.closest('tr').find('select.item_id');
 
                         selectbox.append('<option selected="selected">Select Item</option>');
-                        $.each(data.array_data, function(value, text){
-                            // console.log(text);
+                        $.each(data.array_data, function(value, text){   
+                            // console.log(text);                  
                           selectbox.append('<option value="' + text.id + '">' + text.name + '</option>');
                         });
                     }
@@ -232,17 +232,17 @@
                     method: 'POST',
                     data: {branch_id:branch_id, _token:token},
                     success: function(data) {
-                        $('#project_id').find('option').remove();
+                        $('#project_id').find('option').remove();  
 
-                        $('#project_id').append('<option selected="selected" value="">Select Project</option>');
-                        $.each(data.array_data, function(value, text){
-                            // console.log(text);
+                        $('#project_id').append('<option selected="selected">Select Project</option>');
+                        $.each(data.array_data, function(value, text){   
+                            // console.log(text);                  
                           $('#project_id').append('<option value="' + text.id + '">' + text.name + '</option>');
                         });
                     }
                 });
             }
         });
-
+        
     </script>
 @endpush

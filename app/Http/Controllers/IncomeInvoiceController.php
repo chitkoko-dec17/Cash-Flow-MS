@@ -17,7 +17,7 @@ use DB;
 
 class IncomeInvoiceController extends Controller
 {
-    private $statuses = array("processing" => "Processing","reject" => "Reject","complete" => "Complete");
+    private $statuses = array("pending" => "Pending","checking" => "Checking","checkedup" => "Checked Up","reject" => "Reject","complete" => "Complete");
     /**
      * Check authentication in the constructor
      *
@@ -95,13 +95,14 @@ class IncomeInvoiceController extends Controller
                 'invoice_no' => $invoice_no,
                 'invoice_date' => $request->invoice_date,
                 'total_amount' => $request->total_amount,
-                'return_total_amount' => 0,
+                'return_total_amount' => $request->total_amount,
                 'description' => $request->description,
                 'upload_user_id' => Auth::id(),
                 'appoved_manager_id' => 0,
                 'manager_status' => 'processing',
                 'appoved_admin_id' => 0,
                 'admin_status' => 'processing',
+                'edit_by' => Auth::id(),
             ]);
 
         foreach($request->items as $itind => $item){
@@ -138,10 +139,11 @@ class IncomeInvoiceController extends Controller
 
                 $i++;
             }
-            return redirect('/income-invoice')->with('success', 'New Expense Invoice Added successfully.');
+            
         }
+        return redirect('/income-invoice')->with('success', 'New Expense Invoice Added successfully.');
 
-        return redirect('/income-invoice')->with('error', 'Failed to add Expense Invoice!');
+        // return redirect('/income-invoice')->with('error', 'Failed to add Expense Invoice!');
     }
 
     /**
@@ -229,6 +231,6 @@ class IncomeInvoiceController extends Controller
     {
         // $book = Book::find($id);
         // $book->delete();
-        // return redirect()->route('book.index')->with('success', 'Book has been deleted successfully!');
+        return redirect('/income-invoice')->with('success', 'Expense Invoice deleted successfully.');
     }
 }

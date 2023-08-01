@@ -15,7 +15,7 @@ use App\Models\BusinessUnit;
 use Auth;
 use DB;
 
-class ExpenseInvoiceController extends Controller
+class ReturnInvoiceController extends Controller
 {
     private $statuses = array("pending" => "Pending","checking" => "Checking","checkedup" => "Checked Up","reject" => "Reject","complete" => "Complete");
     /**
@@ -35,7 +35,7 @@ class ExpenseInvoiceController extends Controller
      */
     public function index(Request $request)
     {
-        $expense_invoices = ExpenseInvoice::paginate(25);
+        $expense_invoices = ExpenseInvoice::paginate(25); 
         return view('cfms.expense-invoice.index', compact('expense_invoices'));
     }
 
@@ -78,7 +78,7 @@ class ExpenseInvoiceController extends Controller
         ]);
 
         //creating invoice no
-        $latestInv = ExpenseInvoice::orderBy('invoice_no','DESC')->first();
+        $latestInv = ExpenseInvoice::orderBy('invoice_no','DESC')->first(); 
         if(isset($latestInv->invoice_no)){
             $invoice_no = str_pad($latestInv->invoice_no + 1, 10, "0", STR_PAD_LEFT);
         }else{
@@ -118,7 +118,7 @@ class ExpenseInvoiceController extends Controller
         }
 
         if($request->hasfile('docs')) {
-
+            
             $i=1;
             foreach($request->file('docs') as $file){
 
@@ -135,11 +135,11 @@ class ExpenseInvoiceController extends Controller
                     'invoice_no' => 'EXINV-'.$exp_invoice->invoice_no,
                     'title' => $org_file_name,
                     'inv_file' => $upload_path.'/'.$file_name
-                ]);
+                ]);  
 
                 $i++;
             }
-
+            
         }
         return redirect('/expense-invoice')->with('success', 'New Expense Invoice Added successfully.');
 
@@ -203,7 +203,7 @@ class ExpenseInvoiceController extends Controller
             'branch_id'  =>  'required',
             'invoice_date'  =>  'required',
             'total_amount'  =>  'required'
-        ]);
+        ]); 
 
         $item_quantity = $request->quantity;
         $item_amount = $request->amount;
@@ -242,7 +242,7 @@ class ExpenseInvoiceController extends Controller
         }
 
         if($request->hasfile('docs')) {
-
+            
             $i=1;
             foreach($request->file('docs') as $file){
 
@@ -259,11 +259,11 @@ class ExpenseInvoiceController extends Controller
                     'invoice_no' => 'EXINV-'.$exp_invoice->invoice_no,
                     'title' => $org_file_name,
                     'inv_file' => $upload_path.'/'.$file_name
-                ]);
+                ]);  
 
                 $i++;
             }
-
+            
         }
         return redirect('/expense-invoice')->with('success', 'Expense Invoice updated successfully.');
 
