@@ -62,9 +62,9 @@
 	                                            <a href="{{ route('expense-invoice.edit',$inv->id) }}"
 	                                                class="btn btn-outline-info btn-sm  action-btn" title="Edit"
 	                                                data-toggle="tooltip"><i class="fa fa-pencil"></i></a>
-	                                            <!-- <button
-	                                                class="btn btn-outline-danger btn-sm  action-btn" title="Delete"
-	                                                data-toggle="tooltip"><i class="fa fa-trash"></i></button> -->
+	                                            <a href="javascript:void(0)" data-toggle="modal" data-target="#deleteModal"
+	                                                class="btn btn-outline-danger btn-sm  action-btn delete-inv" title="Delete"
+	                                                data-toggle="tooltip" data-id="{{ $inv->id }}" data-attr="{{ route('expense-invoice.destroy', $inv->id) }}"><i class="fa fa-trash"></i></a>
 	                                        </td>
 	                                    </tr>
 	                                @endforeach
@@ -84,6 +84,32 @@
 	    </div>
 	</div>
 </div>
+
+
+<!-- Delete Modal Box -->
+<div class="modal fade" id="deleteModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-sm" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel2">Delete Invoice</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+      	<form action="" id="delete-inv" method="post">
+            @csrf
+            @method('DELETE')
+        <div class="row">
+          <p>Are you sure you want to delete?</p>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Close</button>
+        <button type="submit" id="delete-it" class="btn btn-danger">Delete</button>
+      </div>
+      </form>
+    </div>
+  </div>
+</div>
 @endsection
 
 @section('customJs')
@@ -98,5 +124,11 @@
                     'Error! {{ $message }}',
                     'danger');
 		@endif
+
+    $(document).on('click','.delete-inv',function(){
+    	$('#deleteModal').modal('show');
+     	let href = $(this).attr('data-attr');
+     	$('#delete-inv').attr('action', href);
+    });
 	</script>
 @endsection

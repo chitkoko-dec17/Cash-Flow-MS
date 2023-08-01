@@ -4,10 +4,11 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class IncomeInvoice extends Model
 {
-    use HasFactory;
+    use HasFactory, SoftDeletes;
 
     /**
      * The attributes that are mass assignable.
@@ -29,4 +30,29 @@ class IncomeInvoice extends Model
         'admin_status',
         'edit_by',
     ];
+
+    public function branch()
+    {
+        return $this->belongsTo(Branch::class, 'branch_id');
+    }
+
+    public function project()
+    {
+        return $this->belongsTo(Project::class, 'project_id');
+    }
+
+    public function admin()
+    {
+        return $this->belongsTo(User::class, 'appoved_admin_id');
+    }
+
+    public function staff()
+    {
+        return $this->belongsTo(User::class, 'upload_user_id');
+    }
+
+    public function manager()
+    {
+        return $this->belongsTo(User::class, 'appoved_manager_id');
+    }
 }

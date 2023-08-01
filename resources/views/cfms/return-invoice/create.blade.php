@@ -10,15 +10,15 @@
         <div class="row">
             <div class="card">
                 <div class="card-header pb-0">
-                    <h5>Expense Invoice <code>Configuration</code></h5>
+                    <h5>Income Invoice <code>Configuration</code></h5>
                 </div>
                 <div class="card-body">
                     <div class="tab-content pt-4" id="pills-tabContent">
                         <div class="tab-pane fade show active" id="pills-home" role="tabpanel"
-                            aria-labelledby="expense-form">
+                            aria-labelledby="income-form">
                             <div class="row">
                                 <div class="col-xl-12 col-sm-12">
-                                    <form method="post" action="{{ route('expense-invoice.store') }}" enctype="multipart/form-data">
+                                    <form method="post" action="{{ route('income-invoice.store') }}" enctype="multipart/form-data">
                                         @csrf
                                         <div class="row">
                                             <div class="mb-3 col-sm-4">
@@ -234,7 +234,7 @@
                     success: function(data) {
                         $('#project_id').find('option').remove();  
 
-                        $('#project_id').append('<option selected="selected" value="">Select Project</option>');
+                        $('#project_id').append('<option selected="selected">Select Project</option>');
                         $.each(data.array_data, function(value, text){   
                             // console.log(text);                  
                           $('#project_id').append('<option value="' + text.id + '">' + text.name + '</option>');

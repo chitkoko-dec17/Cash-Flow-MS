@@ -15,7 +15,7 @@ use App\Models\BusinessUnit;
 use Auth;
 use DB;
 
-class ExpenseInvoiceController extends Controller
+class ReturnInvoiceController extends Controller
 {
     private $statuses = array("pending" => "Pending","checking" => "Checking","checkedup" => "Checked Up","reject" => "Reject","complete" => "Complete");
     /**

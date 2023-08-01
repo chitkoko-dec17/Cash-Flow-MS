@@ -67,6 +67,20 @@
                                                     <span class="text-danger">{{ $message }}</span>
                                                 @enderror
                                             </div>
+
+                                            <div class="mb-3 col-sm-4">
+                                                <label for="status">Invoice Status</label>
+                                                <select class="form-control form-select" id="status" name="status">
+                                                	@foreach($statuses as $skey => $statuse)
+                                                    @if($invoice->admin_status == $statuse)
+                                                    	<option value="{{ $skey }}" selected>{{ $statuse }}</option>
+                                                    @else
+                                                    	<option value="{{ $skey }}">{{ $statuse }}</option>
+                                                    @endif
+                                                    
+                                                  @endforeach
+                                                </select>
+                                            </div>
                                         </div>
                                         <!-- Invoice Items -->
                                         <div class="form-group">
@@ -149,6 +163,7 @@
     <script src="{{ asset('assets/js/dropzone/dropzone-script.js') }}"></script>
     <script>
         let jcates = '';
+        let project_id = '{{ $invoice->project_id }}';
         @foreach($itemcategories as $cate)
             jcates += '<option value="{{ $cate->id }}">{{ $cate->name }}</option>';
         @endforeach
@@ -224,7 +239,7 @@
 
                         selectbox.append('<option selected="selected">Select Item</option>');
                         $.each(data.array_data, function(value, text){   
-                            // console.log(text);                  
+                            // console.log(text);               
                           selectbox.append('<option value="' + text.id + '">' + text.name + '</option>');
                         });
                     }
@@ -243,10 +258,16 @@
                     success: function(data) {
                         $('#project_id').find('option').remove();  
 
-                        $('#project_id').append('<option selected="selected">Select Project</option>');
+                        $('#project_id').append('<option selected="selected" value="">Select Project</option>');
                         $.each(data.array_data, function(value, text){   
-                            // console.log(text);                  
-                          $('#project_id').append('<option value="' + text.id + '">' + text.name + '</option>');
+                            // console.log(text); 
+                            if(project_id && project_id == text.id){
+
+                            	$('#project_id').append('<option value="' + text.id + '" selected>' + text.name + '</option>');
+                            }else{
+                            	$('#project_id').append('<option value="' + text.id + '">' + text.name + '</option>');
+                            }               
+                          
                         });
                     }
                 });
