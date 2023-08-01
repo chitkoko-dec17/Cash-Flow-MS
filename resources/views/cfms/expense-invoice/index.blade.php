@@ -82,7 +82,7 @@
                         </form>
                     </div>
 
-                    <div class="row">
+                    <div class="row mt-4">
                         <div class="table-responsive">
                             <table class="table table-hover table-bordered">
                                 <thead>
