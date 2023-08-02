@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
+use Auth;
 
 class User extends Authenticatable
 {
@@ -80,5 +81,48 @@ class User extends Authenticatable
     public function projectUser()
     {
         return $this->hasOne(ProjectUser::class);
+    }
+
+    public function businessunit()
+    {
+        return $this->hasOne(BusinessUnit::class, 'manager_id', 'id');
+    }
+
+    public function getUserRoleAttribute() 
+    {
+        if(session()->has('user_role')) {
+            return session('user_role');
+        }
+
+        // Get the user role from related model
+        $user_role = Auth::user()->role->name;
+
+        // Save it to session
+        session(['user_role' => $user_role]);
+        return $user_role;
+    }
+
+    public function getUserBusinessUnitAttribute() 
+    {
+        if(session()->has('user_business_unit_id')) {
+            return session('user_business_unit_id');
+        }
+
+        // Get the user role from related model
+        $user_role = Auth::user()->role->name;
+
+        if($user_role == "Admin"){
+            $user_business_unit_id = null;
+        }elseif($user_role == "Manager"){
+            $user_business_unit_id = isset(Auth::user()->businessunit->id) ? Auth::user()->businessunit->id : null;
+        }elseif($user_role == "Staff"){
+            $user_business_unit_id = null;
+        }else{
+            $user_business_unit_id = null;
+        }
+
+        // Save it to session
+        session(['user_business_unit_id' => $user_business_unit_id]);
+        return $user_business_unit_id;
     }
 }

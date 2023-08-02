@@ -122,7 +122,7 @@
                                         @endforeach
                                     @else
                                         <tr>
-                                            <td colspan="4" align="center">
+                                            <td colspan="6" align="center">
                                                 No Expense Invoice Found.
                                             </td>
                                         </tr>
@@ -130,7 +130,9 @@
                                 </tbody>
                             </table>
                         </div>
+                        @if (count($expense_invoices) > 0)
                         {{ $expense_invoices->links('cfms.livewire-pagination-links') }}
+                        @endif
                     </div>
                 </div>
             </div>

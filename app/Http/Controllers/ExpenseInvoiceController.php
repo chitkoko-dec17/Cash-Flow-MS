@@ -18,6 +18,8 @@ use DB;
 class ExpenseInvoiceController extends Controller
 {
     private $statuses = array("pending" => "Pending","checking" => "Checking","checkedup" => "Checked Up","reject" => "Reject","complete" => "Complete");
+    private $cuser_role = null;
+    private $cuser_business_unit_id = null;
     /**
      * Check authentication in the constructor
      *
@@ -26,6 +28,7 @@ class ExpenseInvoiceController extends Controller
     public function __construct()
     {
         $this->middleware('auth');
+        
     }
 
     /**
@@ -35,8 +38,26 @@ class ExpenseInvoiceController extends Controller
      */
     public function index(Request $request)
     {
-        $expense_invoices = ExpenseInvoice::paginate(25);
-        return view('cfms.expense-invoice.index', compact('expense_invoices'));
+        $this->cuser_role = Auth::user()->user_role;
+        $this->cuser_business_unit_id = Auth::user()->user_business_unit;
+
+        $expense_invoices = array();
+        if($this->cuser_role == "Admin"){
+            $expense_invoices = ExpenseInvoice::paginate(25);
+        }elseif($this->cuser_role == "Manager"){
+            if($this->cuser_business_unit_id){
+                $expense_invoices = ExpenseInvoice::where('business_unit_id', $this->cuser_business_unit_id)->paginate(25);
+            }
+            
+        }elseif($this->cuser_role == "Staff"){
+            if($this->cuser_business_unit_id){
+                $expense_invoices = ExpenseInvoice::where('business_unit_id', $this->cuser_business_unit_id)->where('upload_user_id', Auth::user()->id )->paginate(25);
+            }
+        }
+
+        $data['user_role'] = $this->cuser_role;
+        $data['business_unit_id'] = $this->cuser_business_unit_id;
+        return view('cfms.expense-invoice.index', compact('expense_invoices','data'));
     }
 
     /**
@@ -46,11 +67,22 @@ class ExpenseInvoiceController extends Controller
      */
     public function create()
     {
-        $itemcategories = ItemCategory::where('business_unit_id', 0)->get();
+        $this->cuser_role = Auth::user()->user_role;
+        $this->cuser_business_unit_id = Auth::user()->user_business_unit;
+
+        if($this->cuser_role == "Admin"){
+            return redirect('/expense-invoice')->with('error', "Admin can't create invoice. Due to multiple business units!");
+        }
+
+        if($this->cuser_business_unit_id){
+            return redirect('/expense-invoice')->with('error', "Manager should has business unit!");
+        }
+
+        $itemcategories = ItemCategory::where('business_unit_id', $this->cuser_business_unit_id)->get();
         // $items = Item::where('invoice_type_id', 0)->get();
         $statuses = $this->statuses;
 
-        $businessUnits = BusinessUnit::all();
+        $businessUnits = BusinessUnit::where('id', $this->cuser_business_unit_id)->get();
         $branches = array();
 
         foreach ($businessUnits as $businessUnit) {
@@ -71,6 +103,8 @@ class ExpenseInvoiceController extends Controller
      */
     public function store(Request $request)
     {
+        $this->cuser_business_unit_id = Auth::user()->user_business_unit;
+
         $request->validate([
             'branch_id'  =>  'required',
             'invoice_date'  =>  'required',
@@ -89,7 +123,7 @@ class ExpenseInvoiceController extends Controller
         $item_amount = $request->amount;
 
         $exp_invoice= ExpenseInvoice::create([
-                'business_unit_id' => 0,
+                'business_unit_id' => isset($this->cuser_business_unit_id) ? $this->cuser_business_unit_id : 0,
                 'branch_id' => $request->branch_id,
                 'project_id' => ($request->project_id) ? $request->project_id : 0,
                 'invoice_no' => $invoice_no,
@@ -170,10 +204,12 @@ class ExpenseInvoiceController extends Controller
      */
     public function edit($id)
     {
-        $itemcategories = ItemCategory::where('business_unit_id', 0)->get();
+        $this->cuser_business_unit_id = Auth::user()->user_business_unit;
+
+        $itemcategories = ItemCategory::where('business_unit_id', $this->cuser_business_unit_id)->get();
         $statuses = $this->statuses;
 
-        $businessUnits = BusinessUnit::all();
+        $businessUnits = BusinessUnit::where('id', $this->cuser_business_unit_id)->get();
         $branches = array();
 
         foreach ($businessUnits as $businessUnit) {
