@@ -12,6 +12,7 @@ use App\Http\Livewire\ItemComponent;
 use App\Http\Livewire\InvoiceTypeComponent;
 use App\Http\Controllers\ExpenseInvoiceController;
 use App\Http\Controllers\IncomeInvoiceController;
+use App\Http\Controllers\ReturnInvoiceController;
 use App\Http\Livewire\EstimateBudgetComponent;
 use App\Http\Livewire\ProjectComponent;
 use App\Http\Controllers\CommonController;
@@ -91,6 +92,7 @@ Route::group(['middleware' => ['auth']], function() {
 
     Route::resource('expense-invoice', ExpenseInvoiceController::class);
     Route::resource('income-invoice', IncomeInvoiceController::class);
+    Route::resource('return-invoice', ReturnInvoiceController::class);
     Route::post('invoice/get_items', [CommonController::class, 'get_items'])->name('get.items');
 
     Route::post('branch/get_projects', [CommonController::class, 'get_projects'])->name('get.projects');

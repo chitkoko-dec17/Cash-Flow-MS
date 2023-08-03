@@ -6,12 +6,19 @@
 @endpush
 
 @section('content')
+    @component('components.income_breadcrumb')
+        @slot('breadcrumb_title')
+            <h3>Income Invoice Create</h3>
+        @endslot
+        <li class="breadcrumb-item"><a href="{{ route('income-invoice.index') }}">Income List</a></li>
+        <li class="breadcrumb-item active">Create</li>
+    @endcomponent
     <div class="container-fluid list-products">
         <div class="row">
             <div class="card">
-                <div class="card-header pb-0">
+                <!-- <div class="card-header pb-0">
                     <h5>Income Invoice <code>Configuration</code></h5>
-                </div>
+                </div> -->
                 <div class="card-body">
                     <div class="tab-content pt-4" id="pills-tabContent">
                         <div class="tab-pane fade show active" id="pills-home" role="tabpanel"

@@ -48,6 +48,24 @@ class AuthController extends Controller
    
         $credentials = $request->only('email', 'password');
         if (Auth::attempt($credentials)) {
+
+            // Get the user role from related model
+            $user_role = Auth::user()->role->name;
+            $user_business_unit_id = null;
+            $user_business_unit_name = null;
+
+            if($user_role == "Admin"){
+                $user_business_unit_id = null;
+            }elseif($user_role == "Manager"){
+                $user_business_unit_id = isset(Auth::user()->businessunit->id) ? Auth::user()->businessunit->id : null;
+                $user_business_unit_name = isset(Auth::user()->businessunit->name) ? Auth::user()->businessunit->name : null;
+            }elseif($user_role == "Staff"){
+                $user_business_unit_id = null;
+            }
+
+            Session::put('user_business_unit_id', $user_business_unit_id);
+            Session::put('user_business_unit_name', $user_business_unit_name);
+
             return redirect()->intended('dashboard')
                         ->withSuccess('You have Successfully loggedin');
         }

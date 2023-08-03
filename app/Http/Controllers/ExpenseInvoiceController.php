@@ -28,7 +28,6 @@ class ExpenseInvoiceController extends Controller
     public function __construct()
     {
         $this->middleware('auth');
-        
     }
 
     /**
@@ -103,13 +102,13 @@ class ExpenseInvoiceController extends Controller
      */
     public function store(Request $request)
     {
-        $this->cuser_business_unit_id = Auth::user()->user_business_unit;
-
         $request->validate([
             'branch_id'  =>  'required',
             'invoice_date'  =>  'required',
             'total_amount'  =>  'required'
         ]);
+
+        $this->cuser_business_unit_id = Auth::user()->user_business_unit;
 
         //creating invoice no
         $latestInv = ExpenseInvoice::orderBy('invoice_no','DESC')->first();

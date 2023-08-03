@@ -57,11 +57,11 @@
 	                                        <td>{{$inv->total_amount}}</td>
 	                                        <td>{{$inv->admin_status}}</td>
 	                                        <td>
-	                                            <a href="{{ route('income-invoice.show',$inv->id) }}"  class="btn btn-outline-success btn-sm action-btn"
+	                                            <!-- <a href="{{ route('income-invoice.show',$inv->id) }}"  class="btn btn-outline-success btn-sm action-btn"
 	                                                title="View" data-toggle="tooltip"><i class="fa fa-eye"></i></a>
 	                                            <a href="{{ route('income-invoice.edit',$inv->id) }}"
 	                                                class="btn btn-outline-info btn-sm  action-btn" title="Edit"
-	                                                data-toggle="tooltip"><i class="fa fa-pencil"></i></a>
+	                                                data-toggle="tooltip"><i class="fa fa-pencil"></i></a> -->
 	                                            <a href="javascript:void(0)" data-toggle="modal" data-target="#deleteModal"
 	                                                class="btn btn-outline-danger btn-sm  action-btn delete-inv" title="Delete"
 	                                                data-toggle="tooltip" data-id="{{ $inv->id }}" data-attr="{{ route('income-invoice.destroy', $inv->id) }}"><i class="fa fa-trash"></i></a>
