@@ -16,6 +16,7 @@ use App\Http\Controllers\ReturnInvoiceController;
 use App\Http\Livewire\EstimateBudgetComponent;
 use App\Http\Livewire\ProjectComponent;
 use App\Http\Controllers\CommonController;
+use App\Http\Livewire\ReportComponent;
 
 /*
 |--------------------------------------------------------------------------
@@ -89,6 +90,7 @@ Route::group(['middleware' => ['auth']], function() {
     Route::get('/branch',BranchComponent::class)->name('branch.index');
     Route::get('/project',ProjectComponent::class)->name('project.index');
     Route::get('/budget',EstimateBudgetComponent::class)->name('budget.index');
+    Route::get('/report',ReportComponent::class)->name('report.index');
 
     Route::resource('expense-invoice', ExpenseInvoiceController::class);
     Route::resource('income-invoice', IncomeInvoiceController::class);
@@ -96,7 +98,7 @@ Route::group(['middleware' => ['auth']], function() {
     Route::post('invoice/get_items', [CommonController::class, 'get_items'])->name('get.items');
 
     Route::post('branch/get_projects', [CommonController::class, 'get_projects'])->name('get.projects');
-    
+
     // Route::resource('user', UserController::class);
 
     // Route::post('/change-password', [AdminController::class, 'updatePassword'])->name('update-password');

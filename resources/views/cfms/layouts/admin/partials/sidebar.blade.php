@@ -59,11 +59,8 @@
                         </ul>
                     </li>
                     @if(Auth::user()->user_role == "Admin")
-                    <li class="dropdown">
-                        <a class="nav-link menu-title {{ prefixActive('/user') }}" href="javascript:void(0)"><i data-feather="pie-chart"></i><span>Report</span></a>
-                        <ul class="nav-submenu menu-content" style="display: {{ prefixBlock('/user') }};">
-                            <li><a href="{{ route('chart-widget') }}" class="{{routeActive('')}}">Report List</a></li>
-                        </ul>
+                    <li>
+                        <a class="nav-link menu-title link-nav " href="{{ url('report') }}"><i data-feather="pie-chart"></i><span>Report</span></a>
                     </li>
 
                     <li>
