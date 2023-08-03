@@ -27,28 +27,31 @@ class EstimateBudget extends Model
 
     public function businessUnit()
     {
-        return $this->belongsTo(BusinessUnit::class);
+        return $this->belongsTo(BusinessUnit::class, 'business_unit_id');
     }
 
     public function branch()
     {
-        return $this->belongsTo(Branch::class);
+        return $this->belongsTo(Branch::class, 'branch_id');
     }
 
     public function project()
     {
-        return $this->belongsTo(Project::class);
+        return $this->belongsTo(Project::class, 'project_id');
     }
 
     public function org()
     {
-        return $this->belongsTo(OrgStructure::class);
+        return $this->belongsTo(OrgStructure::class, 'org_id');
     }
 
     public function scopeSearch($query, $term){
         $term = "%$term%";
         $query->where(function($query) use ($term){
             $query->where('name','like',$term)
+            ->orwhere('total_amount','like',$term)
+            ->orwhere('start_date','like',$term)
+            ->orwhere('end_date','like',$term)
             ->orWhereHas('businessUnit', function ($query) use ($term) {
                 $query->where('name','like',$term);
             })
