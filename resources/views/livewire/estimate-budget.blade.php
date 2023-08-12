@@ -51,16 +51,16 @@
                             @if (count($budgets) > 0)
                                 @foreach ($budgets as $budget)
                                     <tr>
-                                        <td>Business Unit</td>
-                                        <td><code>business unit > branch </code>Equal Fc</td>
-                                        <td>12/2/2023</td>
-                                        <td>12/2/2024</td>
-                                        <td>100000</td>
+                                        <td>{{ isset($budget->org->name) ? $budget->org->name : '' }}</td>
+                                        <td><code>{{ $budget->name }}</code></td>
+                                        <td>{{ $budget->start_date }}</td>
+                                        <td>{{ $budget->end_date }}</td>
+                                        <td>{{ $budget->total_amount }}</td>
                                         <td>
-                                            <button
+                                            <button wire:click="edit({{ $budget->id }})"
                                                 class="btn btn-outline-info btn-sm  action-btn" title="Edit"
                                                 data-toggle="tooltip"><i class="fa fa-pencil"></i></button>
-                                            <button
+                                            <button wire:click="confirmDelete({{ $budget->id }}, '{{ $budget->name }}')"
                                                 class="btn btn-outline-danger btn-sm  action-btn" title="Delete"
                                                 data-toggle="tooltip"><i class="fa fa-trash"></i></button>
                                         </td>

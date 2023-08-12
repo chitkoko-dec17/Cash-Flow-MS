@@ -341,11 +341,11 @@
         </div>
       </div>
 
-    @push('scripts')    
+    @push('scripts')
         <script src="{{asset('assets/js/chart/apex-chart/moment.min.js')}}"></script>
         <script src="{{asset('assets/js/chart/apex-chart/apex-chart.js')}}"></script>
         <script src="{{asset('assets/js/chart/apex-chart/stock-prices.js')}}"></script>
-        <script src="{{asset('assets/js/prism/prism.min.js')}}"></script>
+        <script src="{{asset('assets/js/prism/pris    m.min.js')}}"></script>
         <script src="{{asset('assets/js/clipboard/clipboard.min.js')}}"></script>
         <script src="{{asset('assets/js/counter/jquery.waypoints.min.js')}}"></script>
         <script src="{{asset('assets/js/counter/jquery.counterup.min.js')}}"></script>

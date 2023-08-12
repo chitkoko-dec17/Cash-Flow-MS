@@ -21,8 +21,6 @@ class EstimateBudgetComponent extends Component
     public $sortColumnName= 'name';
     public $confirmingDelete = false;
     public $idToDelete , $selectedName;
-    public $selected_budget_type;
-    public $selectedBusinessUnit,$selectedBranch,$selectedProject;
     public $branches = [];
     public $projects = [];
 
@@ -34,8 +32,9 @@ class EstimateBudgetComponent extends Component
 
         $businessUnits = BusinessUnit::all();
         $orgs = OrgStructure::all();
+        $businessUnits = BusinessUnit::all();
 
-        return view('livewire.estimate-budget',compact('budgets','businessUnits','orgs'));
+        return view('livewire.estimate-budget',compact('budgets','orgs','businessUnits'));
     }
 
     public function updatedOrgId($value){
@@ -43,7 +42,6 @@ class EstimateBudgetComponent extends Component
     }
 
     public function updatedBusinessUnitId($value){
-        $this->reset(['branches', 'projects','branch_id', 'project_id']);
         if ($value) {
             // Fetch item_category based on the selected bu
             $this->branches = Branch::where('business_unit_id', $value)->get();
@@ -53,7 +51,6 @@ class EstimateBudgetComponent extends Component
     }
 
     public function updatedBranchId($value){
-        $this->reset(['projects', 'project_id']);
         if ($value) {
             // Fetch item_category based on the selected bu
             $this->projects = Project::where('branch_id', $value)->get();
@@ -102,39 +99,73 @@ class EstimateBudgetComponent extends Component
       */
     public function store()
     {
-        $this->validate([
-            'org_id' => 'required',
-            'business_unit_id' => 'required',
-            'branch_id'=> 'required',
-            'project_id'=> 'required',
-            'name' => 'required',
-            'total_amount' => 'required',
-            'start_date' => 'required',
-            'end_date' => 'required',
-        ]);
+        // Determine the name based on the selected budget type
+        $name = '';
+        if ($this->org_id == 1) {
+            $businessUnit = BusinessUnit::find($this->business_unit_id);
+            if ($businessUnit) {
+                $name .= $businessUnit->name;
+            }
+            // For Business Unit type, only 'business_unit_id' is required
+            $this->validate([
+                'org_id' => 'required',
+                'business_unit_id' => 'required',
+                'total_amount' => 'required',
+                'start_date' => 'required',
+                'end_date' => 'required',
+            ]);
+        } elseif ($this->org_id == 2) {
+            $businessUnit = BusinessUnit::find($this->business_unit_id);
+            $branch = Branch::find($this->branch_id);
+            if ($businessUnit && $branch) {
+                $name .= $businessUnit->name . ' > ' . $branch->name;
+            }
+            // For Branch type, 'business_unit_id' and 'branch_id' are required
+            $this->validate([
+                'org_id' => 'required',
+                'business_unit_id' => 'required',
+                'branch_id' => 'required',
+                'total_amount' => 'required',
+                'start_date' => 'required',
+                'end_date' => 'required',
+            ]);
+        } elseif ($this->org_id == 3) {
+            $businessUnit = BusinessUnit::find($this->business_unit_id);
+            $branch = Branch::find($this->branch_id);
+            $project = Project::find($this->project_id);
+            if ($businessUnit && $branch && $project) {
+                $name .= $businessUnit->name . ' > ' . $branch->name . ' > ' . $project->name;
+            }
+            // For Project type, 'business_unit_id', 'branch_id', and 'project_id' are required
+            $this->validate([
+                'org_id' => 'required',
+                'business_unit_id' => 'required',
+                'branch_id' => 'required',
+                'project_id' => 'required',
+                'total_amount' => 'required',
+                'start_date' => 'required',
+                'end_date' => 'required',
+            ]);
+        } else {
+            // For unknown budget types, 'org_id' is required
+            $this->validate([
+                'org_id' => 'required',
+                'total_amount' => 'required',
+                'start_date' => 'required',
+                'end_date' => 'required',
+            ]);
+        }
 
-        // EstimateBudget::updateOrCreate(['id' => $this->est_budget_id], [
-        //     'org_id' => $this->org_id,
-        //     'business_unit_id' => $this->business_unit_id,
-        //     'branch_id' => $this->branch_id,
-        //     'project_id' => $this->project_id,
-        //     'name' => $this->name,
-        //     'total_amount' => $this->total_amount,
-        //     'start_date' => $this->start_date,
-        //     'end_date' => $this->end_date,
-        // ]);
-
-        var_dump([
+        EstimateBudget::updateOrCreate(['id' => $this->est_budget_id], [
             'org_id' => $this->org_id,
             'business_unit_id' => $this->business_unit_id,
             'branch_id' => $this->branch_id,
             'project_id' => $this->project_id,
-            'name' => $this->name,
+            'name' => $name,
             'total_amount' => $this->total_amount,
             'start_date' => $this->start_date,
             'end_date' => $this->end_date,
         ]);
-        exit();
 
         ($this->est_budget_id) ?  $this->emit('btnCreateOrUpdated','edit') : $this->emit('btnCreateOrUpdated','create');
         $this->closeModal();
@@ -159,7 +190,7 @@ class EstimateBudgetComponent extends Component
             $this->start_date = $est_budget->start_date;
             $this->end_date = $est_budget->end_date;
             $this->est_budget_id = $est_budget->id;
-            $this->updatedOrgId($est_budget->org_id);
+
             $this->updatedBusinessUnitId($est_budget->business_unit_id);
             $this->updatedBranchId($est_budget->branch_id);
             $this->openModal();
