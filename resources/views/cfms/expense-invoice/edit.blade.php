@@ -13,6 +13,7 @@
         <li class="breadcrumb-item"><a href="{{ route('expense-invoice.index') }}">Expense List</a></li>
         <li class="breadcrumb-item active">Edit</li> {{-- i think . no need to add href for active --}}
     @endcomponent
+
     <div class="container-fluid list-products">
         <div class="row">
             <div class="card">
@@ -79,7 +80,7 @@
                                                 <label for="status">Invoice Status</label>
                                                 <select class="form-control form-select" id="status" name="status">
                                                 	@foreach($statuses as $skey => $statuse)
-                                                    @if($invoice->admin_status == $statuse)
+                                                    @if($invoice->admin_status == $skey)
                                                     	<option value="{{ $skey }}" selected>{{ $statuse }}</option>
                                                     @else
                                                     	<option value="{{ $skey }}">{{ $statuse }}</option>
@@ -139,8 +140,10 @@
                                                     </tr>
                                                 </tfoot>
                                             </table>
+                                            @if($data['submit_btn_control'] == true)
                                             <button type="button" class="btn btn-light mt-2" id="add-item-btn"><i
                                                     class="fa fa-plus"></i> Add Item</button>
+                                            @endif
                                         </div>
                                         <div class="form-group">
                                             <label for="description">Description</label>
@@ -150,7 +153,9 @@
                                             <label for="docs">Invoice Files</label>
                                             <input type="file" class="form-control" id="docs" name="docs[]" multiple>
                                         </div>
+                                        @if($data['submit_btn_control'] == true)
                                         <button type="submit" class="btn btn-primary">Update</button>
+                                        @endif
                                     </form>
                                 </div>
                             </div>
@@ -159,6 +164,162 @@
                 </div>
             </div>
 
+        </div>
+
+        <div class="row">
+            <div class="col-xl-4 col-md-4 box-col-4">
+                <div class="file-content">
+                    <div class="card">
+                        <div class="card-header pb-0">
+                            <h5>All Invoice Files</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="list-group">
+
+                                @foreach ($invoice_docs as $invd)
+
+                                @php
+                                    $ext = pathinfo($invd->inv_file, PATHINFO_EXTENSION);
+                                @endphp
+                                <a class="list-group-item list-group-item-action flex-column align-items-start mt-2"
+                                    href="{{ url($invd->inv_file) }}" target="_blank">
+                                    <div class="d-flex">
+                                        <div style="margin: auto;">
+                                            @if($ext == "xls")
+                                                <i class="fa fa-file-excel-o"
+                                                style="font-size: 4em;"></i>
+                                            @elseif($ext == "pdf")
+                                                <i class="fa fa-file-text-o" style="font-size: 4em;"></i>
+                                            @else
+                                                <i class="fa fa-file-image-o"
+                                                style="font-size: 4em;"></i>
+                                            @endif
+                                        </div>
+                                        <div></div>
+                                        <div class="file-bottom w-100 p-2">
+                                            <h6>{{ $invd->title .'.'. $ext }} </h6>
+                                            <!-- <p class="mb-1">2.0 MB</p> -->
+                                            <p> <b>Upload Date : </b>{{ date('d-m-Y', strtotime($invd->created_at)) }}</p>
+                                        </div>
+                                    </div>
+                                </a>
+                                @endforeach
+                                <!-- <a class="list-group-item list-group-item-action flex-column align-items-start mt-2"
+                                    href="javascript:void(0)">
+                                    <div class="d-flex">
+                                        <div style="margin: auto;"><i class="fa fa-file-image-o"
+                                                style="font-size: 4em;"></i></div>
+                                        <div class="file-bottom w-100 p-2">
+                                            <h6>Logo.png </h6>
+                                            <p class="mb-1">2.0 MB</p>
+                                            <p> <b>last open : </b>1 hour ago</p>
+                                        </div>
+                                    </div>
+                                </a>
+                                <a class="list-group-item list-group-item-action flex-column align-items-start mt-2"
+                                    href="javascript:void(0)">
+                                    <div class="d-flex">
+                                        <div style="margin: auto;"><i class="fa fa-file-excel-o"
+                                                style="font-size: 4em;"></i></div>
+                                        <div class="file-bottom w-100 p-2">
+                                            <h6>file.excel</h6>
+                                            <p class="mb-1">2.0 MB</p>
+                                            <p> <b>last open : </b>1 hour ago</p>
+                                        </div>
+                                    </div>
+                                </a> -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md">
+                <div class="col-xl-12 col-md-12 box-col-12">
+                    <div class="card">
+                        <div class="card-body p-0">
+                            <div class="row chat-box">
+                                <!-- Chat right side start-->
+                                <div class="col chat-right-aside">
+                                    <!-- chat start-->
+                                    <div class="chat">
+                                        <!-- chat-header start-->
+                                        <div class="media chat-header clearfix">
+                                            <h5>Invoice Note History</h5>
+                                        </div>
+                                        <!-- chat-header end-->
+                                        <div class="chat-history chat-msg-box custom-scrollbar" style="margin-bottom:110px;">
+                                            <ul>
+                                                
+                                                @foreach ($invoice_notes as $invnote)
+                                                <li>
+                                                    <div class="message my-message" style="width: 100%!important;">
+                                                            <div class="message-data-time float-start">{{ $invnote->added_user->name }}<code>{{ $invnote->added_user->role->name }}</code></div>
+                                                            <div class="message-data text-end"><span class="message-data-time">{{ date('d-m-Y - H:i:s', strtotime($invnote->created_at)) }}</span></div>
+                                                        {{ $invnote->description }}
+                                                    </div>
+                                                </li>
+                                                @endforeach
+                                                <!-- <li>
+                                                    <div class="message my-message" style="width: 100%!important;">
+                                                            <div class="message-data-time float-start">Staff Name<code>staff</code></div>
+                                                            <div class="message-data text-end"><span
+                                                                class="message-data-time">10:12 am </span>-<span class="message-data-time">12/2/2023</span></div>
+                                                        Lorem ipsum dolor sit, amet consectetur adipisicing elit. Quod sequi consectetur iusto cumque, illo, accusantium ducimus porro assumenda repellendus, dolorum sunt ad! Molestiae numquam nisi iusto quibusdam, repudiandae et voluptates.
+                                                    </div>
+                                                </li>
+                                                <li>
+                                                    <div class="message my-message" style="width: 100%!important;">
+                                                            <div class="message-data-time float-start">Admin Name<code>manager</code></div>
+                                                            <div class="message-data text-end"><span
+                                                                class="message-data-time">10:12 am </span>-<span class="message-data-time">12/2/2023</span></div>
+                                                        Lorem ipsum dolor, sit amet consectetur adipisicing elit. Ducimus eligendi ratione porro a facere amet blanditiis delectus neque iste dolorem labore alias fugiat similique, possimus repudiandae excepturi. Soluta, in facere.
+                                                    </div>
+                                                </li> -->
+                                            </ul>
+                                        </div>
+                                        <!-- end chat-history-->
+                                        <form method="post" action="{{ route('expense-note.add',$invoice->id) }}" >
+                                            @csrf
+                                            <div class="chat-message clearfix">
+                                                <div class="row">
+                                                    <div class="col-xl-12 d-flex" style="margin-bottom:10px;">
+                                                        <select class="form-control form-select" id="status" name="status">
+                                                            @foreach($statuses as $skey => $statuse)
+                                                            @if($invoice->admin_status == $skey)
+                                                                <option value="{{ $skey }}" selected>{{ $statuse }}</option>
+                                                            @else
+                                                                <option value="{{ $skey }}">{{ $statuse }}</option>
+                                                            @endif
+                                                            
+                                                          @endforeach
+                                                        </select>
+                                                    </div>
+                                                    <br>
+                                                    <div class="col-xl-12 d-flex">
+                                                        <div class="input-group text-box">
+                                                            <input class="form-control input-txt-bx" id="invoice_note"
+                                                                type="text" name="invoice_note"
+                                                                placeholder="Type a message......" />
+                                                            <button class="btn btn-primary input-group-text"
+                                                                type="submit">SEND</button>
+                                                        </div>
+                                                    </div>
+                                                    @error('invoice_note')
+                                                        <span class="text-danger">{{ $message }}</span>
+                                                    @enderror
+                                                </div>
+                                            </div> 
+                                        </form>
+                                        <!-- end chat-message-->
+                                        <!-- chat end-->
+                                        <!-- Chat right side ends-->
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
 
     </div>
@@ -283,3 +444,12 @@
         
     </script>
 @endpush
+
+@section('customJs')
+    <script type="text/javascript">
+        @if ($message = Session::get('success'))
+            notifyToUser('Expense Invoice Action', '{{ $message }}',
+                'primary');
+        @endif
+    </script>
+@endsection

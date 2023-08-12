@@ -8,6 +8,10 @@
         @endslot
         <li class="breadcrumb-item"><a href="{{ route('expense-invoice.index') }}">Expense List</a></li>
         <li class="breadcrumb-item active">Detail</li> {{-- i think . no need to add href for active --}}
+
+        @slot('print_url')
+            <li><a href="{{ route('expense-invoice.template',$invoice->id) }}" data-container="body" data-bs-toggle="popover" data-placement="top" title="Print" data-original-title="Tables"><i data-feather="printer"></i></a></li>
+        @endslot
     @endcomponent
     <div class="container-fluid list-products">
         <div class="row">
@@ -118,17 +122,21 @@
                                                         </td>
                                                         <td>
                                                             <label>
+                                                                @if($data['user_role'] == "Admin")
                                                                 <a  href="javascript:void(0)"
                                                                     class="item-history-inv"
                                                                     data-toggle="modal"
                                                                     data-target="#itemHistoryModal"
                                                                     data-attr=""
-                                                                    data-id=""
+                                                                    data-id="{{ $invitem->item_id }}"
                                                                     style="pointer:hand;">
                                                                     <span class="badge badge-primary">
                                                                         {{ $invitem->item->name }}
                                                                     </span>
                                                                 </a>
+                                                                @else
+                                                                    {{ $invitem->item->name }}
+                                                                @endif
                                                             </label>
                                                         </td>
                                                         <td>
@@ -164,10 +172,6 @@
                             </div>
                             <!-- End InvoiceBot-->
                         </div>
-                        {{-- <div class="col-sm-12 text-center mt-3">
-                            <button class="btn btn btn-primary me-2" type="button" onclick="myFunction()">Print</button>
-                            <button class="btn btn-secondary" type="button">Cancel</button>
-                        </div> --}}
                         <!-- End Invoice-->
                         <!-- End Invoice Holder-->
                     </div>
@@ -184,43 +188,36 @@
                         </div>
                         <div class="card-body">
                             <div class="list-group">
+                                @foreach ($invoice_docs as $invd)
+
+                                @php
+                                    $ext = pathinfo($invd->inv_file, PATHINFO_EXTENSION);
+                                @endphp
                                 <a class="list-group-item list-group-item-action flex-column align-items-start mt-2"
-                                    href="javascript:void(0)">
+                                    href="{{ url($invd->inv_file) }}" target="_blank">
                                     <div class="d-flex">
-                                        <div style="margin: auto;"><i class="fa fa-file-text-o" style="font-size: 4em;"></i>
+                                        <div style="margin: auto;">
+                                            @if($ext == "xls")
+                                                <i class="fa fa-file-excel-o"
+                                                style="font-size: 4em;"></i>
+                                            @elseif($ext == "pdf")
+                                                <i class="fa fa-file-text-o" style="font-size: 4em;"></i>
+                                            @else
+                                                <i class="fa fa-file-image-o"
+                                                style="font-size: 4em;"></i>
+                                            @endif
                                         </div>
                                         <div></div>
                                         <div class="file-bottom w-100 p-2">
-                                            <h6>file.pdf </h6>
-                                            <p class="mb-1">2.0 MB</p>
-                                            <p> <b>last open : </b>1 hour ago</p>
+                                            <h6>{{ $invd->title .'.'. $ext }} </h6>
+                                            <!-- <p class="mb-1">2.0 MB</p> -->
+                                            <p> <b>Upload Date : </b>{{ date('d-m-Y', strtotime($invd->created_at)) }}</p>
                                         </div>
                                     </div>
                                 </a>
-                                <a class="list-group-item list-group-item-action flex-column align-items-start mt-2"
-                                    href="javascript:void(0)">
-                                    <div class="d-flex">
-                                        <div style="margin: auto;"><i class="fa fa-file-image-o"
-                                                style="font-size: 4em;"></i></div>
-                                        <div class="file-bottom w-100 p-2">
-                                            <h6>Logo.png </h6>
-                                            <p class="mb-1">2.0 MB</p>
-                                            <p> <b>last open : </b>1 hour ago</p>
-                                        </div>
-                                    </div>
-                                </a>
-                                <a class="list-group-item list-group-item-action flex-column align-items-start mt-2"
-                                    href="javascript:void(0)">
-                                    <div class="d-flex">
-                                        <div style="margin: auto;"><i class="fa fa-file-excel-o"
-                                                style="font-size: 4em;"></i></div>
-                                        <div class="file-bottom w-100 p-2">
-                                            <h6>file.excel</h6>
-                                            <p class="mb-1">2.0 MB</p>
-                                            <p> <b>last open : </b>1 hour ago</p>
-                                        </div>
-                                    </div>
-                                </a>
+                                @endforeach
+
+                                
                             </div>
                         </div>
                     </div>
@@ -242,50 +239,18 @@
                                         <!-- chat-header end-->
                                         <div class="chat-history chat-msg-box custom-scrollbar">
                                             <ul>
+                                                @foreach ($invoice_notes as $invnote)
                                                 <li>
                                                     <div class="message my-message" style="width: 100%!important;">
-                                                            <div class="message-data-time float-start">Nyan Lynn Htun<code>admin</code></div>
-                                                            <div class="message-data text-end"><span
-                                                                class="message-data-time">10:12 am </span>-<span class="message-data-time">12/2/2023</span></div>
-                                                        Lorem ipsum dolor sit amet, consectetur adipisicing elit. Animi, cumque laudantium. Ex inventore voluptatem architecto omnis tenetur possimus eaque repellat iusto eveniet, unde, nemo voluptas temporibus quod, doloremque suscipit minus?
+                                                            <div class="message-data-time float-start">{{ $invnote->added_user->name }}<code>{{ $invnote->added_user->role->name }}</code></div>
+                                                            <div class="message-data text-end"><span class="message-data-time">{{ date('d-m-Y - H:i:s', strtotime($invnote->created_at)) }}</span></div>
+                                                        {{ $invnote->description }}
                                                     </div>
                                                 </li>
-                                                <li>
-                                                    <div class="message my-message" style="width: 100%!important;">
-                                                            <div class="message-data-time float-start">Staff Name<code>staff</code></div>
-                                                            <div class="message-data text-end"><span
-                                                                class="message-data-time">10:12 am </span>-<span class="message-data-time">12/2/2023</span></div>
-                                                        Lorem ipsum dolor sit, amet consectetur adipisicing elit. Quod sequi consectetur iusto cumque, illo, accusantium ducimus porro assumenda repellendus, dolorum sunt ad! Molestiae numquam nisi iusto quibusdam, repudiandae et voluptates.
-                                                    </div>
-                                                </li>
-                                                <li>
-                                                    <div class="message my-message" style="width: 100%!important;">
-                                                        <img class="rounded-circle float-start chat-user-img img-30"
-                                                            src="{{ asset('assets/images/user/3.png') }}"
-                                                            alt="" />
-                                                            <div class="message-data-time float-start">Admin Name<code>manager</code></div>
-                                                            <div class="message-data text-end"><span
-                                                                class="message-data-time">10:12 am </span>-<span class="message-data-time">12/2/2023</span></div>
-                                                        Lorem ipsum dolor, sit amet consectetur adipisicing elit. Ducimus eligendi ratione porro a facere amet blanditiis delectus neque iste dolorem labore alias fugiat similique, possimus repudiandae excepturi. Soluta, in facere.
-                                                    </div>
-                                                </li>
+                                                @endforeach
+                                                
                                             </ul>
                                         </div>
-                                        <!-- end chat-history-->
-                                        {{-- <div class="chat-message clearfix">
-                                            <div class="row">
-                                                <div class="col-xl-12 d-flex">
-                                                    <div class="input-group text-box">
-                                                        <input class="form-control input-txt-bx" id="message-to-send"
-                                                            type="text" name="message-to-send"
-                                                            placeholder="Type a message......" />
-                                                        <button class="btn btn-primary input-group-text"
-                                                            type="button">SEND</button>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div> --}}
-                                        <!-- end chat-message-->
                                         <!-- chat end-->
                                         <!-- Chat right side ends-->
                                     </div>
@@ -300,7 +265,7 @@
 
     <!-- Item History Modal Box -->
     <div class="modal fade" id="itemHistoryModal" tabindex="-1" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered modal-sm" role="document">
+        <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="exampleModalLabel2">Item History</h5>
@@ -308,46 +273,27 @@
                 </div>
                 <div class="modal-body">
                     <div class="list-group">
-                        <a class="list-group-item list-group-item-action flex-column align-items-start mt-2"
-                            href="javascript:void(0)">
-                            <div class="d-flex">
-                                <div class="file-bottom w-100 p-2">
-                                    <h6>Invoice Number</h6>
-                                    <p class="mb-1">Item Name</p>
-                                    <p class="mb-1"> <b>Qty : </b>2</p>
-                                    <p class="mb-1"> <b>Unit Price : </b>20000</p>
-                                </div>
-                            </div>
-                        </a>
-                        <a class="list-group-item list-group-item-action flex-column align-items-start mt-2"
-                            href="javascript:void(0)">
-                            <div class="d-flex">
-                                <div class="file-bottom w-100 p-2">
-                                    <h6>Invoice Number</h6>
-                                    <p class="mb-1">Item Name</p>
-                                    <p class="mb-1"> <b>Qty : </b>2</p>
-                                    <p class="mb-1"> <b>Unit Price : </b>20000</p>
-                                </div>
-                            </div>
-                        </a>
-                        <a class="list-group-item list-group-item-action flex-column align-items-start mt-2"
-                            href="javascript:void(0)">
-                            <div class="d-flex">
-                                <div class="file-bottom w-100 p-2">
-                                    <h6>Invoice Number</h6>
-                                    <p class="mb-1">Item Name</p>
-                                    <p class="mb-1"> <b>Qty : </b>2</p>
-                                    <p class="mb-1"> <b>Unit Price : </b>20000</p>
-                                </div>
-                            </div>
-                        </a>
+                        <div class="table-responsive">
+                            <table class="table table-hover table-bordered" id="item-history">
+                                <thead>
+                                    <tr>
+                                        <th>Invoice No.</th>
+                                        <th>Item Name</th>
+                                        <th>Qty</th>
+                                        <th>Unit Price</th>
+                                        <th>Date</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Close</button>
-                    {{-- <button type="submit" id="delete-it" class="btn btn-danger">Delete</button> --}}
                 </div>
-                </form>
             </div>
         </div>
     </div>
@@ -358,14 +304,41 @@
     <script src="{{ asset('assets/js/counter/jquery.counterup.min.js') }}"></script>
     <script src="{{ asset('assets/js/counter/counter-custom.js') }}"></script>
     <script src="{{ asset('assets/js/print.js') }}"></script>
+    <script src="{{ asset('js/jquery-dateformat.min.js') }}"></script>
 @endpush
 
 @section('customJs')
     <script type="text/javascript">
         $(document).on('click', '.item-history-inv', function() {
-            $('#itemHistoryModal').modal('show');
-            // let href = $(this).attr('data-attr');
-            // $('#item-history-inv').attr('action', href);
+            let item_id = $(this).attr('data-id');
+            get_items(item_id);            
         });
+
+        function get_items(item_id){
+            $('#item-history tbody').empty();
+            if(item_id){
+                $.ajax({
+                    url: "<?php echo route('expense-invoice.item') ?>",
+                    method: 'GET',
+                    data: {item_id:item_id},
+                    success: function(data) {
+
+                        $.each(data.data, function(value, text){
+
+                            let row = "<tr>";
+                            row += "<td>EXINV-"+text.invoice.invoice_no+"</td>";
+                            row += "<td>"+text.item.name+"</td>";
+                            row += "<td>"+text.qty+"</td>";
+                            row += "<td>"+text.amount+"</td>";
+                            row += "<td>"+$.format.date(text.created_at, "dd/MM/yyyy") +"</td>";
+                            row += "</tr>";
+                            $('#item-history').append(row);
+                            $('#itemHistoryModal').modal('show');
+                        });
+                    }
+                });
+            }
+        }
+
     </script>
 @endsection

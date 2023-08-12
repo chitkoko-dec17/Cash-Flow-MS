@@ -91,6 +91,10 @@ Route::group(['middleware' => ['auth']], function() {
     Route::get('/budget',EstimateBudgetComponent::class)->name('budget.index');
 
     Route::resource('expense-invoice', ExpenseInvoiceController::class);
+    Route::post('add/exp_note/{id}', [ExpenseInvoiceController::class, 'add_inv_note'])->name('expense-note.add');
+    Route::get('/item/history',[ExpenseInvoiceController::class, 'get_item_history'])->name('expense-invoice.item');
+    Route::get('/expense/invoice/{id}',[ExpenseInvoiceController::class, 'get_expense_invoice'])->name('expense-invoice.template');
+
     Route::resource('income-invoice', IncomeInvoiceController::class);
     Route::resource('return-invoice', ReturnInvoiceController::class);
     Route::post('invoice/get_items', [CommonController::class, 'get_items'])->name('get.items');

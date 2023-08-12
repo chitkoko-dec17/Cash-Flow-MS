@@ -72,10 +72,10 @@ class IncomeInvoiceController extends Controller
         $this->cuser_business_unit_id = Auth::user()->user_business_unit;
 
         if($this->cuser_role == "Admin"){
-            return redirect('/income-invoice')->with('error', "Admin can't create invoice. Due to multiple business units!");
+            // return redirect('/income-invoice')->with('error', "Admin can't create invoice. Due to multiple business units!");
         }
 
-        if($this->cuser_business_unit_id){
+        if($this->cuser_role == "Manager" && !$this->cuser_business_unit_id){
             return redirect('/income-invoice')->with('error', "Manager should has business unit!");
         }
 
