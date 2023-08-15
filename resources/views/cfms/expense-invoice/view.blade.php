@@ -209,8 +209,7 @@
                                         <span class="media-body">
                                             <h6>{{ $invd->title .'.'. $ext }}</h6>
                                             <p><b class="f-12">Upload Date : </b>{{ date('d-m-Y', strtotime($invd->created_at)) }}</p>
-                                            <a href="{{ url($invd->inv_file) }}" type="button" class="btn btn-outline-primary pmd-ripple-effect btn-xs"><i class="fa fa-eye m-0"></i></a>
-                                            <a href="#" type="button" class="btn btn-outline-danger pmd-ripple-effect btn-xs"><i class="fa fa-trash m-0"></i></a>
+                                            <a href="{{ url($invd->inv_file) }}" target="_blank" type="button" class="btn btn-outline-primary pmd-ripple-effect btn-xs"><i class="fa fa-eye m-0"></i></a>
                                         </span>
                                     </li>
                                     @endforeach

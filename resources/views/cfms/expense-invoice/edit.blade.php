@@ -178,44 +178,31 @@
                         <div class="card-body">
                             <div class="list-group">
 
-                                @foreach ($invoice_docs as $invd)
-
-                                @php
-                                    $ext = pathinfo($invd->inv_file, PATHINFO_EXTENSION);
-                                @endphp
-                                <a class="list-group-item list-group-item-action flex-column align-items-start mt-2 pe-0"
-                                    href="{{ url($invd->inv_file) }}" target="_blank">
-                                    <div class="d-flex">
-
-                                        <div style="margin: auto;">
-                                            @if($ext == "xls")
-                                                <i class="fa fa-file-excel-o"
-                                                style="font-size: 4em;"></i>
-                                            @elseif($ext == "pdf")
-                                                <i class="fa fa-file-text-o" style="font-size: 4em;"></i>
-                                            @else
-                                                <i class="fa fa-file-image-o"
-                                                style="font-size: 4em;"></i>
-                                            @endif
-                                        </div>
-                                        <div></div>
-                                        <div class="file-bottom w-100 p-2">
-                                            <h6>{{ $invd->title .'.'. $ext }} </h6>
-                                            <!-- <p class="mb-1">2.0 MB</p> -->
-                                            <p> <b>Upload Date : </b>{{ date('d-m-Y', strtotime($invd->created_at)) }}</p>
-                                        </div>
-                                        <div>
-                                            <i class="fa fa-times" aria-hidden="true"></i>
-                                        </div>
-                                    </div>
-                                </a>
-                                <a href="javascript:void(0)" data-toggle="modal"
-                                                        data-target="#deleteModal"
-                                                        class="btn btn-outline-danger btn-sm  action-btn delete-inv-doc"
-                                                        title="Delete" data-toggle="tooltip" 
-                                                        data-attr="{{ url('/expense/doc', $invd->id) }}"><i
-                                                            class="fa fa-trash"></i></a>
-                                @endforeach
+                                <ul>
+                                    @foreach ($invoice_docs as $invd)
+                                    @php
+                                        $ext = pathinfo($invd->inv_file, PATHINFO_EXTENSION);
+                                    @endphp
+                                    <li class="list-group-item d-flex mb-5">
+                                        @if($ext == "xls")
+                                            <i class="fa fa-file-excel-o"
+                                            style="font-size: 4em;"></i>
+                                        @elseif($ext == "pdf")
+                                            <i class="fa fa-file-text-o" style="font-size: 4em;"></i>
+                                        @else
+                                            <i class="fa fa-file-image-o"
+                                            style="font-size: 4em;"></i>
+                                        @endif
+                                        <span class="media-body">
+                                            <h6>{{ $invd->title .'.'. $ext }}</h6>
+                                            <p><b class="f-12">Upload Date : </b>{{ date('d-m-Y', strtotime($invd->created_at)) }}</p>
+                                            <a href="{{ url($invd->inv_file) }}" target="_blank" type="button" class="btn btn-outline-primary pmd-ripple-effect btn-xs"><i class="fa fa-eye m-0"></i></a>
+                                            <a href="javascript:void(0)" data-toggle="modal"
+                                                        data-target="#deleteModal" type="button" class="btn btn-outline-danger pmd-ripple-effect btn-xs delete-inv-doc" data-attr="{{ url('/expense/doc', $invd->id) }}"><i class="fa fa-trash m-0"></i></a>
+                                        </span>
+                                    </li>
+                                    @endforeach
+                                </ul>
                                 
                             </div>
                         </div>
