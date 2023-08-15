@@ -207,7 +207,6 @@
                                                 style="font-size: 4em;"></i>
                                             @endif
                                         </div>
-                                        <div></div>
                                         <div class="file-bottom w-100 p-2">
                                             <h6>{{ $invd->title .'.'. $ext }} </h6>
                                             <!-- <p class="mb-1">2.0 MB</p> -->

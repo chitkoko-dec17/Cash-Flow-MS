@@ -28,6 +28,7 @@
                                     <form method="post" action="{{ route('expense-invoice.store') }}" enctype="multipart/form-data">
                                         @csrf
                                         <div class="row">
+                                            @if($data['user_role'] != "Staff")
                                             <div class="mb-3 col-sm-4">
                                                 <label for="branch_id">Branch</label>
                                                 <select class="form-control form-select" id="branch_id" name="branch_id">
@@ -44,7 +45,10 @@
                                                     <span class="text-danger">{{ $message }}</span>
                                                 @enderror
                                             </div>
-
+                                            @endif
+                                            @if($data['user_role'] == "Staff")
+                                                <input type="hidden" id="branch_id" name="branch_id" value="{{ $data['branch_id'] }}">
+                                            @endif
                                             <div class="mb-3 col-sm-4">
                                                 <label for="project_id">Project</label>
                                                 <select class="form-control form-select" id="project_id" name="project_id">
@@ -151,6 +155,10 @@
             jcates += '<option value="{{ $cate->id }}">{{ $cate->name }}</option>';
         @endforeach
         $(document).ready(function() {
+            @if($data['user_role'] == "Staff")
+            $('#branch_id').trigger('change');
+            @endif
+
             // Add new invoice item row
             $("#add-item-btn").click(function() {
                 const newRow = `

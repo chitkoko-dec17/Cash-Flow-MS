@@ -37,7 +37,7 @@
                                             </div>
                                             <div class="mb-3 col-sm-4">
                                                 <label for="branch_id">Branch</label>
-                                                <select class="form-control form-select" id="branch_id" name="branch_id">
+                                                <select class="form-control form-select" id="branch_id" name="branch_id" readonly>
                                                     <option value="">Select Branch</option>
                                                     @foreach($branches as $optgroupLabel => $branchOptions)
                                                     <optgroup label="{{ $optgroupLabel }}">
@@ -59,7 +59,7 @@
 
                                             <div class="mb-3 col-sm-4">
                                                 <label for="project_id">Project</label>
-                                                <select class="form-control form-select" id="project_id" name="project_id">
+                                                <select class="form-control form-select" id="project_id" name="project_id" disabled>
                                                     <option value="">Select Project</option>
                                                 </select>
                                                 @error('project_id')
@@ -121,9 +121,11 @@
                                                                 name="amount[]" step="0.01" value="{{$invitem->amount}}"></td>
                                                         <td class="total">{{$invitem->qty * $invitem->amount}} MMK</td>
                                                         <td>
-                                                            <!-- <button type="button"
-                                                                class="btn btn-danger btn-sm action-btn remove-btn"><i
-                                                                    class="fa fa-trash"></i></button> -->
+                                                            @if($data['submit_btn_control'] == true)
+                                                            <button type="button"
+                                                                class="btn btn-danger btn-sm action-btn remove-edit-btn" data-attr="{{ url('/expense/item', $invitem->id) }}"><i
+                                                                    class="fa fa-trash"></i></button>
+                                                            @endif
                                                         </td>
                                                     </tr>
 	                                                	@endforeach
@@ -203,31 +205,14 @@
                                         </div>
                                     </div>
                                 </a>
+                                <a href="javascript:void(0)" data-toggle="modal"
+                                                        data-target="#deleteModal"
+                                                        class="btn btn-outline-danger btn-sm  action-btn delete-inv-doc"
+                                                        title="Delete" data-toggle="tooltip" 
+                                                        data-attr="{{ url('/expense/doc', $invd->id) }}"><i
+                                                            class="fa fa-trash"></i></a>
                                 @endforeach
-                                <!-- <a class="list-group-item list-group-item-action flex-column align-items-start mt-2"
-                                    href="javascript:void(0)">
-                                    <div class="d-flex">
-                                        <div style="margin: auto;"><i class="fa fa-file-image-o"
-                                                style="font-size: 4em;"></i></div>
-                                        <div class="file-bottom w-100 p-2">
-                                            <h6>Logo.png </h6>
-                                            <p class="mb-1">2.0 MB</p>
-                                            <p> <b>last open : </b>1 hour ago</p>
-                                        </div>
-                                    </div>
-                                </a>
-                                <a class="list-group-item list-group-item-action flex-column align-items-start mt-2"
-                                    href="javascript:void(0)">
-                                    <div class="d-flex">
-                                        <div style="margin: auto;"><i class="fa fa-file-excel-o"
-                                                style="font-size: 4em;"></i></div>
-                                        <div class="file-bottom w-100 p-2">
-                                            <h6>file.excel</h6>
-                                            <p class="mb-1">2.0 MB</p>
-                                            <p> <b>last open : </b>1 hour ago</p>
-                                        </div>
-                                    </div>
-                                </a> -->
+                                
                             </div>
                         </div>
                     </div>
@@ -259,22 +244,7 @@
                                                     </div>
                                                 </li>
                                                 @endforeach
-                                                <!-- <li>
-                                                    <div class="message my-message" style="width: 100%!important;">
-                                                            <div class="message-data-time float-start">Staff Name<code>staff</code></div>
-                                                            <div class="message-data text-end"><span
-                                                                class="message-data-time">10:12 am </span>-<span class="message-data-time">12/2/2023</span></div>
-                                                        Lorem ipsum dolor sit, amet consectetur adipisicing elit. Quod sequi consectetur iusto cumque, illo, accusantium ducimus porro assumenda repellendus, dolorum sunt ad! Molestiae numquam nisi iusto quibusdam, repudiandae et voluptates.
-                                                    </div>
-                                                </li>
-                                                <li>
-                                                    <div class="message my-message" style="width: 100%!important;">
-                                                            <div class="message-data-time float-start">Admin Name<code>manager</code></div>
-                                                            <div class="message-data text-end"><span
-                                                                class="message-data-time">10:12 am </span>-<span class="message-data-time">12/2/2023</span></div>
-                                                        Lorem ipsum dolor, sit amet consectetur adipisicing elit. Ducimus eligendi ratione porro a facere amet blanditiis delectus neque iste dolorem labore alias fugiat similique, possimus repudiandae excepturi. Soluta, in facere.
-                                                    </div>
-                                                </li> -->
+                                                
                                             </ul>
                                         </div>
                                         <!-- end chat-history-->
@@ -282,6 +252,7 @@
                                             @csrf
                                             <div class="chat-message clearfix">
                                                 <div class="row">
+                                                    @if($data['user_role'] != "Staff")
                                                     <div class="col-xl-12 d-flex" style="margin-bottom:10px;">
                                                         <select class="form-control form-select" id="status" name="status">
                                                             @foreach($statuses as $skey => $statuse)
@@ -295,6 +266,10 @@
                                                         </select>
                                                     </div>
                                                     <br>
+                                                    @endif
+                                                    @if($data['user_role'] == "Staff")
+                                                        <input type="hidden" name="status" value="{{ $invoice->admin_status }}">
+                                                    @endif
                                                     <div class="col-xl-12 d-flex">
                                                         <div class="input-group text-box">
                                                             <input class="form-control input-txt-bx" id="invoice_note"
@@ -323,6 +298,31 @@
         </div>
 
     </div>
+
+<!-- Delete Modal Box -->
+<div class="modal fade" id="deleteModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-sm" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modal_title"></h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form action="" id="delete-inv-item" method="post">
+                    @csrf
+                    @method('DELETE')
+                    <div class="row">
+                        <p>Are you sure you want to delete?</p>
+                    </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="submit" id="delete-it" class="btn btn-danger">Delete</button>
+            </div>
+            </form>
+        </div>
+    </div>
+</div>
 @endsection
 
 @push('scripts')
@@ -342,18 +342,18 @@
                 const newRow = `
                     <tr>
                         <td>
-                            <select class="form-select category_id" name="category_ids[]">
+                            <select class="form-select category_id" name="category_ids_up[]">
                                 <option value="">Select Category</option>
                                 `+jcates+`
                             </select>
                         </td>
                         <td>
-                            <select class="form-select item_id" name="items[]">
+                            <select class="form-select item_id" name="items_up[]">
                                 <option value="">Select Item</option>
                             </select>
                         </td>
-                        <td><input type="number" class="form-control quantity" name="quantity[]" min="1" value="1"></td>
-                        <td><input type="number" class="form-control amount" name="amount[]" step="0.01" value="0"></td>
+                        <td><input type="number" class="form-control quantity" name="quantity_up[]" min="1" value="1"></td>
+                        <td><input type="number" class="form-control amount" name="amount_up[]" step="0.01" value="0"></td>
                         <td class="total">0.00 MMK</td>
                         <td><button type="button" class="btn btn-danger btn-sm action-btn remove-btn"><i class="fa fa-trash"></i></button></td>
                     </tr>
@@ -441,6 +441,22 @@
                 });
             }
         });
+        
+
+        $(document).on('click', '.remove-edit-btn', function() {
+            $('#modal_title').html('Delete Invoice Item');
+            $('#deleteModal').modal('show');
+            let href = $(this).attr('data-attr');
+            $('#delete-inv-item').attr('action', href);
+        });
+
+        $(document).on('click', '.delete-inv-doc', function() {
+            $('#modal_title').html('Delete Invoice Doc');
+            $('#deleteModal').modal('show');
+            let href = $(this).attr('data-attr');
+            $('#delete-inv-item').attr('action', href);
+        });
+
         
     </script>
 @endpush

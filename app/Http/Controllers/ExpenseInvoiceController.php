@@ -11,6 +11,8 @@ use App\Models\Item;
 use App\Models\ItemCategory;
 use App\Models\InvoiceDocument;
 use App\Models\Branch;
+use App\Models\BranchUser;
+use App\Models\ProjectUser;
 use App\Models\BusinessUnit;
 use Auth;
 use DB;
@@ -68,6 +70,8 @@ class ExpenseInvoiceController extends Controller
             if($this->cuser_business_unit_id){
                 // $expense_invoices = ExpenseInvoice::where('business_unit_id', $this->cuser_business_unit_id)->where('upload_user_id', Auth::user()->id )->paginate(25);
 
+                
+
                 $queryExpInv->where('business_unit_id', $this->cuser_business_unit_id)->where('upload_user_id', Auth::user()->id);
             }
         }
@@ -119,6 +123,7 @@ class ExpenseInvoiceController extends Controller
     {
         $this->cuser_role = Auth::user()->user_role;
         $this->cuser_business_unit_id = Auth::user()->user_business_unit;
+        $data['user_role'] = Auth::user()->user_role;
 
         if($this->cuser_role == "Admin"){
             return redirect('/expense-invoice')->with('error', "Admin can't create invoice. Due to multiple business units!");
@@ -135,14 +140,25 @@ class ExpenseInvoiceController extends Controller
         $businessUnits = BusinessUnit::where('id', $this->cuser_business_unit_id)->get();
         $branches = array();
 
-        foreach ($businessUnits as $businessUnit) {
-            $optgroupLabel = $businessUnit->name;
-            $branchOptions = Branch::where('business_unit_id', $businessUnit->id)->pluck('name', 'id')->toArray();
-            $branches[$optgroupLabel] = $branchOptions;
+        if($this->cuser_role != "Staff"){
+            foreach ($businessUnits as $businessUnit) {
+                $optgroupLabel = $businessUnit->name;
+                
+                $branchOptions = Branch::where('business_unit_id', $businessUnit->id)->pluck('name', 'id')->toArray();
+                
+                $branches[$optgroupLabel] = $branchOptions;
+            }
         }
-        // var_dump($branches);exit;
+        if($this->cuser_role == "Staff"){
 
-        return view('cfms.expense-invoice.create', compact('itemcategories','statuses','branches'));
+            $branch_user = BranchUser::where('user_id', Auth::id())->first();
+            $project_user = ProjectUser::where('user_id', Auth::id())->first();
+            $data['branch_id'] = $branch_user->branch_id;
+            $data['project_id'] = isset($project_user->project_id) ? $project_user->project_id : 0;
+        }
+        // var_dump($data);exit;
+
+        return view('cfms.expense-invoice.create', compact('itemcategories','statuses','branches', 'data'));
     }
 
     /**
@@ -263,16 +279,16 @@ class ExpenseInvoiceController extends Controller
         $itemcategories = ItemCategory::where('business_unit_id', $this->cuser_business_unit_id)->get();
         $statuses = $this->statuses;
 
-        $businessUnits = BusinessUnit::where('id', $this->cuser_business_unit_id)->get();
+        $invoice = ExpenseInvoice::find($id);
+        $businessUnits = BusinessUnit::where('id', $invoice->business_unit_id)->get();
         $branches = array();
 
         foreach ($businessUnits as $businessUnit) {
             $optgroupLabel = $businessUnit->name;
-            $branchOptions = Branch::where('business_unit_id', $businessUnit->id)->pluck('name', 'id')->toArray();
+            $branchOptions = Branch::where('business_unit_id', $invoice->business_unit_id)->pluck('name', 'id')->toArray();
             $branches[$optgroupLabel] = $branchOptions;
         }
-
-        $invoice = ExpenseInvoice::find($id);
+        
         $invoice_no = 'EXINV-'.$invoice->invoice_no;
         $invoice_items = ExpenseInvoiceItem::where('invoice_id', $id)->get();
         $invoice_docs = InvoiceDocument::where('invoice_no', $invoice_no)->get();
@@ -283,6 +299,7 @@ class ExpenseInvoiceController extends Controller
             $submit_btn_control = false;
         }
         $data['submit_btn_control'] = $submit_btn_control;
+        $data['user_role'] = Auth::user()->user_role;
 
         return view('cfms.expense-invoice.edit', compact('invoice', 'invoice_items','invoice_docs','invoice_no','itemcategories','branches', 'statuses', 'invoice_notes', 'data'));
     }
@@ -302,8 +319,8 @@ class ExpenseInvoiceController extends Controller
             'total_amount'  =>  'required'
         ]);
 
-        $item_quantity = $request->quantity;
         $item_amount = $request->amount;
+        $item_quantity = $request->quantity;
 
         $exp_invoice = ExpenseInvoice::find($id);
         $exp_invoice->branch_id = $request->branch_id;
@@ -327,16 +344,26 @@ class ExpenseInvoiceController extends Controller
             $exp_invoice_item->qty = $item_quantity[$itind];
             $exp_invoice_item->amount = $item_amount[$itind];
             $exp_invoice_item->save();
-
-            // $item_cate = Item::where('id',$item)->first();
-            // ExpenseInvoiceItem::create([
-            //     'category_id' => $item_cate->category_id,
-            //     'invoice_id' => $exp_invoice->id,
-            //     'item_id' => $item,
-            //     'qty' => $item_quantity[$itind],
-            //     'amount' => $item_amount[$itind],
-            // ]);
         }
+
+        $items = $request->items_up;
+        $item_amount_up = $request->amount_up;
+        $item_quantity_up = $request->quantity_up;
+
+        if(!empty($request->category_ids_up)){
+            foreach($request->category_ids_up as $itind => $category_id){
+                $item_cate = Item::where('id',$item)->first();
+
+                ExpenseInvoiceItem::create([
+                    'category_id' => $category_id,
+                    'invoice_id' => $id,
+                    'item_id' => $items[$itind],
+                    'qty' => $item_quantity_up[$itind],
+                    'amount' => $item_amount_up[$itind],
+                ]);
+            }
+        }
+        
 
         if($request->hasfile('docs')) {
 
@@ -417,5 +444,24 @@ class ExpenseInvoiceController extends Controller
         $invoice_items = ExpenseInvoiceItem::where('invoice_id', $id)->get();
 
         return view('cfms.expense-invoice.invoice', compact('invoice', 'invoice_items','invoice_no'));
+    }
+
+    public function delete_edit_item($id){
+        $exp_invoice_item = ExpenseInvoiceItem::find($id);
+        $exp_invoice_item->delete();
+        return back()->with("success", "Successfully delete the invoice item.");
+    }
+
+    public function delete_item_doc($id){
+        $invoice_doc = InvoiceDocument::find($id);
+
+        $old_inv_file = $invoice_doc->inv_file;
+
+        if(file_exists(public_path($old_inv_file))){
+            unlink(public_path($old_inv_file));
+        }
+
+        $invoice_doc->delete();
+        return back()->with("success", "Successfully delete the invoice doc.");
     }
 }
