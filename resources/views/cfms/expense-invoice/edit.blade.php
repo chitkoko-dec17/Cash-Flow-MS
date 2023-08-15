@@ -2,7 +2,7 @@
 
 
 @push('css')
-    <link rel="stylesheet" type="text/css" href="{{ asset('assets/css/dropzone.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ asset('assets/css/select2.css') }}">
 @endpush
 
 @section('content')
@@ -183,7 +183,7 @@
                                     @php
                                         $ext = pathinfo($invd->inv_file, PATHINFO_EXTENSION);
                                     @endphp
-                                    <li class="list-group-item d-flex mb-5">
+                                    <li class="list-group-item d-flex mb-2">
                                         @if($ext == "xls")
                                             <i class="fa fa-file-excel-o"
                                             style="font-size: 4em;"></i>
@@ -318,8 +318,8 @@
 
 @push('scripts')
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="{{ asset('assets/js/dropzone/dropzone.js') }}"></script>
-    <script src="{{ asset('assets/js/dropzone/dropzone-script.js') }}"></script>
+    <script src="{{ asset('assets/js/select2/select2.full.min.js') }}"></script>
+    <script src="{{ asset('assets/js/select2/select2-custom.js') }}"></script>
     <script>
         let jcates = '';
         let project_id = '{{ $invoice->project_id }}';
@@ -339,7 +339,7 @@
                             </select>
                         </td>
                         <td>
-                            <select class="form-select item_id" name="items_up[]">
+                            <select class="form-select js-example-basic-single item_id" name="items_up[]">
                                 <option value="">Select Item</option>
                             </select>
                         </td>
@@ -350,6 +350,10 @@
                     </tr>
                 `;
                 $("#invoiceItems tbody").append(newRow);
+
+                setTimeout(function(){
+                    $('.js-example-basic-single').select2();
+                }, 100);
             });
 
             // Remove invoice item row

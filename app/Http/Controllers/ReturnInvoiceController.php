@@ -44,7 +44,7 @@ class ReturnInvoiceController extends Controller
             
         }elseif($this->cuser_role == "Staff"){
             if($this->cuser_business_unit_id){
-                $return_invoices = ReturnInvoice::where('business_unit_id', $this->cuser_business_unit_id)->where('upload_user_id', Auth::user()->id )->paginate(25);
+                $return_invoices = ReturnInvoice::where('business_unit_id', $this->cuser_business_unit_id)->where('create_by', Auth::user()->id )->paginate(25);
             }
         }
 
@@ -94,13 +94,12 @@ class ReturnInvoiceController extends Controller
             'invoice_id'  =>  'required',
             'invoice_date'  =>  'required',
             'total_amount'  =>  'required',
-            'docs'   =>  'required|mimes:jpg,png,jpeg,pdf,xls|max:3072'
+            'docs'   =>  'mimes:jpg,png,jpeg,pdf,xls|max:3072'
         ]);
 
         $file_name = time() . '.' . request()->docs->getClientOriginalExtension();
 
         $upload_path = 'return_docs/';
-        request()->docs->move(public_path($upload_path), $file_name);
 
         $expense_invoice = ExpenseInvoice::where('id', $request->invoice_id)->get();
 
@@ -115,9 +114,16 @@ class ReturnInvoiceController extends Controller
         $return_inv->invoice_date = $request->invoice_date;
         $return_inv->total_amount = $request->total_amount;
         $return_inv->description = $request->description;
-        $return_inv->return_form_file = $upload_path.$file_name;
         $return_inv->create_by = Auth::id();
         $return_inv->edit_by = Auth::id();
+
+        if($request->hasfile('docs')) {
+            $file_name = time() . '.' . request()->docs->getClientOriginalExtension();
+            request()->docs->move(public_path($upload_path), $file_name);
+
+            $return_inv->return_form_file = $upload_path.$file_name;
+        }
+
         $return_inv->save();
 
 
@@ -152,6 +158,7 @@ class ReturnInvoiceController extends Controller
     public function edit($id)
     {
         $this->cuser_business_unit_id = Auth::user()->user_business_unit;
+        $this->cuser_role = Auth::user()->user_role;
         $invoice = ReturnInvoice::find($id);
 
         $expense_invoices = array();
@@ -160,7 +167,7 @@ class ReturnInvoiceController extends Controller
         }elseif($this->cuser_role == "Manager"){
             $expense_invoices = ExpenseInvoice::where('business_unit_id', $this->cuser_business_unit_id)->get(['id', 'invoice_no']);
         }elseif($this->cuser_role == "Staff"){
-            $expense_invoices = ExpenseInvoice::where('upload_user_id', $user_id)->get(['id', 'invoice_no']);
+            $expense_invoices = ExpenseInvoice::where('business_unit_id', $this->cuser_business_unit_id)->where('upload_user_id', Auth::id())->get(['id', 'invoice_no']);
         }
 
         return view('cfms.return-invoice.edit', compact('invoice','expense_invoices'));
@@ -184,11 +191,8 @@ class ReturnInvoiceController extends Controller
 
         $upload_path = 'return_docs/';
 
-        //update return total amout in expense table
-        $expense_invoice = ExpenseInvoice::where('id', $request->invoice_id)->get();
-        $final_amt = $expense_invoice[0]->total_amount - $request->total_amount;
         $exp_invoice = ExpenseInvoice::find($request->invoice_id);
-        $exp_invoice->return_total_amount = $final_amt;
+        $exp_invoice->return_total_amount = $request->total_amount;
         $exp_invoice->save();
 
         $return_inv = ReturnInvoice::find($id);

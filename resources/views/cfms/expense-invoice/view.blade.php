@@ -196,7 +196,7 @@
                                     @php
                                         $ext = pathinfo($invd->inv_file, PATHINFO_EXTENSION);
                                     @endphp
-                                    <li class="list-group-item d-flex mb-5">
+                                    <li class="list-group-item d-flex mb-2">
                                         @if($ext == "xls")
                                             <i class="fa fa-file-excel-o"
                                             style="font-size: 4em;"></i>

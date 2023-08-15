@@ -45,7 +45,7 @@
 
                                             <div class="mb-3 col-sm-4">
                                                 <label for="invoice_date">Invoice Date</label>
-                                                <input type="date" class="form-control" id="invoice_date" name="invoice_date">
+                                                <input type="date" class="form-control" id="invoice_date" name="invoice_date" value="{{ date('Y-m-d') }}">
                                                 @error('invoice_date')
                                                     <span class="text-danger">{{ $message }}</span>
                                                 @enderror

@@ -2,7 +2,7 @@
 
 
 @push('css')
-    <link rel="stylesheet" type="text/css" href="{{ asset('assets/css/dropzone.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ asset('assets/css/select2.css') }}">
 @endpush
 
 @section('content')
@@ -62,7 +62,7 @@
                                             <div class="mb-3 col-sm-4">
                                                 <label for="invoice_date">Invoice Date</label>
                                                 <input type="date" class="form-control" id="invoice_date"
-                                                    name="invoice_date">
+                                                    name="invoice_date" value="{{ date('Y-m-d') }}">
                                                 @error('invoice_date')
                                                     <span class="text-danger">{{ $message }}</span>
                                                 @enderror
@@ -93,7 +93,7 @@
                                                             </select>
                                                         </td>
                                                         <td>
-                                                            <select class="form-select item_id" name="items[]">
+                                                            <select class="form-select js-example-basic-single item_id" name="items[]">
                                                                 <option value="">Select Item</option>
                                                             </select>
                                                         </td>
@@ -146,9 +146,7 @@
 @endsection
 
 @push('scripts')
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="{{ asset('assets/js/dropzone/dropzone.js') }}"></script>
-    <script src="{{ asset('assets/js/dropzone/dropzone-script.js') }}"></script>
+    
     <script>
         let jcates = '';
         @foreach($itemcategories as $cate)
@@ -170,7 +168,7 @@
                             </select>
                         </td>
                         <td>
-                            <select class="form-select item_id" name="items[]">
+                            <select class="form-select js-example-basic-single item_id" name="items[]">
                                 <option value="">Select Item</option>
                             </select>
                         </td>
@@ -181,6 +179,10 @@
                     </tr>
                 `;
                 $("#invoiceItems tbody").append(newRow);
+
+                setTimeout(function(){
+                    $('.js-example-basic-single').select2();
+                }, 100);
             });
 
             // Remove invoice item row
@@ -260,4 +262,7 @@
         });
 
     </script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="{{ asset('assets/js/select2/select2.full.min.js') }}"></script>
+    <script src="{{ asset('assets/js/select2/select2-custom.js') }}"></script>
 @endpush
