@@ -55,7 +55,7 @@ class ExpenseInvoiceController extends Controller
         $expense_invoices = array();
         $queryExpInv = ExpenseInvoice::query();
         if($this->cuser_role == "Admin"){
-            
+
         }elseif($this->cuser_role == "Manager"){
             if($this->cuser_business_unit_id){
                 // else{
@@ -63,9 +63,9 @@ class ExpenseInvoiceController extends Controller
                 // }
 
                 $queryExpInv->where('business_unit_id', $this->cuser_business_unit_id);
-                
+
             }
-            
+
         }elseif($this->cuser_role == "Staff"){
             if($this->cuser_business_unit_id){
                 // $expense_invoices = ExpenseInvoice::where('business_unit_id', $this->cuser_business_unit_id)->where('upload_user_id', Auth::user()->id )->paginate(25);
@@ -125,9 +125,9 @@ class ExpenseInvoiceController extends Controller
         $this->cuser_business_unit_id = Auth::user()->user_business_unit;
         $data['user_role'] = Auth::user()->user_role;
 
-        if($this->cuser_role == "Admin"){
-            return redirect('/expense-invoice')->with('error', "Admin can't create invoice. Due to multiple business units!");
-        }
+        // if($this->cuser_role == "Admin"){
+        //     return redirect('/expense-invoice')->with('error', "Admin can't create invoice. Due to multiple business units!");
+        // }
 
         if($this->cuser_role == "Manager" && !$this->cuser_business_unit_id){
             return redirect('/expense-invoice')->with('error', "Manager should has business unit!");

@@ -47,7 +47,7 @@
                                                         @else
                                                         	<option value="{{ $branchId }}">{{ $branchName }}</option>
                                                         @endif
-                                                        
+
                                                         @endforeach
                                                     </optgroup>
                                                     @endforeach
@@ -85,7 +85,7 @@
                                                     @else
                                                     	<option value="{{ $skey }}">{{ $statuse }}</option>
                                                     @endif
-                                                    
+
                                                   @endforeach
                                                 </select>
                                             </div>
@@ -183,9 +183,10 @@
                                 @php
                                     $ext = pathinfo($invd->inv_file, PATHINFO_EXTENSION);
                                 @endphp
-                                <a class="list-group-item list-group-item-action flex-column align-items-start mt-2"
+                                <a class="list-group-item list-group-item-action flex-column align-items-start mt-2 pe-0"
                                     href="{{ url($invd->inv_file) }}" target="_blank">
                                     <div class="d-flex">
+
                                         <div style="margin: auto;">
                                             @if($ext == "xls")
                                                 <i class="fa fa-file-excel-o"
@@ -202,6 +203,9 @@
                                             <h6>{{ $invd->title .'.'. $ext }} </h6>
                                             <!-- <p class="mb-1">2.0 MB</p> -->
                                             <p> <b>Upload Date : </b>{{ date('d-m-Y', strtotime($invd->created_at)) }}</p>
+                                        </div>
+                                        <div>
+                                            <i class="fa fa-times" aria-hidden="true"></i>
                                         </div>
                                     </div>
                                 </a>
@@ -234,7 +238,7 @@
                                         <!-- chat-header end-->
                                         <div class="chat-history chat-msg-box custom-scrollbar" style="margin-bottom:110px;">
                                             <ul>
-                                                
+
                                                 @foreach ($invoice_notes as $invnote)
                                                 <li>
                                                     <div class="message my-message" style="width: 100%!important;">
@@ -261,7 +265,7 @@
                                                             @else
                                                                 <option value="{{ $skey }}">{{ $statuse }}</option>
                                                             @endif
-                                                            
+
                                                           @endforeach
                                                         </select>
                                                     </div>
@@ -283,7 +287,7 @@
                                                         <span class="text-danger">{{ $message }}</span>
                                                     @enderror
                                                 </div>
-                                            </div> 
+                                            </div>
                                         </form>
                                         <!-- end chat-message-->
                                         <!-- chat end-->
@@ -401,13 +405,13 @@
                     method: 'POST',
                     data: {cate_id:cate_id, _token:token},
                     success: function(data) {
-                        // $('.item_id').find('option').remove();  
+                        // $('.item_id').find('option').remove();
                         main.closest('tr').find('select.item_id option').remove();
                         var selectbox = main.closest('tr').find('select.item_id');
 
                         selectbox.append('<option selected="selected">Select Item</option>');
-                        $.each(data.array_data, function(value, text){   
-                            // console.log(text);               
+                        $.each(data.array_data, function(value, text){
+                            // console.log(text);
                           selectbox.append('<option value="' + text.id + '">' + text.name + '</option>');
                         });
                     }
@@ -424,24 +428,23 @@
                     method: 'POST',
                     data: {branch_id:branch_id, _token:token},
                     success: function(data) {
-                        $('#project_id').find('option').remove();  
+                        $('#project_id').find('option').remove();
 
                         $('#project_id').append('<option selected="selected" value="">Select Project</option>');
-                        $.each(data.array_data, function(value, text){   
-                            // console.log(text); 
+                        $.each(data.array_data, function(value, text){
+                            // console.log(text);
                             if(project_id && project_id == text.id){
 
                             	$('#project_id').append('<option value="' + text.id + '" selected>' + text.name + '</option>');
                             }else{
                             	$('#project_id').append('<option value="' + text.id + '">' + text.name + '</option>');
-                            }               
-                          
+                            }
+
                         });
                     }
                 });
             }
         });
-        
 
         $(document).on('click', '.remove-edit-btn', function() {
             $('#modal_title').html('Delete Invoice Item');
@@ -456,8 +459,6 @@
             let href = $(this).attr('data-attr');
             $('#delete-inv-item').attr('action', href);
         });
-
-        
     </script>
 @endpush
 
