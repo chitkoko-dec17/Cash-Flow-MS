@@ -35,7 +35,6 @@
                             <form class="row g-3">
                                 <div class="col-md-3 col-sm-12">
                                     <div class="form-group">
-
                                         <select class="js-example-basic-single col-sm-12">
                                             <option value="">Select a business unit</option>
                                             <option value="AL">one</option>
@@ -85,7 +84,7 @@
                                         </select>
                                     </div>
                                 </div>
-                                <div class="col-md-3 col-sm-12">
+                                {{-- <div class="col-md-3 col-sm-12">
                                     <div class="form-group">
 
                                         <select class="js-example-basic-single col-sm-12">
@@ -93,7 +92,7 @@
                                             <option value="AL">By Price</option>
                                         </select>
                                     </div>
-                                </div>
+                                </div> --}}
                                 <div class="col-md-3 col-sm-12">
                                     <div class="form-group">
 
@@ -106,10 +105,10 @@
                                         <input type="date" class="form-control" id="toDate">
                                     </div>
                                 </div>
-                                <div class="col-md">
+                                <div class="col-md-3 ">
                                     <div class="form-group">
                                         <input class="btn btn-primary" type="submit" value="Search">
-                                        <input class="btn btn-info" type="reset" value="Clear Filter">
+                                        {{-- <input class="btn btn-info" type="reset" value="Clear Filter"> --}}
                                     </div>
                                 </div>
                             </form>

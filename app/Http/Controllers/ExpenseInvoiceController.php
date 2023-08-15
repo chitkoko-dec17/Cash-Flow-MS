@@ -14,6 +14,7 @@ use App\Models\Branch;
 use App\Models\BusinessUnit;
 use Auth;
 use DB;
+use Carbon\Carbon;
 
 class ExpenseInvoiceController extends Controller
 {
@@ -37,25 +38,75 @@ class ExpenseInvoiceController extends Controller
      */
     public function index(Request $request)
     {
+
         $this->cuser_role = Auth::user()->user_role;
         $this->cuser_business_unit_id = Auth::user()->user_business_unit;
 
+        // $selected_from_date = ($request->from_date) ? Carbon::parse($request->from_date) : "";
+        // $selected_to_date = ($request->to_date) ? Carbon::parse($request->to_date) : "";
+
+        $selected_invoice_no = ($request->invoice_no) ? $request->invoice_no : "";
+        $selected_from_date = ($request->from_date) ? $request->from_date : "";
+        $selected_to_date = ($request->to_date) ? $request->to_date : "";
+        $selected_status = ($request->status) ? $request->status : "";
+
         $expense_invoices = array();
+        $queryExpInv = ExpenseInvoice::query();
         if($this->cuser_role == "Admin"){
-            $expense_invoices = ExpenseInvoice::paginate(25);
+
         }elseif($this->cuser_role == "Manager"){
             if($this->cuser_business_unit_id){
-                $expense_invoices = ExpenseInvoice::where('business_unit_id', $this->cuser_business_unit_id)->paginate(25);
+                // else{
+                //     $expense_invoices = ExpenseInvoice::where('business_unit_id', $this->cuser_business_unit_id)->paginate(25);
+                // }
+
+                $queryExpInv->where('business_unit_id', $this->cuser_business_unit_id);
+
             }
 
         }elseif($this->cuser_role == "Staff"){
             if($this->cuser_business_unit_id){
-                $expense_invoices = ExpenseInvoice::where('business_unit_id', $this->cuser_business_unit_id)->where('upload_user_id', Auth::user()->id )->paginate(25);
+                // $expense_invoices = ExpenseInvoice::where('business_unit_id', $this->cuser_business_unit_id)->where('upload_user_id', Auth::user()->id )->paginate(25);
+
+                $queryExpInv->where('business_unit_id', $this->cuser_business_unit_id)->where('upload_user_id', Auth::user()->id);
             }
         }
 
+        if($selected_invoice_no || $selected_from_date || $selected_to_date || $selected_status){
+
+            // $queryExpInv = ExpenseInvoice::query();
+            // $queryExpInv->where('business_unit_id', $this->cuser_business_unit_id);
+
+            if($selected_invoice_no){
+                $queryExpInv->where('invoice_no', 'like', '%' . $selected_invoice_no . '%');
+            }
+
+            if($selected_from_date) {
+                $queryExpInv->whereDate('invoice_date', '>=', $selected_from_date);
+            }
+
+            if($selected_to_date) {
+                $queryExpInv->whereDate('invoice_date', '<=', $selected_to_date);
+            }
+
+            if($selected_status) {
+                $queryExpInv->Where('admin_status', $selected_status);
+            }
+        }
+
+        //Fetch list of results
+        $expense_invoices = $queryExpInv->paginate(25);
+
         $data['user_role'] = $this->cuser_role;
         $data['business_unit_id'] = $this->cuser_business_unit_id;
+        $data['statuses'] = $this->statuses;
+
+        //filter selected data
+        $data['selected_from_date'] = $selected_from_date;
+        $data['selected_to_date'] = $selected_to_date;
+        $data['selected_status'] = $selected_status;
+        $data['selected_invoice_no'] = $selected_invoice_no;
+
         return view('cfms.expense-invoice.index', compact('expense_invoices','data'));
     }
 
@@ -73,9 +124,9 @@ class ExpenseInvoiceController extends Controller
         //     return redirect('/expense-invoice')->with('error', "Admin can't create invoice. Due to multiple business units!");
         // }
 
-        // if($this->cuser_business_unit_id){
-        //     return redirect('/expense-invoice')->with('error', "Manager should has business unit!");
-        // }
+        if($this->cuser_role == "Manager" && !$this->cuser_business_unit_id){
+            return redirect('/expense-invoice')->with('error', "Manager should has business unit!");
+        }
 
         $itemcategories = ItemCategory::where('business_unit_id', $this->cuser_business_unit_id)->get();
         // $items = Item::where('invoice_type_id', 0)->get();
@@ -128,7 +179,7 @@ class ExpenseInvoiceController extends Controller
                 'invoice_no' => $invoice_no,
                 'invoice_date' => $request->invoice_date,
                 'total_amount' => $request->total_amount,
-                'return_total_amount' => $request->total_amount,
+                'return_total_amount' => 0,
                 'description' => $request->description,
                 'upload_user_id' => Auth::id(),
                 'appoved_manager_id' => 0,
@@ -191,8 +242,11 @@ class ExpenseInvoiceController extends Controller
         $invoice_no = 'EXINV-'.$invoice->invoice_no;
         $invoice_items = ExpenseInvoiceItem::where('invoice_id', $id)->get();
         $invoice_docs = InvoiceDocument::where('invoice_no', $invoice_no)->get();
+        $invoice_notes = InvoiceNote::where('invoice_no', $invoice_no)->get();
 
-        return view('cfms.expense-invoice.view', compact('invoice', 'invoice_items','invoice_docs','invoice_no'));
+        $data['user_role'] = Auth::user()->user_role;
+
+        return view('cfms.expense-invoice.view', compact('invoice', 'invoice_items','invoice_docs','invoice_no', 'invoice_notes', 'data'));
     }
 
     /**
@@ -204,6 +258,7 @@ class ExpenseInvoiceController extends Controller
     public function edit($id)
     {
         $this->cuser_business_unit_id = Auth::user()->user_business_unit;
+        $submit_btn_control = true;
 
         $itemcategories = ItemCategory::where('business_unit_id', $this->cuser_business_unit_id)->get();
         $statuses = $this->statuses;
@@ -221,8 +276,15 @@ class ExpenseInvoiceController extends Controller
         $invoice_no = 'EXINV-'.$invoice->invoice_no;
         $invoice_items = ExpenseInvoiceItem::where('invoice_id', $id)->get();
         $invoice_docs = InvoiceDocument::where('invoice_no', $invoice_no)->get();
+        $invoice_notes = InvoiceNote::where('invoice_no', $invoice_no)->get();
 
-        return view('cfms.expense-invoice.edit', compact('invoice', 'invoice_items','invoice_docs','invoice_no','itemcategories','branches', 'statuses'));
+        //for submit btn control
+        if(Auth::user()->user_role == "Staff" && $invoice->admin_status != "pending"){
+            $submit_btn_control = false;
+        }
+        $data['submit_btn_control'] = $submit_btn_control;
+
+        return view('cfms.expense-invoice.edit', compact('invoice', 'invoice_items','invoice_docs','invoice_no','itemcategories','branches', 'statuses', 'invoice_notes', 'data'));
     }
 
     /**
@@ -316,5 +378,44 @@ class ExpenseInvoiceController extends Controller
         $exp_invoice = ExpenseInvoice::find($id);
         $exp_invoice->delete();
         return redirect('/expense-invoice')->with('success', 'Expense Invoice deleted successfully.');
+    }
+
+    public function add_inv_note(Request $request, $id){
+        $request->validate([
+            'invoice_note'  =>  'required',
+        ]);
+
+        $invoice = ExpenseInvoice::find($id);
+        // $invoice->manager_status = $request->status;
+        // $invoice->admin_status = $request->status;
+        // $invoice->save();
+        $invoice_no = 'EXINV-'.$invoice->invoice_no;
+
+        InvoiceNote::create([
+                'invoice_no' => $invoice_no,
+                'description' => $request->invoice_note,
+                'status' => $request->status,
+                'added_by' => Auth::id()
+            ]);
+
+        return back()->with("success", "Successfully add the invoice note.");
+    }
+
+    public function get_item_history(Request $request){
+        $item_id = $request->item_id;
+        $items = ExpenseInvoiceItem::with('invoice','item')->where('item_id', $item_id)->orderBy('id', 'desc')->take(10)->get()->toArray();
+
+        return response()->json([
+            'success' => true,
+            'data' => $items
+        ]);
+    }
+
+    public function get_expense_invoice($id){
+        $invoice = ExpenseInvoice::find($id);
+        $invoice_no = 'EXINV-'.$invoice->invoice_no;
+        $invoice_items = ExpenseInvoiceItem::where('invoice_id', $id)->get();
+
+        return view('cfms.expense-invoice.invoice', compact('invoice', 'invoice_items','invoice_no'));
     }
 }

@@ -18,5 +18,11 @@ class InvoiceNote extends Model
         'invoice_no',
         'description',
         'status',
+        'added_by'
     ];
+
+    public function added_user()
+    {
+        return $this->belongsTo(User::class, 'added_by');
+    }
 }

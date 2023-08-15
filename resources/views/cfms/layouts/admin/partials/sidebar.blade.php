@@ -2,7 +2,7 @@
     <div class="sidebar-user text-center">
         <a class="setting-primary" href="{{ route('edit-user') }}"><i data-feather="settings"></i></a><img class="img-90 rounded-circle" src="{{asset('assets/images/dashboard/1.png')}}" alt="" />
         {{-- <div class="badge-bottom"><span class="badge badge-primary">New</span></div> --}}
-        <a href="javascript:void(0)"> <h6 class="mt-3 f-14 f-w-600">Nyan Lynn Htun</h6></a>
+        <a href="javascript:void(0)"> <h6 class="mt-3 f-14 f-w-600">{{ Auth::user()->name }}</h6></a>
         <p class="mb-0 font-roboto">{{ Auth::user()->user_role }}</p>
         <p class="mb-0 font-roboto">{{ Session::get('user_business_unit_name')}}</p>
     </div>

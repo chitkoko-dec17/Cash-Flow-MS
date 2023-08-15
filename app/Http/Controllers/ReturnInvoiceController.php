@@ -58,28 +58,28 @@ class ReturnInvoiceController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
+    public function create(Request $request)
     {
         $this->cuser_role = Auth::user()->user_role;
         $this->cuser_business_unit_id = Auth::user()->user_business_unit;
         $user_id = Auth::user()->id;
 
-        if($this->cuser_role == "Admin"){
-            // return redirect('/return-invoice')->with('error', "Admin can't create invoice. Due to multiple business units!");
-        }
-
-        if($this->cuser_business_unit_id){
-            // return redirect('/return-invoice')->with('error', "Manager should has business unit!");
+        if($this->cuser_role == "Manager" && !$this->cuser_business_unit_id){
+            return redirect('/return-invoice')->with('error', "Manager should has business unit!");
         }
 
         $expense_invoices = array();
-        if($this->cuser_role == "Staff"){
-            $expense_invoices = ExpenseInvoice::where('upload_user_id', $user_id)->get(['id', 'invoice_no']);
-        }else{
+        if($this->cuser_role == "Admin"){
             $expense_invoices = ExpenseInvoice::all(['id', 'invoice_no']);
+        }elseif($this->cuser_role == "Manager"){
+            $expense_invoices = ExpenseInvoice::where('business_unit_id', $this->cuser_business_unit_id)->get(['id', 'invoice_no']);
+        }elseif($this->cuser_role == "Staff"){
+            $expense_invoices = ExpenseInvoice::where('upload_user_id', $user_id)->get(['id', 'invoice_no']);
         }
 
-        return view('cfms.return-invoice.create', compact('expense_invoices'));
+        $data['expense_inv_id'] = ($request->expense_inv) ? $request->expense_inv : "";
+
+        return view('cfms.return-invoice.create', compact('expense_invoices','data'));
     }
 
     /**
@@ -105,9 +105,8 @@ class ReturnInvoiceController extends Controller
         $expense_invoice = ExpenseInvoice::where('id', $request->invoice_id)->get();
 
         //update return total amout in expense table
-        $final_amt = $expense_invoice[0]->total_amount - $request->total_amount;
         $exp_invoice = ExpenseInvoice::find($request->invoice_id);
-        $exp_invoice->return_total_amount = $final_amt;
+        $exp_invoice->return_total_amount = $request->total_amount;
         $exp_invoice->save();
 
         $return_inv = new ReturnInvoice;
@@ -156,10 +155,12 @@ class ReturnInvoiceController extends Controller
         $invoice = ReturnInvoice::find($id);
 
         $expense_invoices = array();
-        if($this->cuser_role == "Staff"){
-            $expense_invoices = ExpenseInvoice::where('upload_user_id', $user_id)->get(['id', 'invoice_no']);
-        }else{
+        if($this->cuser_role == "Admin"){
             $expense_invoices = ExpenseInvoice::all(['id', 'invoice_no']);
+        }elseif($this->cuser_role == "Manager"){
+            $expense_invoices = ExpenseInvoice::where('business_unit_id', $this->cuser_business_unit_id)->get(['id', 'invoice_no']);
+        }elseif($this->cuser_role == "Staff"){
+            $expense_invoices = ExpenseInvoice::where('upload_user_id', $user_id)->get(['id', 'invoice_no']);
         }
 
         return view('cfms.return-invoice.edit', compact('invoice','expense_invoices'));
