@@ -48,7 +48,7 @@
                                 @foreach ($users as $user)
                                     <tr>
                                         <td>{{$user->name}}</td>
-                                        <td>{{$user->role->name}} - {{$user->role_id}}</td>
+                                        <td>{{$user->role->name}}</td>
                                         <td>{{$user->email}}</td>
                                         <td>{{isset($user->branchUser->branch->name) ? $user->branchUser->branch->name : ''}} </td>
                                         <td>{{isset($user->projectUser->project->name) ? $user->projectUser->project->name : ''}}</td>
