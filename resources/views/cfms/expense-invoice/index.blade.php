@@ -115,16 +115,20 @@
                                                     <a href="{{ route('expense-invoice.edit', $inv->id) }}"
                                                         class="btn btn-outline-info btn-sm  action-btn" title="Edit"
                                                         data-toggle="tooltip"><i class="fa fa-pencil"></i></a>
+                                                    @if(($data['user_role'] == "Staff" && $inv->return_total_amount == 0) || ($data['user_role'] != "Staff"))
                                                     <a href="{{ route('return-invoice.create') }}/?expense_inv={{ $inv->id }}" data-toggle="modal" 
                                                         class="btn btn-outline-warning btn-sm  action-btn"
                                                         title="Go Return Invoice" data-toggle="tooltip"><i
                                                             class="fa fa-file"></i></a>
+                                                    @endif
+                                                    @if($data['user_role'] != "Staff")
                                                     <a href="javascript:void(0)" data-toggle="modal"
                                                         data-target="#deleteModal"
                                                         class="btn btn-outline-danger btn-sm  action-btn delete-inv"
                                                         title="Delete" data-toggle="tooltip" data-id="{{ $inv->id }}"
                                                         data-attr="{{ route('expense-invoice.destroy', $inv->id) }}"><i
                                                             class="fa fa-trash"></i></a>
+                                                    @endif
                                                 </td>
                                             </tr>
                                         @endforeach

@@ -76,6 +76,7 @@
                                                 @enderror
                                             </div>
 
+                                            @if($data['user_role'] != "Staff")
                                             <div class="mb-3 col-sm-4">
                                                 <label for="status">Invoice Status</label>
                                                 <select class="form-control form-select" id="status" name="status">
@@ -89,6 +90,7 @@
                                                   @endforeach
                                                 </select>
                                             </div>
+                                            @endif
                                         </div>
                                         <!-- Invoice Items -->
                                         <div class="form-group">
@@ -394,7 +396,7 @@
                 $.ajax({
                     url: "<?php echo route('get.items') ?>",
                     method: 'POST',
-                    data: {cate_id:cate_id, _token:token},
+                    data: {cate_id:cate_id, inv_type:1, _token:token},
                     success: function(data) {
                         // $('.item_id').find('option').remove();
                         main.closest('tr').find('select.item_id option').remove();

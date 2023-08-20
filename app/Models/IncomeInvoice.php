@@ -55,4 +55,9 @@ class IncomeInvoice extends Model
     {
         return $this->belongsTo(User::class, 'appoved_manager_id');
     }
+
+    public function inv_items()
+    {
+        return $this->hasMany(ExpenseInvoiceItem::class); 
+    }
 }

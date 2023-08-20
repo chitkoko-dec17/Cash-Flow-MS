@@ -223,7 +223,7 @@
                 $.ajax({
                     url: "<?php echo route('get.items') ?>",
                     method: 'POST',
-                    data: {cate_id:cate_id, _token:token},
+                    data: {cate_id:cate_id, inv_type:1, _token:token},
                     success: function(data) {
                         // $('.item_id').find('option').remove();
                         main.closest('tr').find('select.item_id option').remove();
