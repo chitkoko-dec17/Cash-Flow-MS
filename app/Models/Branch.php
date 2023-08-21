@@ -25,6 +25,10 @@ class Branch extends Model
         return $this->belongsTo(BusinessUnit::class, 'business_unit_id');
     }
 
+    public function branchuser(){
+        return $this->belongsTo(BranchUser::class, 'branch_id');
+    }
+
     public function scopeSearch($query, $term){
         $term = "%$term%";
         $query->where(function($query) use ($term){

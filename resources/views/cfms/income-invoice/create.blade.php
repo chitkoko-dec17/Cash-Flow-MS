@@ -2,7 +2,7 @@
 
 
 @push('css')
-    <link rel="stylesheet" type="text/css" href="{{ asset('assets/css/dropzone.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ asset('assets/css/select2.css') }}">
 @endpush
 
 @section('content')
@@ -13,11 +13,12 @@
         <li class="breadcrumb-item"><a href="{{ route('income-invoice.index') }}">Income List</a></li>
         <li class="breadcrumb-item active">Create</li>
     @endcomponent
+
     <div class="container-fluid list-products">
         <div class="row">
             <div class="card">
                 <!-- <div class="card-header pb-0">
-                    <h5>Income Invoice <code>Configuration</code></h5>
+                    <h5>Expense Invoice <code>Configuration</code></h5>
                 </div> -->
                 <div class="card-body">
                     <div class="tab-content pt-4" id="pills-tabContent">
@@ -28,6 +29,7 @@
                                     <form method="post" action="{{ route('income-invoice.store') }}" enctype="multipart/form-data">
                                         @csrf
                                         <div class="row">
+                                            @if($data['user_role'] != "Staff")
                                             <div class="mb-3 col-sm-4">
                                                 <label for="branch_id">Branch</label>
                                                 <select class="form-control form-select" id="branch_id" name="branch_id">
@@ -44,7 +46,10 @@
                                                     <span class="text-danger">{{ $message }}</span>
                                                 @enderror
                                             </div>
-
+                                            @endif
+                                            @if($data['user_role'] == "Staff")
+                                                <input type="hidden" id="branch_id" name="branch_id" value="{{ $data['branch_id'] }}">
+                                            @endif
                                             <div class="mb-3 col-sm-4">
                                                 <label for="project_id">Project</label>
                                                 <select class="form-control form-select" id="project_id" name="project_id">
@@ -58,7 +63,7 @@
                                             <div class="mb-3 col-sm-4">
                                                 <label for="invoice_date">Invoice Date</label>
                                                 <input type="date" class="form-control" id="invoice_date"
-                                                    name="invoice_date">
+                                                    name="invoice_date" value="{{ date('Y-m-d') }}">
                                                 @error('invoice_date')
                                                     <span class="text-danger">{{ $message }}</span>
                                                 @enderror
@@ -89,7 +94,7 @@
                                                             </select>
                                                         </td>
                                                         <td>
-                                                            <select class="form-select item_id" name="items[]">
+                                                            <select class="form-select js-example-basic-single item_id" name="items[]">
                                                                 <option value="">Select Item</option>
                                                             </select>
                                                         </td>
@@ -142,15 +147,17 @@
 @endsection
 
 @push('scripts')
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="{{ asset('assets/js/dropzone/dropzone.js') }}"></script>
-    <script src="{{ asset('assets/js/dropzone/dropzone-script.js') }}"></script>
+    
     <script>
         let jcates = '';
         @foreach($itemcategories as $cate)
             jcates += '<option value="{{ $cate->id }}">{{ $cate->name }}</option>';
         @endforeach
         $(document).ready(function() {
+            @if($data['user_role'] == "Staff")
+            $('#branch_id').trigger('change');
+            @endif
+
             // Add new invoice item row
             $("#add-item-btn").click(function() {
                 const newRow = `
@@ -162,7 +169,7 @@
                             </select>
                         </td>
                         <td>
-                            <select class="form-select item_id" name="items[]">
+                            <select class="form-select js-example-basic-single item_id" name="items[]">
                                 <option value="">Select Item</option>
                             </select>
                         </td>
@@ -173,6 +180,10 @@
                     </tr>
                 `;
                 $("#invoiceItems tbody").append(newRow);
+
+                setTimeout(function(){
+                    $('.js-example-basic-single').select2();
+                }, 100);
             });
 
             // Remove invoice item row
@@ -213,7 +224,7 @@
                 $.ajax({
                     url: "<?php echo route('get.items') ?>",
                     method: 'POST',
-                    data: {cate_id:cate_id, _token:token},
+                    data: {cate_id:cate_id, inv_type:2, _token:token},
                     success: function(data) {
                         // $('.item_id').find('option').remove();
                         main.closest('tr').find('select.item_id option').remove();
@@ -241,7 +252,7 @@
                     success: function(data) {
                         $('#project_id').find('option').remove();
 
-                        $('#project_id').append('<option selected="selected">Select Project</option>');
+                        $('#project_id').append('<option selected="selected" value="">Select Project</option>');
                         $.each(data.array_data, function(value, text){
                             // console.log(text);
                           $('#project_id').append('<option value="' + text.id + '">' + text.name + '</option>');
@@ -252,4 +263,7 @@
         });
 
     </script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="{{ asset('assets/js/select2/select2.full.min.js') }}"></script>
+    <script src="{{ asset('assets/js/select2/select2-custom.js') }}"></script>
 @endpush

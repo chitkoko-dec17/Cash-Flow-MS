@@ -54,28 +54,32 @@
                     {{-- filter form area --}}
                     <div class="row mt-0 collapse filter-collapse" id="filterCollapse">
                         <form class="row g-3">
+                            <!-- <div class="col-md-4">
+                                <label for="invoice_no" class="form-label">Invoice No.</label>
+                                <input type="text" class="form-control" name="invoice_no" id="invoice_no" value="{{ $data['selected_invoice_no'] }}">
+                            </div> -->
                             <div class="col-md-4">
-                                <label for="inputState" class="form-label">Create by</label>
-                                <select id="inputState" class="form-select">
-                                    <option selected>Choose...</option>
-                                    <option>...</option>
+                                <label for="from_date" class="form-label">From</label>
+                                <input type="date" class="form-control" name="from_date" id="from_date" value="{{ $data['selected_from_date'] }}">
+                            </div>
+                            <div class="col-md-4">
+                                <label for="to_date" class="form-label">To</label>
+                                <input type="date" class="form-control" name="to_date" id="to_date" value="{{ $data['selected_to_date'] }}">
+                            </div>
+                            <!-- <div class="col-md-4">
+                                <label for="status" class="form-label">Status</label>
+                                <select class="form-select" id="status" name="status">
+                                    <option value="">Choose...</option>
+                                    @foreach($data['statuses'] as $skey => $statuse)
+                                        @if($data['selected_status'] == $skey)
+                                            <option value="{{ $skey }}" selected>{{ $statuse }}</option>
+                                        @else
+                                            <option value="{{ $skey }}">{{ $statuse }}</option>
+                                        @endif
+                                        
+                                    @endforeach
                                 </select>
-                            </div>
-                            <div class="col-md-4">
-                                <label for="fromDate" class="form-label">From</label>
-                                <input type="date" class="form-control" id="fromDate">
-                            </div>
-                            <div class="col-md-4">
-                                <label for="toDate" class="form-label">To</label>
-                                <input type="date" class="form-control" id="toDate">
-                            </div>
-                            <div class="col-md-4">
-                                <label for="inputState" class="form-label">Status</label>
-                                <select id="inputState" class="form-select">
-                                    <option selected>Choose...</option>
-                                    <option>...</option>
-                                </select>
-                            </div>
+                            </div> -->
                             <div class="col-12">
                                 <button type="submit" class="btn btn-primary">Search</button>
                             </div>
@@ -103,18 +107,20 @@
                                                 <td>{{ $inv->total_amount }}</td>
                                                 <td>{{ $inv->user->name }}</td>
                                                 <td>
-                                                    <!-- <a href="{{ route('return-invoice.show', $inv->id) }}"
+                                                    <a href="{{ route('return-invoice.show', $inv->id) }}"
                                                         class="btn btn-outline-success btn-sm action-btn" title="View"
-                                                        data-toggle="tooltip"><i class="fa fa-eye"></i></a>-->
+                                                        data-toggle="tooltip"><i class="fa fa-eye"></i></a>
                                                     <a href="{{ route('return-invoice.edit', $inv->id) }}"
                                                         class="btn btn-outline-info btn-sm  action-btn" title="Edit"
                                                         data-toggle="tooltip"><i class="fa fa-pencil"></i></a>
+                                                    @if($data['user_role'] != "Staff")
                                                     <a href="javascript:void(0)" data-toggle="modal"
                                                         data-target="#deleteModal"
                                                         class="btn btn-outline-danger btn-sm  action-btn delete-inv"
                                                         title="Delete" data-toggle="tooltip" data-id="{{ $inv->id }}"
                                                         data-attr="{{ route('return-invoice.destroy', $inv->id) }}"><i
                                                             class="fa fa-trash"></i></a>
+                                                    @endif
                                                 </td>
                                             </tr>
                                         @endforeach

@@ -8,6 +8,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 use Auth;
+use App\Models\BranchUser;
 
 class User extends Authenticatable
 {
@@ -116,7 +117,8 @@ class User extends Authenticatable
         }elseif($user_role == "Manager"){
             $user_business_unit_id = isset(Auth::user()->businessunit->id) ? Auth::user()->businessunit->id : null;
         }elseif($user_role == "Staff"){
-            $user_business_unit_id = null;
+            $branchuser = BranchUser::where('user_id', Auth::id())->first();
+            $user_business_unit_id = $branchuser->branch->business_unit_id;
         }else{
             $user_business_unit_id = null;
         }

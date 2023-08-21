@@ -2,205 +2,86 @@
 
 
 @section('content')
-<div class="container-fluid list-products">
-  <div class="row">
-      <div class="col-sm-12">
-          <div class="card">
-              <div class="card-body">
-                  <div>
-                      <div>
-                          <div class="row invo-header">
-                              <div class="col-sm-6">
-                                  <div class="media">
-                                      <div class="media-left">
-                                          <a href="{{ route('index') }}"><img class="media-object img-60" src="{{asset('assets/images/logo/logo-1.png')}}" alt="" /></a>
-                                      </div>
-                                      <div class="media-body m-l-20">
-                                          <h4 class="media-heading f-w-600">Viho</h4>
-                                          <p>
-                                              hello@viho.in<br />
-                                              <span class="digits">289-335-6503</span>
-                                          </p>
-                                      </div>
-                                  </div>
-                                  <!-- End Info-->
-                              </div>
-                              <div class="col-sm-6">
-                                  <div class="text-md-end text-xs-center">
-                                      <h3>Invoice #<span class="digits counter">1069</span></h3>
-                                      <p>
-                                          Issued: May<span class="digits"> 27, 2015</span><br />
-                                          Payment Due: June <span class="digits">27, 2015</span>
-                                      </p>
-                                  </div>
-                                  <!-- End Title                                 -->
-                              </div>
-                          </div>
-                      </div>
-                      <!-- End InvoiceTop-->
-                      <div class="row invo-profile">
-                          <div class="col-xl-4">
-                              <div class="media">
-                                  <div class="media-left"><img class="media-object rounded-circle img-60" src="{{asset('assets/images/user/1.jpg')}}" alt="" /></div>
-                                  <div class="media-body m-l-20">
-                                      <h4 class="media-heading f-w-600">Johan Deo</h4>
-                                      <p>
-                                          JohanDeo@gmail.com<br />
-                                          <span class="digits">555-555-5555</span>
-                                      </p>
-                                  </div>
-                              </div>
-                          </div>
-                          <div class="col-xl-8">
-                              <div class="text-xl-end" id="project">
-                                  <h6>Project Description</h6>
-                                  <p>
-                                      Lorem Ipsum is simply dummy text of the printing and typesetting industry.It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout.
-                                  </p>
-                              </div>
-                          </div>
-                      </div>
-                      <!-- End Invoice Mid-->
-                      <div>
-                          <div class="table-responsive invoice-table" id="table">
-                              <table class="table table-bordered table-striped">
-                                  <tbody>
-                                      <tr>
-                                          <td class="item">
-                                              <h6 class="p-2 mb-0">Item Description</h6>
-                                          </td>
-                                          <td class="Hours">
-                                              <h6 class="p-2 mb-0">Hours</h6>
-                                          </td>
-                                          <td class="Rate">
-                                              <h6 class="p-2 mb-0">Rate</h6>
-                                          </td>
-                                          <td class="subtotal">
-                                              <h6 class="p-2 mb-0">Sub-total</h6>
-                                          </td>
-                                      </tr>
-                                      <tr>
-                                          <td>
-                                              <label>Lorem Ipsum</label>
-                                              <p class="m-0">Lorem Ipsum is simply dummy text of the printing and typesetting industry.</p>
-                                          </td>
-                                          <td>
-                                              <p class="itemtext digits">5</p>
-                                          </td>
-                                          <td>
-                                              <p class="itemtext digits">$75</p>
-                                          </td>
-                                          <td>
-                                              <p class="itemtext digits">$375.00</p>
-                                          </td>
-                                      </tr>
-                                      <tr>
-                                          <td>
-                                              <label>Lorem Ipsum</label>
-                                              <p class="m-0">Lorem Ipsum is simply dummy text of the printing and typesetting industry.</p>
-                                          </td>
-                                          <td>
-                                              <p class="itemtext digits">3</p>
-                                          </td>
-                                          <td>
-                                              <p class="itemtext digits">$75</p>
-                                          </td>
-                                          <td>
-                                              <p class="itemtext digits">$225.00</p>
-                                          </td>
-                                      </tr>
-                                      <tr>
-                                          <td>
-                                              <label>Lorem Ipsum</label>
-                                              <p class="m-0">Lorem Ipsum is simply dummy text of the printing and typesetting industry.</p>
-                                          </td>
-                                          <td>
-                                              <p class="itemtext digits">10</p>
-                                          </td>
-                                          <td>
-                                              <p class="itemtext digits">$75</p>
-                                          </td>
-                                          <td>
-                                              <p class="itemtext digits">$750.00</p>
-                                          </td>
-                                      </tr>
-                                      <tr>
-                                          <td>
-                                              <label>Lorem Ipsum</label>
-                                              <p class="m-0">Lorem Ipsum is simply dummy text of the printing and typesetting industry.</p>
-                                          </td>
-                                          <td>
-                                              <p class="itemtext digits">10</p>
-                                          </td>
-                                          <td>
-                                              <p class="itemtext digits">$75</p>
-                                          </td>
-                                          <td>
-                                              <p class="itemtext digits">$750.00</p>
-                                          </td>
-                                      </tr>
-                                      <tr>
-                                          <td>
-                                              <p class="itemtext"></p>
-                                          </td>
-                                          <td>
-                                              <p class="m-0">HST</p>
-                                          </td>
-                                          <td>
-                                              <p class="m-0 digits">13%</p>
-                                          </td>
-                                          <td>
-                                              <p class="m-0 digits">$419.25</p>
-                                          </td>
-                                      </tr>
-                                      <tr>
-                                          <td></td>
-                                          <td></td>
-                                          <td class="Rate">
-                                              <h6 class="mb-0 p-2">Total</h6>
-                                          </td>
-                                          <td class="payment digits">
-                                              <h6 class="mb-0 p-2">$3,644.25</h6>
-                                          </td>
-                                      </tr>
-                                  </tbody>
-                              </table>
-                          </div>
-                          <!-- End Table-->
-                          <div class="row mt-3">
-                              <div class="col-md-8">
-                                  <div>
-                                      <p class="legal">
-                                          <strong>Thank you for your business!</strong> Payment is expected within 31 days; please process this invoice within that time. There will be a 5% interest charge per month on late invoices.
-                                      </p>
-                                  </div>
-                              </div>
-                              <div class="col-md-4">
-                                  <form class="text-end invo-pal">
-                                      <input type="image" src="{{asset('assets/images/other-images/paypal.png')}}" name="submit" alt="PayPal - The safer, easier way to pay online!" />
-                                  </form>
-                              </div>
-                          </div>
-                      </div>
-                      <!-- End InvoiceBot-->
-                  </div>
-                  <div class="col-sm-12 text-center mt-3">
-                      <button class="btn btn btn-primary me-2" type="button" onclick="myFunction()">Print</button>
-                      <button class="btn btn-secondary" type="button">Cancel</button>
-                  </div>
-                  <!-- End Invoice-->
-                  <!-- End Invoice Holder-->
-              </div>
-          </div>
-      </div>
-  </div>
+    @component('components.return_breadcrumb')
+        @slot('breadcrumb_title')
+            <h3>Return Invoice Detail</h3>
+        @endslot
+        <li class="breadcrumb-item"><a href="{{ route('return-invoice.index') }}">Return List</a></li>
+        <li class="breadcrumb-item active">Detail</li>
+    @endcomponent
+    <div class="container-fluid list-products">
+        <div class="row">
+            <div class="card">
+                <div class="card-body">
+                    <div class="tab-content pt-4" id="pills-tabContent">
+                        <div class="tab-pane fade show active" id="pills-home" role="tabpanel"
+                            aria-labelledby="return-form">
+                            <div class="row">
+                                <div class="col-xl-12 col-sm-12">
+                                    
+                                        <div class="row">
+                                            <div class="mb-3 col-sm-4">
+                                                <label for="invoice_id">Expense Invoice No.</label>
+                                                <input type="date" class="form-control" id="invoice_date" name="invoice_date" value="{{$invoice->invoice_date }}">
+                                            </div>
 
-</div>
+                                            <div class="mb-3 col-sm-4">
+                                                <label for="invoice_date">Invoice Date</label>
+                                                <input type="date" class="form-control" id="invoice_date" name="invoice_date" value="{{$invoice->invoice_date }}">
+                                            </div>
+
+                                            <div class="mb-3 col-sm-4">
+                                                <label for="total_amount">Total Amount</label>
+                                                <input type="text" class="form-control" id="total_amount" name="total_amount" value="{{$invoice->total_amount }}">
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="description">Description</label>
+                                            <textarea class="form-control" id="description" name="description" rows="3">{{$invoice->description }}</textarea>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="docs">Claim Return File</label>
+                                            <div class="col-xl-6">
+                                              @if($invoice->return_form_file)
+                                              <div class="list-group">
+                                                  <ul>
+                                                      @php
+                                                          $ext = pathinfo($invoice->return_form_file, PATHINFO_EXTENSION);
+                                                      @endphp
+                                                      <li class="list-group-item d-flex mb-2">
+                                                          @if($ext == "xls")
+                                                              <i class="fa fa-file-excel-o"
+                                                              style="font-size: 4em;"></i>
+                                                          @elseif($ext == "pdf")
+                                                              <i class="fa fa-file-text-o" style="font-size: 4em;"></i>
+                                                          @else
+                                                              <i class="fa fa-file-image-o"
+                                                              style="font-size: 4em;"></i>
+                                                          @endif
+                                                          <span class="media-body">
+                                                              <h6>{{ basename($invoice->return_form_file) }}</h6>
+                                                              <p><b class="f-12">Upload Date : </b>{{ date('d-m-Y', strtotime($invoice->created_at)) }}</p>
+                                                              <a href="{{ url($invoice->return_form_file) }}" target="_blank" type="button" class="btn btn-outline-primary pmd-ripple-effect btn-xs"><i class="fa fa-eye m-0"></i></a>
+                                                          </span>
+                                                      </li>
+                                                  </ul>
+                                              </div>
+                                              @endif
+                                          </div>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
 @endsection
 
 @push('scripts')
-  <script src="{{asset('assets/js/counter/jquery.waypoints.min.js')}}"></script>
-  <script src="{{asset('assets/js/counter/jquery.counterup.min.js')}}"></script>
-  <script src="{{asset('assets/js/counter/counter-custom.js')}}"></script>
-  <script src="{{asset('assets/js/print.js')}}"></script>
+  
 @endpush

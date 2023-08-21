@@ -2,7 +2,7 @@
 
 
 @push('css')
-    <link rel="stylesheet" type="text/css" href="{{ asset('assets/css/dropzone.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ asset('assets/css/select2.css') }}">
 @endpush
 
 @section('content')
@@ -28,6 +28,7 @@
                                     <form method="post" action="{{ route('expense-invoice.store') }}" enctype="multipart/form-data">
                                         @csrf
                                         <div class="row">
+                                            @if($data['user_role'] != "Staff")
                                             <div class="mb-3 col-sm-4">
                                                 <label for="branch_id">Branch</label>
                                                 <select class="form-control form-select" id="branch_id" name="branch_id">
@@ -44,7 +45,10 @@
                                                     <span class="text-danger">{{ $message }}</span>
                                                 @enderror
                                             </div>
-
+                                            @endif
+                                            @if($data['user_role'] == "Staff")
+                                                <input type="hidden" id="branch_id" name="branch_id" value="{{ $data['branch_id'] }}">
+                                            @endif
                                             <div class="mb-3 col-sm-4">
                                                 <label for="project_id">Project</label>
                                                 <select class="form-control form-select" id="project_id" name="project_id">
@@ -58,7 +62,7 @@
                                             <div class="mb-3 col-sm-4">
                                                 <label for="invoice_date">Invoice Date</label>
                                                 <input type="date" class="form-control" id="invoice_date"
-                                                    name="invoice_date">
+                                                    name="invoice_date" value="{{ date('Y-m-d') }}">
                                                 @error('invoice_date')
                                                     <span class="text-danger">{{ $message }}</span>
                                                 @enderror
@@ -89,7 +93,7 @@
                                                             </select>
                                                         </td>
                                                         <td>
-                                                            <select class="form-select item_id" name="items[]">
+                                                            <select class="form-select js-example-basic-single item_id" name="items[]">
                                                                 <option value="">Select Item</option>
                                                             </select>
                                                         </td>
@@ -142,15 +146,17 @@
 @endsection
 
 @push('scripts')
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="{{ asset('assets/js/dropzone/dropzone.js') }}"></script>
-    <script src="{{ asset('assets/js/dropzone/dropzone-script.js') }}"></script>
+    
     <script>
         let jcates = '';
         @foreach($itemcategories as $cate)
             jcates += '<option value="{{ $cate->id }}">{{ $cate->name }}</option>';
         @endforeach
         $(document).ready(function() {
+            @if($data['user_role'] == "Staff")
+            $('#branch_id').trigger('change');
+            @endif
+
             // Add new invoice item row
             $("#add-item-btn").click(function() {
                 const newRow = `
@@ -162,7 +168,7 @@
                             </select>
                         </td>
                         <td>
-                            <select class="form-select item_id" name="items[]">
+                            <select class="form-select js-example-basic-single item_id" name="items[]">
                                 <option value="">Select Item</option>
                             </select>
                         </td>
@@ -173,6 +179,10 @@
                     </tr>
                 `;
                 $("#invoiceItems tbody").append(newRow);
+
+                setTimeout(function(){
+                    $('.js-example-basic-single').select2();
+                }, 100);
             });
 
             // Remove invoice item row
@@ -213,7 +223,7 @@
                 $.ajax({
                     url: "<?php echo route('get.items') ?>",
                     method: 'POST',
-                    data: {cate_id:cate_id, _token:token},
+                    data: {cate_id:cate_id, inv_type:1, _token:token},
                     success: function(data) {
                         // $('.item_id').find('option').remove();
                         main.closest('tr').find('select.item_id option').remove();
@@ -252,4 +262,7 @@
         });
 
     </script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="{{ asset('assets/js/select2/select2.full.min.js') }}"></script>
+    <script src="{{ asset('assets/js/select2/select2-custom.js') }}"></script>
 @endpush

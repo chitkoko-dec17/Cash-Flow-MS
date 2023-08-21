@@ -21,4 +21,19 @@ class IncomeInvoiceItem extends Model
         'qty',
         'amount',
     ];
+
+    public function category()
+    {
+        return $this->belongsTo(ItemCategory::class, 'category_id');
+    }
+
+    public function item()
+    {
+        return $this->belongsTo(Item::class, 'item_id');
+    }
+
+    public function invoice()
+    {
+        return $this->belongsTo(ExpenseInvoice::class, 'invoice_id');
+    }
 }

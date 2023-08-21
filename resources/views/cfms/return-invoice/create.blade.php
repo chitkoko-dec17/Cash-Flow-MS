@@ -31,7 +31,11 @@
                                                 <select class="form-control js-example-basic-single col-sm-12" name="invoice_id" id="invoice_id">
                                                     <option value="">Select Invoice No.</option>
                                                     @foreach($expense_invoices as $optgroupLabel => $exp_inv)
-                                                        <option value="{{ $exp_inv->id }}">{{ $exp_inv->invoice_no }}</option>
+                                                        @if($data['expense_inv_id'] == $exp_inv->id)
+                                                            <option value="{{ $exp_inv->id }}" selected>{{ $exp_inv->invoice_no }}</option>
+                                                        @else
+                                                            <option value="{{ $exp_inv->id }}">{{ $exp_inv->invoice_no }}</option>
+                                                        @endif
                                                     @endforeach
                                                 </select>
                                                 @error('invoice_id')
@@ -41,7 +45,7 @@
 
                                             <div class="mb-3 col-sm-4">
                                                 <label for="invoice_date">Invoice Date</label>
-                                                <input type="date" class="form-control" id="invoice_date" name="invoice_date">
+                                                <input type="date" class="form-control" id="invoice_date" name="invoice_date" value="{{ date('Y-m-d') }}">
                                                 @error('invoice_date')
                                                     <span class="text-danger">{{ $message }}</span>
                                                 @enderror

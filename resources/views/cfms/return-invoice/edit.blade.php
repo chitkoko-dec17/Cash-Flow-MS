@@ -32,6 +32,11 @@
                                                 <select class="form-control js-example-basic-single col-sm-12" name="invoice_id" id="invoice_id">
                                                     <option value="">Select Invoice No.</option>
                                                     @foreach($expense_invoices as $exp_inv)
+
+                                                        @php
+                                                            var_dump($invoice->invoice_id , $exp_inv->id);
+                                                        @endphp
+
                                                     	@if($invoice->invoice_id == $exp_inv->id)
                                                     		<option value="{{ $exp_inv->id }}" selected>{{ $exp_inv->invoice_no }}</option>
                                                     	@else
