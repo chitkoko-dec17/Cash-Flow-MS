@@ -16,7 +16,6 @@ use App\Models\ProjectUser;
 use App\Models\BusinessUnit;
 use Auth;
 use DB;
-use Carbon\Carbon;
 
 class ExpenseInvoiceController extends Controller
 {
@@ -44,9 +43,6 @@ class ExpenseInvoiceController extends Controller
         $this->cuser_role = Auth::user()->user_role;
         $this->cuser_business_unit_id = Auth::user()->user_business_unit;
 
-        // $selected_from_date = ($request->from_date) ? Carbon::parse($request->from_date) : "";
-        // $selected_to_date = ($request->to_date) ? Carbon::parse($request->to_date) : "";
-
         $selected_invoice_no = ($request->invoice_no) ? $request->invoice_no : "";
         $selected_from_date = ($request->from_date) ? $request->from_date : "";
         $selected_to_date = ($request->to_date) ? $request->to_date : "";
@@ -64,15 +60,18 @@ class ExpenseInvoiceController extends Controller
 
                 $queryExpInv->where('business_unit_id', $this->cuser_business_unit_id);
 
+            }else{
+                return redirect('/expense-invoice')->with('error', 'Manager should had one business unit!');
             }
 
         }elseif($this->cuser_role == "Staff"){
             if($this->cuser_business_unit_id){
                 // $expense_invoices = ExpenseInvoice::where('business_unit_id', $this->cuser_business_unit_id)->where('upload_user_id', Auth::user()->id )->paginate(25);
 
-                
-
                 $queryExpInv->where('business_unit_id', $this->cuser_business_unit_id)->where('upload_user_id', Auth::user()->id);
+            }
+            else{
+                return redirect('/expense-invoice')->with('error', 'Staff should had one business unit!');
             }
         }
 
@@ -352,7 +351,6 @@ class ExpenseInvoiceController extends Controller
 
         if(!empty($request->category_ids_up)){
             foreach($request->category_ids_up as $itind => $category_id){
-                $item_cate = Item::where('id',$item)->first();
 
                 ExpenseInvoiceItem::create([
                     'category_id' => $category_id,

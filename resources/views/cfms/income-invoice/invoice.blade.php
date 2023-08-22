@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Expense Invoice</title>
+    <title>Income Invoice</title>
 </head>
 <style type="text/css">
     body{
@@ -86,7 +86,7 @@
 </style>
 <body>
 <div class="head-title">
-    <h1 class="text-center m-0 p-0">Expense Invoice</h1>
+    <h1 class="text-center m-0 p-0">Income Invoice</h1>
 </div>
 <div class="add-detail mt-10">
     <div class="w-50 float-left mt-10">

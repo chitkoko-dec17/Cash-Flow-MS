@@ -34,22 +34,62 @@ class ReturnInvoiceController extends Controller
         $this->cuser_role = Auth::user()->user_role;
         $this->cuser_business_unit_id = Auth::user()->user_business_unit;
 
+        $selected_invoice_no = ($request->invoice_no) ? $request->invoice_no : "";
+        $selected_from_date = ($request->from_date) ? $request->from_date : "";
+        $selected_to_date = ($request->to_date) ? $request->to_date : "";
+        $selected_status = ($request->status) ? $request->status : "";
+
         $return_invoices = array();
+        $queryExpInv = ReturnInvoice::query();
         if($this->cuser_role == "Admin"){
-            $return_invoices = ReturnInvoice::paginate(25);
+
         }elseif($this->cuser_role == "Manager"){
             if($this->cuser_business_unit_id){
-                $return_invoices = ReturnInvoice::where('business_unit_id', $this->cuser_business_unit_id)->paginate(25);
+                $queryExpInv->where('business_unit_id', $this->cuser_business_unit_id);
+            }else{
+                return redirect('/return-invoice')->with('error', 'Manager should had one business unit!');
             }
-            
+
         }elseif($this->cuser_role == "Staff"){
             if($this->cuser_business_unit_id){
-                $return_invoices = ReturnInvoice::where('business_unit_id', $this->cuser_business_unit_id)->where('create_by', Auth::user()->id )->paginate(25);
+                $queryExpInv->where('business_unit_id', $this->cuser_business_unit_id)->where('create_by', Auth::user()->id);
+            }else{
+                return redirect('/return-invoice')->with('error', 'Staff should had one business unit!');
             }
         }
 
+        if($selected_invoice_no || $selected_from_date || $selected_to_date || $selected_status){
+
+            // if($selected_invoice_no){
+            //     $queryExpInv->where('invoice_no', 'like', '%' . $selected_invoice_no . '%');
+            // }
+
+            if($selected_from_date) {
+                $queryExpInv->whereDate('invoice_date', '>=', $selected_from_date);
+            }
+
+            if($selected_to_date) {
+                $queryExpInv->whereDate('invoice_date', '<=', $selected_to_date);
+            }
+
+            // if($selected_status) {
+            //     $queryExpInv->Where('admin_status', $selected_status);
+            // }
+        }
+
+        //Fetch list of results
+        $return_invoices = $queryExpInv->paginate(25);
+
         $data['user_role'] = $this->cuser_role;
         $data['business_unit_id'] = $this->cuser_business_unit_id;
+        $data['statuses'] = $this->statuses;
+
+        //filter selected data
+        $data['selected_from_date'] = $selected_from_date;
+        $data['selected_to_date'] = $selected_to_date;
+        $data['selected_status'] = $selected_status;
+        $data['selected_invoice_no'] = $selected_invoice_no;
+
         return view('cfms.return-invoice.index', compact('return_invoices','data'));
     }
 
@@ -141,12 +181,10 @@ class ReturnInvoiceController extends Controller
      */
     public function show($id)
     {
-        $invoice = ExpenseInvoice::find($id);
-        $invoice_no = 'EXINV-'.$invoice->invoice_no;
-        $invoice_items = ExpenseInvoiceItem::where('invoice_id', $id)->get();
-        $invoice_docs = InvoiceDocument::where('invoice_no', $invoice_no)->get();
+        $invoice = ReturnInvoice::find($id);
+        // $invoice_no = 'EXINV-'.$invoice->invoice_no;
 
-        return view('cfms.return-invoice.view', compact('invoice', 'invoice_items','invoice_docs','invoice_no'));
+        return view('cfms.return-invoice.view', compact('invoice'));
     }
 
     /**
@@ -229,6 +267,19 @@ class ReturnInvoiceController extends Controller
     public function destroy($id)
     {
         $return_inv = ReturnInvoice::find($id);
+
+        //resetting the default value to expense table
+        $exp_invoice = ExpenseInvoice::find($return_inv->invoice_id);
+        $exp_invoice->return_total_amount = 0;
+        $exp_invoice->save();
+
+        //deleting the file
+        $old_inv_file = $return_inv->return_form_file;
+
+        if(file_exists(public_path($old_inv_file))){
+            unlink(public_path($old_inv_file));
+        }
+
         $return_inv->delete();
         return redirect('/return-invoice')->with('success', 'Return Invoice deleted successfully.');
     }

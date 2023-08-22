@@ -21,7 +21,7 @@ class CommonController extends Controller
   public function get_items(Request $request)
   {
     if($request->ajax()){
-      $states = DB::table('items')->where('category_id',$request->cate_id)->get();
+      $states = DB::table('items')->where('category_id',$request->cate_id)->where('invoice_type_id',$request->inv_type)->get();
       return response()->json(['array_data'=>$states]);
     }
   }

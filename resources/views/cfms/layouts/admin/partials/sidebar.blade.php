@@ -1,6 +1,6 @@
 <header class="main-nav">
     <div class="sidebar-user text-center">
-        <a class="setting-primary" href="{{ route('edit-user') }}"><i data-feather="settings"></i></a><img class="img-90 rounded-circle" src="{{asset('assets/images/dashboard/1.png')}}" alt="" />
+        <a class="setting-primary" href="{{ route('user.profile') }}"><i data-feather="settings"></i></a><img class="img-90 rounded-circle" src="{{asset('assets/images/dashboard/1.png')}}" alt="" />
         {{-- <div class="badge-bottom"><span class="badge badge-primary">New</span></div> --}}
         <a href="javascript:void(0)"> <h6 class="mt-3 f-14 f-w-600">{{ Auth::user()->name }}</h6></a>
         <p class="mb-0 font-roboto">{{ Auth::user()->user_role }}</p>
@@ -27,23 +27,23 @@
                     <li class="dropdown">
                         <a class="nav-link menu-title {{ prefixActive('business-unit') }}" href="javascript:void(0)"><i data-feather="server"></i><span>Business Units</span></a>
                         <ul class="nav-submenu menu-content" style="display: {{ prefixBlock('/business-unit') }};">
-                            <li><a href="{{ url('business-unit') }}" class="{{routeActive('business-unit')}}">Business Unit List</a></li>
-                            <li><a href="{{ url('branch') }}" class="{{routeActive('branch')}}">Branch List</a></li>
-                            <li><a href="{{ url('project') }}" class="{{routeActive('project')}}">Project List</a></li>
+                            <li><a href="{{ url('business-unit') }}" class="{{routeActive('business-unit')}}">Business Unit</a></li>
+                            <li><a href="{{ url('branch') }}" class="{{routeActive('branch')}}">Branch</a></li>
+                            <li><a href="{{ url('project') }}" class="{{routeActive('project')}}">Project</a></li>
                         </ul>
                     </li>
                     <li class="dropdown">
                         <a class="nav-link menu-title {{ routeActive('/user') }}" href="javascript:void(0)"><i data-feather="users"></i><span>Users</span></a>
                         <ul class="nav-submenu menu-content" style="display: {{ prefixBlock('/user') }};">
-                            <li><a href="{{ url('user') }}" class="{{routeActive('user')}}">User List</a></li>
-                            <li><a href="{{ url('role') }}" class="{{routeActive('role')}}">Role List</a></li>
+                            <li><a href="{{ url('user') }}" class="{{routeActive('user')}}">User</a></li>
+                            <li><a href="{{ url('role') }}" class="{{routeActive('role')}}">Role</a></li>
                         </ul>
                     </li>
                     <li class="dropdown">
                         <a class="nav-link menu-title {{ prefixActive('/item') }}" href="javascript:void(0)"><i data-feather="file-text"></i><span>Items</span></a>
                         <ul class="nav-submenu menu-content" style="display: {{ prefixBlock('/item') }};">
                             <li><a href="{{ url('itemcategory') }}" class="{{routeActive('itemcategory')}}">Item Category</a></li>
-                            <li><a href="{{ url('item') }}" class="{{routeActive('item')}}">Item list</a></li>
+                            <li><a href="{{ url('item') }}" class="{{routeActive('item')}}">Item</a></li>
                         </ul>
                     </li>
                     @endif

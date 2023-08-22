@@ -17,6 +17,7 @@ use App\Http\Livewire\EstimateBudgetComponent;
 use App\Http\Livewire\ProjectComponent;
 use App\Http\Controllers\CommonController;
 use App\Http\Livewire\ReportComponent;
+use App\Http\Controllers\UserController;
 
 /*
 |--------------------------------------------------------------------------
@@ -92,31 +93,33 @@ Route::group(['middleware' => ['auth']], function() {
     Route::get('/budget',EstimateBudgetComponent::class)->name('budget.index');
     Route::get('/report',ReportComponent::class)->name('report.index');
 
+    //for expense invoice
     Route::resource('expense-invoice', ExpenseInvoiceController::class);
     Route::post('add/exp_note/{id}', [ExpenseInvoiceController::class, 'add_inv_note'])->name('expense-note.add');
     Route::get('/item/history',[ExpenseInvoiceController::class, 'get_item_history'])->name('expense-invoice.item');
     Route::get('/expense/invoice/{id}',[ExpenseInvoiceController::class, 'get_expense_invoice'])->name('expense-invoice.template');
-
     Route::delete('/expense/item/{id}',[ExpenseInvoiceController::class, 'delete_edit_item']);
     Route::delete('/expense/doc/{id}',[ExpenseInvoiceController::class, 'delete_item_doc']);
 
+    //for income invoice
     Route::resource('income-invoice', IncomeInvoiceController::class);
+    Route::post('add/inc_note/{id}', [IncomeInvoiceController::class, 'add_inv_note'])->name('income-note.add');
+    Route::get('/item/history',[IncomeInvoiceController::class, 'get_item_history'])->name('income-invoice.item');
+    Route::get('/income/invoice/{id}',[IncomeInvoiceController::class, 'get_income_invoice'])->name('income-invoice.template');
+    Route::delete('/income/item/{id}',[IncomeInvoiceController::class, 'delete_edit_item']);
+    Route::delete('/income/doc/{id}',[IncomeInvoiceController::class, 'delete_item_doc']);
+
     Route::resource('return-invoice', ReturnInvoiceController::class);
     Route::post('invoice/get_items', [CommonController::class, 'get_items'])->name('get.items');
 
     Route::post('branch/get_projects', [CommonController::class, 'get_projects'])->name('get.projects');
 
-    // Route::resource('user', UserController::class);
-
-    // Route::post('/change-password', [AdminController::class, 'updatePassword'])->name('update-password');
-    // Route::get('admin/profile', [AdminController::class, 'profile'])->name('admin.profile');
-    // Route::post('profile/update', [AdminController::class, 'updateprofile'])->name('profile.update');
-
     //Temp fix route for user
     Route::prefix('user')->group( function(){
-        Route::view('list', 'cfms.user.list')->name('list');
-        Route::view('edit-user', 'cfms.user.edit')->name('edit-user');
-        Route::view('create-user', 'cfms.user.create')->name('create-user');
+
+        Route::post('/change-password', [UserController::class, 'updatePassword'])->name('update-password');
+        Route::get('profile', [UserController::class, 'profile'])->name('user.profile');
+        Route::post('profile/update', [UserController::class, 'updateprofile'])->name('profile.update');
     });
 
 });
