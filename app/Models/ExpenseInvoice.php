@@ -19,7 +19,7 @@ class ExpenseInvoice extends Model
         'business_unit_id',
         'branch_id',
         'project_id',
-        'invoice_no', 
+        'invoice_no',
         'invoice_date',
         'total_amount',
         'return_total_amount',
@@ -35,6 +35,11 @@ class ExpenseInvoice extends Model
     public function branch()
     {
         return $this->belongsTo(Branch::class, 'branch_id');
+    }
+
+    public function businessUnit()
+    {
+        return $this->belongsTo(BusinessUnit::class, 'business_unit_id');
     }
 
     public function project()
@@ -59,6 +64,6 @@ class ExpenseInvoice extends Model
 
     public function inv_items()
     {
-        return $this->hasMany(ExpenseInvoiceItem::class); 
+        return $this->hasMany(ExpenseInvoiceItem::class);
     }
 }
