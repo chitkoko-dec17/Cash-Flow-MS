@@ -101,10 +101,10 @@
 </div>
 <div class="table-section bill-tbl w-100 mt-10">
     <table class="table w-100 mt-10">
-        <tr>
+        <!-- <tr>
             <th class="w-50">From</th>
             <th class="w-50">To</th>
-        </tr>
+        </tr> -->
         <tr>
             <td>
                 <div class="box-text">

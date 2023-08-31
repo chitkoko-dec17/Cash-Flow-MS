@@ -76,7 +76,7 @@
                                         @else
                                             <option value="{{ $skey }}">{{ $statuse }}</option>
                                         @endif
-                                        
+
                                     @endforeach
                                 </select>
                             </div>
@@ -116,7 +116,7 @@
                                                         class="btn btn-outline-info btn-sm  action-btn" title="Edit"
                                                         data-toggle="tooltip"><i class="fa fa-pencil"></i></a>
                                                     @if(($data['user_role'] == "Staff" && $inv->return_total_amount == 0) || ($data['user_role'] != "Staff"))
-                                                    <a href="{{ route('return-invoice.create') }}/?expense_inv={{ $inv->id }}" data-toggle="modal" 
+                                                    <a href="{{ route('return-invoice.create') }}/?expense_inv={{ $inv->id }}" data-toggle="modal"
                                                         class="btn btn-outline-warning btn-sm  action-btn"
                                                         title="Go Return Invoice" data-toggle="tooltip"><i
                                                             class="fa fa-file"></i></a>
