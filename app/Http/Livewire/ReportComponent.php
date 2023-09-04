@@ -10,6 +10,7 @@ use App\Models\ExpenseInvoice;
 use Livewire\Component;
 use Livewire\WithPagination;
 use Maatwebsite\Excel\Facades\Excel;
+use DB;
 
 class ReportComponent extends Component
 {
@@ -57,6 +58,10 @@ class ReportComponent extends Component
             }
         }
 
+        // $this->gettopitems();
+        // $this->get_top_expense_items_cate();
+        // exit;
+
         //Fetch list of results
         $expense_invoices = $queryExpInv->paginate(5);
         $this->expense_invoices_data = $queryExpInv->paginate(5);
@@ -103,5 +108,33 @@ class ReportComponent extends Component
         } else {
             $this->projects = [];
         }
+    }
+
+    public function get_top_expense_items(){
+        $expense_items = DB::table('expense_invoices as exinv')
+            ->leftJoin('expense_invoice_items as exinvi','exinv.id','=','exinvi.invoice_id')
+            ->leftJoin('items as item','item.id','=','exinvi.item_id')
+            ->selectRaw('item.name, COALESCE(sum(exinvi.qty),0) total')
+            ->groupBy('exinvi.item_id')
+            ->orderBy('total','desc')
+            ->take(5)
+            ->get();
+
+        var_dump($expense_items);exit;
+        return $expense_items;
+    }
+
+    public function get_top_expense_items_cate(){
+        $expense_items_cate = DB::table('expense_invoices as exinv')
+            ->leftJoin('expense_invoice_items as exinvic','exinv.id','=','exinvic.invoice_id')
+            ->leftJoin('item_categories as item_cate','item_cate.id','=','exinvic.category_id')
+            ->selectRaw('item_cate.name, COALESCE(sum(exinvic.qty),0) total')
+            ->groupBy('exinvic.category_id')
+            ->orderBy('total','desc')
+            ->take(5)
+            ->get();
+
+        var_dump($expense_items_cate);exit;
+        return $expense_items_cate;
     }
 }
