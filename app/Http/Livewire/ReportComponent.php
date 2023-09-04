@@ -83,8 +83,8 @@ class ReportComponent extends Component
 
     public function export($data)
     {
-        //dd($data);
-        return Excel::download(new ExpenseInvoicesExport($data), 'expense_invoices.xlsx');
+        $filename = 'expense_invoices_' . now()->format('Y-m-d_His') . '.xlsx';
+        return Excel::download(new ExpenseInvoicesExport($data), $filename);
     }
 
     public function updatedBusinessUnitId($value){

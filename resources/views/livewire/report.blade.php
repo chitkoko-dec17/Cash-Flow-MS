@@ -125,8 +125,12 @@
                         <div class="row mb-3">
                             <div class="col-md-12">
                                 <div class="row float-end">
-                                    <div class="">{{count($data)}}
-                                        <button wire:click='export({{$data}})' type="button" class="btn btn-primary btn-sm">Export <i class="fa fa-file-excel-o ms-1"></i></button>
+                                    <div class="">
+                                        @if(count($data) > 0)
+                                            <button wire:click='export({{ $data }})' type="button" class="btn btn-primary btn-sm">Export <i class="fa fa-file-excel-o ms-1"></i></button>
+                                        @else
+                                            <button type="button" class="btn btn-primary btn-sm" disabled>Export <i class="fa fa-file-excel-o ms-1"></i></button>
+                                        @endif
                                     </div>
                                 </div>
                                 <div class="row mt-2">
@@ -168,9 +172,10 @@
                                                             {{ isset($inv->branch->name) ? ' - ' . $inv->branch->name : '' }}
                                                             {{ isset($inv->project->name) ? ' - ' . $inv->project->name : '' }}</code>
                                                     </td>
-                                                    <td width="20%">{{ $inv->total_amount }} -
+                                                    <td width="20%">{{ $this->calculateTotal($inv) }}</td>
+                                                    {{-- <td width="20%">{{ $inv->total_amount }} -
                                                         {{ $inv->return_total_amount }} =
-                                                        {{ $this->calculateTotal($inv) }}</td>
+                                                        {{ $this->calculateTotal($inv) }}</td> --}}
                                                 </tr>
                                             @endforeach
                                         @else
