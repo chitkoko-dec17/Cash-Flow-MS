@@ -52,6 +52,11 @@ class ExpenseInvoice extends Model
         return $this->belongsTo(User::class, 'appoved_admin_id');
     }
 
+    public function editor()
+    {
+        return $this->belongsTo(User::class, 'edit_by');
+    }
+
     public function staff()
     {
         return $this->belongsTo(User::class, 'upload_user_id');
