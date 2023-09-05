@@ -7,6 +7,7 @@ use App\Exports\IncomeInvoicesExport;
 use App\Models\BusinessUnit;
 use App\Models\ExpenseInvoice;
 use App\Models\IncomeInvoice;
+use App\Models\EstimateBudget;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Maatwebsite\Excel\Facades\Excel;
@@ -455,68 +456,60 @@ class ReportController extends Controller
 
     public function budget(Request $request){
         $businessUnits = BusinessUnit::all();
+        $data = array();
 
         $selected_business_unit_id = ($request->business_unit_id) ? $request->business_unit_id : "";
         $selected_branch_id = ($request->branch_id) ? $request->branch_id : "";
         $selected_project_id = ($request->project_id) ? $request->project_id : "";
-        $selected_from_date = ($request->selected_from_date) ? $request->selected_from_date : "";
-        $selected_to_date = ($request->selected_to_date) ? $request->selected_to_date : "";
-        $selected_status = ($request->status) ? $request->status : "";
-        $selected_chartFilter = ($request->chartFilter) ? $request->chartFilter : "";
+        $selected_budget_id = ($request->budget_id) ? $request->budget_id : "";
 
-        $queryIncInv = IncomeInvoice::query();
+        $data['est_budget']['amt'] = 0;
+        $data['est_budget']['name'] = "Estimate Budget";
+        $data['actual_expense']['amt'] = 0;
+        $data['actual_expense']['name'] = "Actual Expense Amount";
 
-        if($selected_business_unit_id || $selected_branch_id || $selected_project_id || $selected_from_date || $selected_to_date || $selected_status || $selected_chartFilter){
+        if($request->budget_id){
+            $est_budget = EstimateBudget::find($selected_budget_id);
 
-            if($selected_business_unit_id) {
-                $queryIncInv->where('business_unit_id', $selected_business_unit_id);
+            $query = DB::table('expense_invoices as exinv')->selectRaw('COALESCE(sum(exinv.total_amount),0) sum_total_amount, COALESCE(sum(exinv.return_total_amount),0) sum_return_total_amount');
+
+            if($selected_business_unit_id || $selected_branch_id || $selected_project_id){
+
+                if($selected_business_unit_id) {
+                    $query->where('business_unit_id', $selected_business_unit_id);
+                }
+
+                if($selected_branch_id) {
+                    $query->where('branch_id', $selected_branch_id);
+                }
+
+                if($selected_project_id) {
+                    $query->where('project_id', $selected_project_id);
+                }
+
+                $query->whereDate('invoice_date', '<=', $est_budget->end_date);
+                $query->whereDate('invoice_date', '>=', $est_budget->start_date);
             }
 
-            if($selected_branch_id) {
-                $queryIncInv->where('branch_id', $selected_branch_id);
-            }
+            $budgets_data = $query->get();
 
-            if($selected_project_id) {
-                $queryIncInv->where('project_id', $selected_project_id);
-            }
+            // var_dump($budgets_data[0]);exit;
 
-            if($selected_from_date) {
-                $queryIncInv->whereDate('invoice_date', '>=', $selected_from_date);
-            }
+            $start_year = explode('-', $est_budget->start_date);
+            $end_year = explode('-', $est_budget->end_date);
 
-
-            if($selected_to_date) {
-                $queryIncInv->whereDate('invoice_date', '<=', $selected_to_date);
-            }
-
-            if($selected_status) {
-                $queryIncInv->Where('admin_status', $selected_status);
-            }
-
-            if($selected_chartFilter) {
-
-            }
+            $data['est_budget']['amt'] = $est_budget->total_amount;
+            $data['est_budget']['name'] = $est_budget->name ."(". $start_year[0] ."-". $end_year[0].")";
+            $data['actual_expense']['amt'] = $budgets_data[0]->sum_total_amount - $budgets_data[0]->sum_return_total_amount;
+            $data['actual_expense']['name'] = "Actual Expense Amount";
+            
         }
 
-        //Fetch list of results
-        $income_invoices = $queryIncInv->paginate(5);
-        $income_invoices_data['statuses'] = $this->statuses;
-        $income_invoices_data['chartFilters'] = $this->chartFilters;
+        $data['selected_business_unit_id'] = $selected_business_unit_id;
+        $data['selected_branch_id'] = $selected_branch_id;
+        $data['selected_project_id'] = $selected_project_id;
+        $data['selected_budget_id'] = $selected_budget_id;
 
-        $income_invoices_data['selected_business_unit_id'] = $selected_business_unit_id;
-        $income_invoices_data['selected_branch_id'] = $selected_branch_id;
-        $income_invoices_data['selected_project_id'] = $selected_project_id;
-        $income_invoices_data['selected_to_date'] = $selected_to_date;
-        $income_invoices_data['selected_from_date'] = $selected_from_date;
-        $income_invoices_data['selected_status'] = $selected_status;
-        $income_invoices_data['selected_chartFilter'] = $selected_chartFilter;
-
-        $this->expense_data = $queryIncInv->paginate(5);
-
-        $data = $queryIncInv->get();
-        //dd($this->expense_data);
-        $charts['income_charts_item'] = $this->get_top_income_items($request);
-        $charts['income_charts_cate'] = $this->get_top_income_items_cate($request);
-        return view('cfms.report.budget',compact('businessUnits','income_invoices','data','income_invoices_data','charts'));
+        return view('cfms.report.budget',compact('businessUnits','data'));
     }
 }
