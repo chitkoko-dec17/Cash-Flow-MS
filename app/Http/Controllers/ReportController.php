@@ -241,15 +241,15 @@ class ReportController extends Controller
             }
 
             if($selected_chartFilter && $selected_chartFilter == "amount") {
-                $query->selectRaw('item.name, COALESCE(sum(exinvi.amount),0) total');
+                $query->selectRaw('item.name, COALESCE(sum(exinvi.amount),0) as total');
             }else{
-                $query->selectRaw('item.name, COALESCE(sum(exinvi.qty),0) total');
+                $query->selectRaw('item.name, COALESCE(sum(exinvi.qty),0) as total');
             }
         }else{
-            $query->selectRaw('item.name, COALESCE(sum(exinvi.qty),0) total');
+            $query->selectRaw('item.name, COALESCE(sum(exinvi.qty),0) as total');
         }
 
-        $expense_items = $query->orderBy('total','desc')->groupBy('exinvi.item_id')->take(10)->get();
+        $expense_items = $query->orderBy('total','desc')->groupBy('item.name')->groupBy('exinvi.item_id')->take(10)->get();
 
         foreach($expense_items as $exp_item){
             $expense_item_counts[] = $exp_item->total;
@@ -313,7 +313,7 @@ class ReportController extends Controller
             $query->selectRaw('item_cate.name, COALESCE(sum(exinvic.qty),0) total');
         }
 
-        $expense_items_cate = $query->orderBy('total','desc')->groupBy('exinvic.category_id')->take(10)->get();
+        $expense_items_cate = $query->orderBy('total','desc')->groupBy('item_cate.name')->groupBy('exinvic.category_id')->take(10)->get();
 
         foreach($expense_items_cate as $exp_item_cate){
             $expense_cate_counts[] = $exp_item_cate->total;
