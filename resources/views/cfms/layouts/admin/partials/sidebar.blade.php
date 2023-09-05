@@ -67,9 +67,9 @@
                             <li><a href="{{ route('report.budget') }}" class="{{routeActive('report.budget')}}">Budget Report</a></li>
                         </ul>
                     </li>
-                    <li>
+                    {{-- <li>
                         <a class="nav-link menu-title link-nav " href="{{ url('reports') }}"><i data-feather="pie-chart"></i><span>Report</span></a>
-                    </li>
+                    </li> --}}
 
                     <li>
                         <a class="nav-link menu-title link-nav " href="{{ url('budget') }}"><i data-feather="dollar-sign"></i><span>Budget</span></a>
