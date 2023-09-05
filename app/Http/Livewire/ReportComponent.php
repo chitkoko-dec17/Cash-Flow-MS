@@ -58,16 +58,17 @@ class ReportComponent extends Component
             }
         }
 
-        // $this->gettopitems();
-        // $this->get_top_expense_items_cate();
+        $charts['expense_charts_item'] = $this->get_top_expense_items();
+        $charts['expense_charts_cate'] = $this->get_top_expense_items_cate();
+        // var_dump($charts);
         // exit;
 
         //Fetch list of results
         $expense_invoices = $queryExpInv->paginate(5);
         $this->expense_invoices_data = $queryExpInv->paginate(5);
         $data = $queryExpInv->get();
-        //dd($this->export_data);
-        return view('livewire.report',compact('businessUnits','statuses','expense_invoices','data'));
+        // dd($this->export_data);
+        return view('livewire.report',compact('businessUnits','statuses','expense_invoices','data','charts'));
     }
 
     public function calculateTotal($inv)
@@ -111,30 +112,49 @@ class ReportComponent extends Component
     }
 
     public function get_top_expense_items(){
+        $expense_item_counts = array();
+        $expense_item_names = array();
         $expense_items = DB::table('expense_invoices as exinv')
             ->leftJoin('expense_invoice_items as exinvi','exinv.id','=','exinvi.invoice_id')
             ->leftJoin('items as item','item.id','=','exinvi.item_id')
             ->selectRaw('item.name, COALESCE(sum(exinvi.qty),0) total')
             ->groupBy('exinvi.item_id')
             ->orderBy('total','desc')
-            ->take(5)
+            ->take(10)
             ->get();
 
-        var_dump($expense_items);exit;
-        return $expense_items;
+        foreach($expense_items as $exp_item){
+            $expense_item_counts[] = $exp_item->total;
+            $expense_item_names[] = $exp_item->name;
+        }
+        $data['expense_item_counts'] = join(', ', $expense_item_counts);
+        $data['expense_item_names'] = join(', ', $expense_item_names);
+
+        // var_dump($data);exit;
+        return $data;
     }
 
     public function get_top_expense_items_cate(){
+        $expense_cate_counts = array();
+        $expense_cate_names = array();
+
         $expense_items_cate = DB::table('expense_invoices as exinv')
             ->leftJoin('expense_invoice_items as exinvic','exinv.id','=','exinvic.invoice_id')
             ->leftJoin('item_categories as item_cate','item_cate.id','=','exinvic.category_id')
             ->selectRaw('item_cate.name, COALESCE(sum(exinvic.qty),0) total')
             ->groupBy('exinvic.category_id')
             ->orderBy('total','desc')
-            ->take(5)
+            ->take(10)
             ->get();
 
-        var_dump($expense_items_cate);exit;
-        return $expense_items_cate;
+        foreach($expense_items_cate as $exp_item_cate){
+            $expense_cate_counts[] = $exp_item_cate->total;
+            $expense_cate_names[] = $exp_item_cate->name;
+        }
+        $data['expense_cate_counts'] = join(', ', $expense_cate_counts);
+        $data['expense_cate_names'] = join(', ', $expense_cate_names);
+
+        // var_dump($data);exit;
+        return $data;
     }
 }
