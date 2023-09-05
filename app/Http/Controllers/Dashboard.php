@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use App\Models\BusinessUnit;
 use Illuminate\Http\Request;
 use App\Models\User;
 
@@ -20,6 +21,8 @@ class Dashboard extends Controller
 
   public function index()
   {
-    return view('cfms.admin.dashboard');
+    $businessUnits = BusinessUnit::all();
+
+    return view('cfms.admin.dashboard',compact('businessUnits'));
   }
 }
