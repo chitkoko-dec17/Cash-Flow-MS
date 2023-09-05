@@ -51,6 +51,11 @@ class IncomeInvoice extends Model
         return $this->belongsTo(User::class, 'upload_user_id');
     }
 
+    public function editor()
+    {
+        return $this->belongsTo(User::class, 'edit_by');
+    }
+
     public function manager()
     {
         return $this->belongsTo(User::class, 'appoved_manager_id');
@@ -58,6 +63,6 @@ class IncomeInvoice extends Model
 
     public function inv_items()
     {
-        return $this->hasMany(ExpenseInvoiceItem::class); 
+        return $this->hasMany(ExpenseInvoiceItem::class);
     }
 }

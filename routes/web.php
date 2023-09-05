@@ -16,6 +16,7 @@ use App\Http\Controllers\ReturnInvoiceController;
 use App\Http\Livewire\EstimateBudgetComponent;
 use App\Http\Livewire\ProjectComponent;
 use App\Http\Controllers\CommonController;
+use App\Http\Controllers\ReportController;
 use App\Http\Livewire\ReportComponent;
 use App\Http\Controllers\UserController;
 
@@ -91,12 +92,22 @@ Route::group(['middleware' => ['auth']], function() {
     Route::get('/branch',BranchComponent::class)->name('branch.index');
     Route::get('/project',ProjectComponent::class)->name('project.index');
     Route::get('/budget',EstimateBudgetComponent::class)->name('budget.index');
-    Route::get('/report',ReportComponent::class)->name('report.index');
+    Route::get('/reports',ReportComponent::class)->name('report.index');
+
+    //for report
+    Route::prefix('report')->group( function(){
+        Route::get('expense', [ReportController::class, 'expense'])->name('report.expense');
+        Route::get('income', [ReportController::class, 'income'])->name('report.income');
+        Route::get('budget', [ReportController::class, 'budget'])->name('report.budget');
+    });
+
+    Route::get('expense/{data}', [ReportController::class, 'exportexpense'])->name('exportexpense');
+    Route::get('income/{data}', [ReportController::class, 'exportincome'])->name('exportincome');
 
     //for expense invoice
     Route::resource('expense-invoice', ExpenseInvoiceController::class);
     Route::post('add/exp_note/{id}', [ExpenseInvoiceController::class, 'add_inv_note'])->name('expense-note.add');
-    Route::get('/item/history',[ExpenseInvoiceController::class, 'get_item_history'])->name('expense-invoice.item');
+    Route::get('/expense-item/history',[ExpenseInvoiceController::class, 'get_item_history'])->name('expense-invoice.item');
     Route::get('/expense/invoice/{id}',[ExpenseInvoiceController::class, 'get_expense_invoice'])->name('expense-invoice.template');
     Route::delete('/expense/item/{id}',[ExpenseInvoiceController::class, 'delete_edit_item']);
     Route::delete('/expense/doc/{id}',[ExpenseInvoiceController::class, 'delete_item_doc']);
@@ -104,7 +115,7 @@ Route::group(['middleware' => ['auth']], function() {
     //for income invoice
     Route::resource('income-invoice', IncomeInvoiceController::class);
     Route::post('add/inc_note/{id}', [IncomeInvoiceController::class, 'add_inv_note'])->name('income-note.add');
-    Route::get('/item/history',[IncomeInvoiceController::class, 'get_item_history'])->name('income-invoice.item');
+    Route::get('/income-item/history',[IncomeInvoiceController::class, 'get_item_history'])->name('income-invoice.item');
     Route::get('/income/invoice/{id}',[IncomeInvoiceController::class, 'get_income_invoice'])->name('income-invoice.template');
     Route::delete('/income/item/{id}',[IncomeInvoiceController::class, 'delete_edit_item']);
     Route::delete('/income/doc/{id}',[IncomeInvoiceController::class, 'delete_item_doc']);
@@ -113,6 +124,10 @@ Route::group(['middleware' => ['auth']], function() {
     Route::post('invoice/get_items', [CommonController::class, 'get_items'])->name('get.items');
 
     Route::post('branch/get_projects', [CommonController::class, 'get_projects'])->name('get.projects');
+    Route::post('business-unit/get_branches', [CommonController::class, 'get_branches'])->name('get.branches');
+    Route::post('budget/get_budgets', [CommonController::class, 'get_budgets'])->name('get.budgets');
+    Route::post('invoice/get_expenseInvoices', [CommonController::class, 'get_expenseInvoices'])->name('get.expenseInvoices');
+    Route::post('invoice/get_incomeInvoices', [CommonController::class, 'get_incomeInvoices'])->name('get.incomeInvoices');
 
     //Temp fix route for user
     Route::prefix('user')->group( function(){

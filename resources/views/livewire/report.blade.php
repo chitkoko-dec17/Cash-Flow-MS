@@ -125,8 +125,12 @@
                         <div class="row mb-3">
                             <div class="col-md-12">
                                 <div class="row float-end">
-                                    <div class="">{{count($data)}}
-                                        <button wire:click='export({{$data}})' type="button" class="btn btn-primary btn-sm">Export <i class="fa fa-file-excel-o ms-1"></i></button>
+                                    <div class="">
+                                        @if(count($data) > 0)
+                                            <button wire:click='export({{ $data }})' type="button" class="btn btn-primary btn-sm">Export <i class="fa fa-file-excel-o ms-1"></i></button>
+                                        @else
+                                            <button type="button" class="btn btn-primary btn-sm" disabled>Export <i class="fa fa-file-excel-o ms-1"></i></button>
+                                        @endif
                                     </div>
                                 </div>
                                 <div class="row mt-2">
@@ -168,9 +172,10 @@
                                                             {{ isset($inv->branch->name) ? ' - ' . $inv->branch->name : '' }}
                                                             {{ isset($inv->project->name) ? ' - ' . $inv->project->name : '' }}</code>
                                                     </td>
-                                                    <td width="20%">{{ $inv->total_amount }} -
+                                                    <td width="20%">{{ $this->calculateTotal($inv) }}</td>
+                                                    {{-- <td width="20%">{{ $inv->total_amount }} -
                                                         {{ $inv->return_total_amount }} =
-                                                        {{ $this->calculateTotal($inv) }}</td>
+                                                        {{ $this->calculateTotal($inv) }}</td> --}}
                                                 </tr>
                                             @endforeach
                                         @else
@@ -219,74 +224,93 @@
     @section('customJs')
         <script type="text/javascript">
             $(document).ready(function() {
-                var options = {
+                let item_counts = "{{ $charts['expense_charts_item']['expense_item_counts'] }}";
+                item_counts = item_counts.split(',');
+                let item_names = "{{ $charts['expense_charts_item']['expense_item_names'] }}";
+                item_names = item_names.split(',');
+                var items = {
                     series: [{
-                        name: 'ITEM A',
-                        data: [44, 55, 41, 67, 22, 43]
-                    }, {
-                        name: 'ITEM B',
-                        data: [13, 23, 20, 8, 13, 27]
-                    }, {
-                        name: 'ITEM C',
-                        data: [11, 17, 15, 15, 21, 14]
-                    }, {
-                        name: 'ITEM D',
-                        data: [21, 7, 25, 13, 22, 8]
+                      data: item_counts
                     }],
                     chart: {
-                        type: 'bar',
-                        height: 350,
-                        stacked: true,
-                        toolbar: {
-                            show: true
-                        },
-                        zoom: {
-                            enabled: false
+                      height: 350,
+                      type: 'bar',
+                      events: {
+                        click: function(chart, w, e) {
+                          // console.log(chart, w, e)
                         }
+                      }
                     },
-                    responsive: [{
-                        breakpoint: 480,
-                        options: {
-                            legend: {
-                                position: 'bottom',
-                                offsetX: -10,
-                                offsetY: 0
-                            }
-                        }
-                    }],
+                    // colors: colors,
                     plotOptions: {
-                        bar: {
-                            horizontal: false,
-                            borderRadius: 10,
-                            dataLabels: {
-                                total: {
-                                    enabled: true,
-                                    style: {
-                                        fontSize: '13px',
-                                        fontWeight: 900
-                                    }
-                                }
-                            }
-                        },
+                      bar: {
+                        columnWidth: '45%',
+                        distributed: true,
+                      }
                     },
-                    xaxis: {
-                        type: 'datetime',
-                        categories: ['01/01/2011 GMT', '01/02/2011 GMT', '01/03/2011 GMT', '01/04/2011 GMT',
-                            '01/05/2011 GMT', '01/06/2011 GMT'
-                        ],
+                    dataLabels: {
+                      enabled: false
                     },
                     legend: {
-                        position: 'right',
-                        offsetY: 40
+                      show: false
                     },
-                    fill: {
-                        opacity: 1
+                    xaxis: {
+                      categories: item_names,
+                      labels: {
+                        style: {
+                          // colors: colors,
+                          fontSize: '12px'
+                        }
+                      }
                     }
                 };
 
-                var chart = new ApexCharts(document.querySelector("#stackedcolumnchart"), options);
+                //for category
+                let cate_item_counts = "{{ $charts['expense_charts_cate']['expense_cate_counts'] }}";
+                cate_item_counts = cate_item_counts.split(',');
+                let item_cate_names = "{{ $charts['expense_charts_cate']['expense_cate_names'] }}";
+                item_cate_names = item_cate_names.split(',');
+
+                var item_cates = {
+                    series: [{
+                      data: cate_item_counts
+                    }],
+                    chart: {
+                      height: 350,
+                      type: 'bar',
+                      events: {
+                        click: function(chart, w, e) {
+                          // console.log(chart, w, e)
+                        }
+                      }
+                    },
+                    // colors: colors,
+                    plotOptions: {
+                      bar: {
+                        columnWidth: '45%',
+                        distributed: true,
+                      }
+                    },
+                    dataLabels: {
+                      enabled: false
+                    },
+                    legend: {
+                      show: false
+                    },
+                    xaxis: {
+                      categories: item_cate_names,
+                      labels: {
+                        style: {
+                          // colors: colors,
+                          fontSize: '12px'
+                        }
+                      }
+                    }
+                };
+
+                var chart = new ApexCharts(document.querySelector("#stackedcolumnchart"), items);
                 chart.render();
-                var chart2 = new ApexCharts(document.querySelector("#stackedcolumnchart2"), options);
+                var chart2 = new ApexCharts(document.querySelector("#stackedcolumnchart2"), item_cates);
                 chart2.render();
             });
         </script>

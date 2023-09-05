@@ -59,9 +59,17 @@
                         </ul>
                     </li>
                     @if(Auth::user()->user_role == "Admin")
-                    <li>
-                        <a class="nav-link menu-title link-nav " href="{{ url('report') }}"><i data-feather="pie-chart"></i><span>Report</span></a>
+                    <li class="dropdown">
+                        <a class="nav-link menu-title {{ prefixActive('/report') }}" href="javascript:void(0)"><i data-feather="pie-chart"></i><span>Report</span></a>
+                        <ul class="nav-submenu menu-content" style="display: {{ prefixBlock('/report') }};">
+                            <li><a href="{{ route('report.expense') }}" class="{{routeActive('report.expense')}}">Expense Report</a></li>
+                            <li><a href="{{ route('report.income') }}" class="{{routeActive('report.income')}}">Income Report</a></li>
+                            <li><a href="{{ route('report.budget') }}" class="{{routeActive('report.budget')}}">Budget Report</a></li>
+                        </ul>
                     </li>
+                    {{-- <li>
+                        <a class="nav-link menu-title link-nav " href="{{ url('reports') }}"><i data-feather="pie-chart"></i><span>Report</span></a>
+                    </li> --}}
 
                     <li>
                         <a class="nav-link menu-title link-nav " href="{{ url('budget') }}"><i data-feather="dollar-sign"></i><span>Budget</span></a>

@@ -1,6 +1,8 @@
 <?php
 
 namespace App\Providers;
+
+use Illuminate\Pagination\Paginator;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\View;
@@ -25,7 +27,7 @@ class AppServiceProvider extends ServiceProvider
     public function boot()
     {
         Schema::defaultStringLength(191);
-
+        Paginator::useBootstrap(); // for pure laravel pagination
         $project_title = '| Cash Flow Management System';
         View::share('title', $project_title);
     }
