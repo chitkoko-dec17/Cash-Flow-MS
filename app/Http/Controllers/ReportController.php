@@ -377,7 +377,7 @@ class ReportController extends Controller
             $query->selectRaw('item.name, COALESCE(sum(incinvi.qty),0) total');
         }
 
-        $income_items = $query->orderBy('total','desc')->groupBy('incinvi.item_id')->take(10)->get();
+        $income_items = $query->orderBy('total','desc')->groupBy('item.name')->groupBy('incinvi.item_id')->take(10)->get();
 
         foreach($income_items as $exp_item){
             $income_item_counts[] = $exp_item->total;
@@ -441,7 +441,7 @@ class ReportController extends Controller
             $query->selectRaw('item_cate.name, COALESCE(sum(incinvic.qty),0) total');
         }
 
-        $income_items_cate = $query->orderBy('total','desc')->groupBy('incinvic.category_id')->take(10)->get();
+        $income_items_cate = $query->orderBy('total','desc')->groupBy('item_cate.name')->groupBy('incinvic.category_id')->take(10)->get();
 
         foreach($income_items_cate as $exp_item_cate){
             $income_cate_counts[] = $exp_item_cate->total;
