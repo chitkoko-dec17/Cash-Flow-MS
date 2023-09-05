@@ -246,6 +246,8 @@ class ReportController extends Controller
             }else{
                 $query->selectRaw('item.name, COALESCE(sum(exinvi.qty),0) total');
             }
+        }else{
+            $query->selectRaw('item.name, COALESCE(sum(exinvi.qty),0) total');
         }
 
         $expense_items = $query->orderBy('total','desc')->groupBy('exinvi.item_id')->take(10)->get();
@@ -308,6 +310,8 @@ class ReportController extends Controller
             }else{
                 $query->selectRaw('item_cate.name, COALESCE(sum(exinvic.qty),0) total');
             }
+        }else{
+            $query->selectRaw('item_cate.name, COALESCE(sum(exinvic.qty),0) total');
         }
 
         $expense_items_cate = $query->orderBy('total','desc')->groupBy('exinvic.category_id')->take(10)->get();
