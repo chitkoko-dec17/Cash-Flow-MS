@@ -2,6 +2,11 @@
 
 @push('css')
     <link rel="stylesheet" type="text/css" href="{{ asset('assets/css/select2.css') }}">
+    <style>
+        .myChart > div {
+            margin: auto;
+        }
+    </style>
 @endpush
 
 @section('content')
@@ -115,14 +120,14 @@
             <div class="col-xl-6 xl-50 box-col-6">
                 <div class="card">
                     <div class="card-body">
-                        <div id="stackedcolumnchart"></div>
+                        <div class="myChart" id="stackedcolumnchart"></div>
                     </div>
                 </div>
             </div>
             <div class="col-xl-6 xl-50 box-col-6">
                 <div class="card">
                     <div class="card-body">
-                        <div id="stackedcolumnchart2"></div>
+                        <div class="myChart" id="stackedcolumnchart2"></div>
                     </div>
                 </div>
             </div>
@@ -233,10 +238,12 @@
             item_names = item_names.split(',');
             var items = {
                 series: [{
+                  name: item_names,
                   data: item_counts
                 }],
                 chart: {
-                  height: 350,
+                  width: '80%',
+                  height: 450,
                   type: 'bar',
                   events: {
                     click: function(chart, w, e) {
@@ -279,7 +286,8 @@
                   data: cate_item_counts
                 }],
                 chart: {
-                  height: 350,
+                  width: '80%',
+                  height: 450,
                   type: 'bar',
                   events: {
                     click: function(chart, w, e) {

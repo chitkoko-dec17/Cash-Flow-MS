@@ -2,6 +2,11 @@
 
 @push('css')
     <link rel="stylesheet" type="text/css" href="{{ asset('assets/css/select2.css') }}">
+    <style>
+        .myChart > div {
+            margin: auto;
+        }
+    </style>
 @endpush
 
 @section('content')
@@ -116,14 +121,14 @@
             <div class="col-xl-6 xl-50 box-col-6">
                 <div class="card">
                     <div class="card-body">
-                        <div id="stackedcolumnchart"></div>
+                        <div class="myChart" id="stackedcolumnchart"></div>
                     </div>
                 </div>
             </div>
             <div class="col-xl-6 xl-50 box-col-6">
                 <div class="card">
                     <div class="card-body">
-                        <div id="stackedcolumnchart2"></div>
+                        <div class="myChart" id="stackedcolumnchart2"></div>
                     </div>
                 </div>
             </div>
@@ -228,74 +233,96 @@
 @section('customJs')
     <script type="text/javascript">
         $(document).ready(function() {
-            var options = {
+            let item_counts = "{{ $charts['income_charts_item']['income_item_counts'] }}";
+            item_counts = item_counts.split(',');
+            let item_names = "{{ $charts['income_charts_item']['income_item_names'] }}";
+            item_names = item_names.split(',');
+            var items = {
                 series: [{
-                    name: 'ITEM A',
-                    data: [44, 55, 41, 67, 22, 43]
-                }, {
-                    name: 'ITEM B',
-                    data: [13, 23, 20, 8, 13, 27]
-                }, {
-                    name: 'ITEM C',
-                    data: [11, 17, 15, 15, 21, 14]
-                }, {
-                    name: 'ITEM D',
-                    data: [21, 7, 25, 13, 22, 8]
+                  name: item_names,
+                  data: item_counts
                 }],
                 chart: {
-                    type: 'bar',
-                    height: 350,
-                    stacked: true,
-                    toolbar: {
-                        show: true
-                    },
-                    zoom: {
-                        enabled: false
+                  width: '80%',
+                  height: 450,
+                  type: 'bar',
+                  events: {
+                    click: function(chart, w, e) {
+                      // console.log(chart, w, e)
                     }
+                  }
                 },
-                responsive: [{
-                    breakpoint: 480,
-                    options: {
-                        legend: {
-                            position: 'bottom',
-                            offsetX: -10,
-                            offsetY: 0
-                        }
-                    }
-                }],
+                // colors: colors,
                 plotOptions: {
-                    bar: {
-                        horizontal: false,
-                        borderRadius: 10,
-                        dataLabels: {
-                            total: {
-                                enabled: true,
-                                style: {
-                                    fontSize: '13px',
-                                    fontWeight: 900
-                                }
-                            }
-                        }
-                    },
+                  bar: {
+                    columnWidth: '45%',
+                    distributed: true,
+                  }
                 },
-                xaxis: {
-                    type: 'datetime',
-                    categories: ['01/01/2011 GMT', '01/02/2011 GMT', '01/03/2011 GMT', '01/04/2011 GMT',
-                        '01/05/2011 GMT', '01/06/2011 GMT'
-                    ],
+                dataLabels: {
+                  enabled: false
                 },
                 legend: {
-                    position: 'right',
-                    offsetY: 40
+                  show: false
                 },
-                fill: {
-                    opacity: 1
+                xaxis: {
+                  categories: item_names,
+                  labels: {
+                    style: {
+                      // colors: colors,
+                      fontSize: '12px'
+                    }
+                  }
                 }
             };
 
-            var chart = new ApexCharts(document.querySelector("#stackedcolumnchart"), options);
+            //for category
+            let cate_item_counts = "{{ $charts['income_charts_cate']['income_cate_counts'] }}";
+            cate_item_counts = cate_item_counts.split(',');
+            let item_cate_names = "{{ $charts['income_charts_cate']['income_cate_names'] }}";
+            item_cate_names = item_cate_names.split(',');
+
+            var item_cates = {
+                series: [{
+                  data: cate_item_counts
+                }],
+                chart: {
+                  width: '80%',
+                  height: 450,
+                  type: 'bar',
+                  events: {
+                    click: function(chart, w, e) {
+                      // console.log(chart, w, e)
+                    }
+                  }
+                },
+                // colors: colors,
+                plotOptions: {
+                  bar: {
+                    columnWidth: '45%',
+                    distributed: true,
+                  }
+                },
+                dataLabels: {
+                  enabled: false
+                },
+                legend: {
+                  show: false
+                },
+                xaxis: {
+                  categories: item_cate_names,
+                  labels: {
+                    style: {
+                      // colors: colors,
+                      fontSize: '12px'
+                    }
+                  }
+                }
+            };
+
+            var chart = new ApexCharts(document.querySelector("#stackedcolumnchart"), items);
             chart.render();
-            var chart2 = new ApexCharts(document.querySelector("#stackedcolumnchart2"), options);
+            var chart2 = new ApexCharts(document.querySelector("#stackedcolumnchart2"), item_cates);
             chart2.render();
 
             function calculateTotalSum() {

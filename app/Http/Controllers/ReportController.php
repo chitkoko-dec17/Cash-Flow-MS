@@ -160,7 +160,9 @@ class ReportController extends Controller
 
         $data = $queryIncInv->get();
         //dd($this->expense_data);
-        return view('cfms.report.income',compact('businessUnits','income_invoices','data','income_invoices_data'));
+        $charts['income_charts_item'] = $this->get_top_income_items($request);
+        $charts['income_charts_cate'] = $this->get_top_income_items_cate($request);
+        return view('cfms.report.income',compact('businessUnits','income_invoices','data','income_invoices_data','charts'));
     }
 
     public function calculateTotal($inv)
@@ -193,10 +195,6 @@ class ReportController extends Controller
         $data = json_decode(urldecode($encodedData), true); // json to array
         $filename = 'report_income_invoices_' . now()->format('Y-m-d_His') . '.xlsx';
         return Excel::download(new IncomeInvoicesExport($data), $filename);
-    }
-
-    public function budget(Request $request){
-        return view('cfms.report.budget');
     }
 
     public function get_top_expense_items($filter){
@@ -325,5 +323,137 @@ class ReportController extends Controller
 
         // var_dump($data);exit;
         return $data;
+    }
+
+    public function get_top_income_items($filter){
+        $selected_business_unit_id = ($filter->business_unit_id) ? $filter->business_unit_id : "";
+        $selected_branch_id = ($filter->branch_id) ? $filter->branch_id : "";
+        $selected_project_id = ($filter->project_id) ? $filter->project_id : "";
+        $selected_from_date = ($filter->selected_from_date) ? $filter->selected_from_date : "";
+        $selected_to_date = ($filter->selected_to_date) ? $filter->selected_to_date : "";
+        $selected_status = ($filter->status) ? $filter->status : "";
+        $selected_chartFilter = ($filter->chartFilter) ? $filter->chartFilter : "";
+
+        $income_item_counts = array();
+        $income_item_names = array();
+
+        $query = DB::table('income_invoices as incinv')
+                ->leftJoin('income_invoice_items as incinvi','incinv.id','=','incinvi.invoice_id')
+                ->leftJoin('items as item','item.id','=','incinvi.item_id');
+
+        if($selected_business_unit_id || $selected_branch_id || $selected_project_id || $selected_from_date || $selected_to_date || $selected_status || $selected_chartFilter){
+
+            if($selected_business_unit_id) {
+                $query->where('incinv.business_unit_id', $selected_business_unit_id);
+            }
+
+            if($selected_branch_id) {
+                $query->where('incinv.branch_id', $selected_branch_id);
+            }
+
+            if($selected_project_id) {
+                $query->where('incinv.project_id', $selected_project_id);
+            }
+
+            if($selected_from_date) {
+                $query->whereDate('incinv.invoice_date', '>=', $selected_from_date);
+            }
+
+            if($selected_to_date) {
+                $query->whereDate('incinv.invoice_date', '<=', $selected_to_date);
+            }
+
+            if($selected_status) {
+                $query->Where('incinv.admin_status', $selected_status);
+            }
+
+            if($selected_chartFilter && $selected_chartFilter == "amount") {
+                $query->selectRaw('item.name, COALESCE(sum(incinvi.amount),0) total');
+            }else{
+                $query->selectRaw('item.name, COALESCE(sum(incinvi.qty),0) total');
+            }
+        }else{
+            $query->selectRaw('item.name, COALESCE(sum(incinvi.qty),0) total');
+        }
+
+        $income_items = $query->orderBy('total','desc')->groupBy('incinvi.item_id')->take(10)->get();
+
+        foreach($income_items as $exp_item){
+            $income_item_counts[] = $exp_item->total;
+            $income_item_names[] = $exp_item->name;
+        }
+        $data['income_item_counts'] = join(', ', $income_item_counts);
+        $data['income_item_names'] = join(', ', $income_item_names);
+
+        // var_dump($data);exit;
+        return $data;
+    }
+
+    public function get_top_income_items_cate($filter){
+        $selected_business_unit_id = ($filter->business_unit_id) ? $filter->business_unit_id : "";
+        $selected_branch_id = ($filter->branch_id) ? $filter->branch_id : "";
+        $selected_project_id = ($filter->project_id) ? $filter->project_id : "";
+        $selected_from_date = ($filter->selected_from_date) ? $filter->selected_from_date : "";
+        $selected_to_date = ($filter->selected_to_date) ? $filter->selected_to_date : "";
+        $selected_status = ($filter->status) ? $filter->status : "";
+        $selected_chartFilter = ($filter->chartFilter) ? $filter->chartFilter : "";
+
+        $income_cate_counts = array();
+        $income_cate_names = array();
+
+        $query = DB::table('income_invoices as incinv')
+            ->leftJoin('income_invoice_items as incinvic','incinv.id','=','incinvic.invoice_id')
+            ->leftJoin('item_categories as item_cate','item_cate.id','=','incinvic.category_id');
+
+        if($selected_business_unit_id || $selected_branch_id || $selected_project_id || $selected_from_date || $selected_to_date || $selected_status || $selected_chartFilter){
+
+            if($selected_business_unit_id) {
+                $query->where('incinv.business_unit_id', $selected_business_unit_id);
+            }
+
+            if($selected_branch_id) {
+                $query->where('incinv.branch_id', $selected_branch_id);
+            }
+
+            if($selected_project_id) {
+                $query->where('incinv.project_id', $selected_project_id);
+            }
+
+            if($selected_from_date) {
+                $query->whereDate('incinv.invoice_date', '>=', $selected_from_date);
+            }
+
+            if($selected_to_date) {
+                $query->whereDate('incinv.invoice_date', '<=', $selected_to_date);
+            }
+
+            if($selected_status) {
+                $query->Where('incinv.admin_status', $selected_status);
+            }
+
+            if($selected_chartFilter && $selected_chartFilter == "amount") {
+                $query->selectRaw('item_cate.name, COALESCE(sum(incinvic.amount),0) total');
+            }else{
+                $query->selectRaw('item_cate.name, COALESCE(sum(incinvic.qty),0) total');
+            }
+        }else{
+            $query->selectRaw('item_cate.name, COALESCE(sum(incinvic.qty),0) total');
+        }
+
+        $income_items_cate = $query->orderBy('total','desc')->groupBy('incinvic.category_id')->take(10)->get();
+
+        foreach($income_items_cate as $exp_item_cate){
+            $income_cate_counts[] = $exp_item_cate->total;
+            $income_cate_names[] = $exp_item_cate->name;
+        }
+        $data['income_cate_counts'] = join(', ', $income_cate_counts);
+        $data['income_cate_names'] = join(', ', $income_cate_names);
+
+        // var_dump($data);exit;
+        return $data;
+    }
+
+    public function budget(Request $request){
+        return view('cfms.report.budget');
     }
 }
