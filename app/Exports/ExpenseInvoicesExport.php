@@ -3,6 +3,7 @@
 namespace App\Exports;
 
 use App\Models\ExpenseInvoice;
+use Illuminate\Support\Facades\Log;
 use Maatwebsite\Excel\Concerns\Exportable;
 use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\FromQuery;
@@ -12,21 +13,23 @@ use Maatwebsite\Excel\Concerns\WithMapping;
 
 class ExpenseInvoicesExport implements FromQuery, WithHeadings, WithMapping, ShouldAutoSize
 {
-    protected $expense_invoices_data;
+    protected $expense_data;
     use Exportable;
 
-    public function __construct($expense_invoices_data)
+    public function __construct($expense_data)
     {
-        $this->expense_invoices_data = $expense_invoices_data;
+        $this->expense_data = $expense_data;
+        //dd($expense_data);
     }
 
     public function query()
     {
         $idArray = [];
-        foreach ($this->expense_invoices_data as $data) {
+        foreach ($this->expense_data as $data) {
             $idArray[] = $data['id'];
         }
         $myString = implode(',', $idArray);
+        //dd($myString);
         return ExpenseInvoice::query()
             ->with([
                 'businessUnit:id,name',

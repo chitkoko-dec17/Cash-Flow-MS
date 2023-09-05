@@ -26,6 +26,15 @@ class CommonController extends Controller
     }
   }
 
+  public function get_branches(Request $request)
+  {
+    if($request->ajax()){
+      $branches = DB::table('branches')->where('business_unit_id',$request->business_unit_id)->get();
+      //dd($branches);
+      return response()->json(['array_data'=>$branches]);
+    }
+  }
+
   public function get_projects(Request $request)
   {
     if($request->ajax()){

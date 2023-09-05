@@ -146,7 +146,7 @@
 @endsection
 
 @push('scripts')
-    
+
     <script>
         let jcates = '';
         @foreach($itemcategories as $cate)
