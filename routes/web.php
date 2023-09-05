@@ -16,6 +16,7 @@ use App\Http\Controllers\ReturnInvoiceController;
 use App\Http\Livewire\EstimateBudgetComponent;
 use App\Http\Livewire\ProjectComponent;
 use App\Http\Controllers\CommonController;
+use App\Http\Controllers\ReportController;
 use App\Http\Livewire\ReportComponent;
 use App\Http\Controllers\UserController;
 
@@ -91,7 +92,17 @@ Route::group(['middleware' => ['auth']], function() {
     Route::get('/branch',BranchComponent::class)->name('branch.index');
     Route::get('/project',ProjectComponent::class)->name('project.index');
     Route::get('/budget',EstimateBudgetComponent::class)->name('budget.index');
-    Route::get('/report',ReportComponent::class)->name('report.index');
+    Route::get('/reports',ReportComponent::class)->name('report.index');
+
+    //for report
+    Route::prefix('report')->group( function(){
+        Route::get('expense', [ReportController::class, 'expense'])->name('report.expense');
+        Route::get('income', [ReportController::class, 'income'])->name('report.income');
+        Route::get('budget', [ReportController::class, 'budget'])->name('report.budget');
+    });
+
+    Route::get('expense/{data}', [ReportController::class, 'exportexpense'])->name('exportexpense');
+    Route::get('income/{data}', [ReportController::class, 'exportincome'])->name('exportincome');
 
     //for expense invoice
     Route::resource('expense-invoice', ExpenseInvoiceController::class);
@@ -113,6 +124,7 @@ Route::group(['middleware' => ['auth']], function() {
     Route::post('invoice/get_items', [CommonController::class, 'get_items'])->name('get.items');
 
     Route::post('branch/get_projects', [CommonController::class, 'get_projects'])->name('get.projects');
+    Route::post('business-unit/get_branches', [CommonController::class, 'get_branches'])->name('get.branches');
 
     //Temp fix route for user
     Route::prefix('user')->group( function(){

@@ -3,6 +3,7 @@
 namespace App\Exports;
 
 use App\Models\ExpenseInvoice;
+use App\Models\IncomeInvoice;
 use Illuminate\Support\Facades\Log;
 use Maatwebsite\Excel\Concerns\Exportable;
 use Maatwebsite\Excel\Concerns\FromCollection;
@@ -11,26 +12,26 @@ use Maatwebsite\Excel\Concerns\ShouldAutoSize;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 use Maatwebsite\Excel\Concerns\WithMapping;
 
-class ExpenseInvoicesExport implements FromQuery, WithHeadings, WithMapping, ShouldAutoSize
+class IncomeInvoicesExport implements FromQuery, WithHeadings, WithMapping, ShouldAutoSize
 {
-    protected $expense_data;
+    protected $income_data;
     use Exportable;
 
-    public function __construct($expense_data)
+    public function __construct($income_data)
     {
-        $this->expense_data = $expense_data;
-        //dd($expense_data);
+        $this->income_data = $income_data;
+        //dd($income_data);
     }
 
     public function query()
     {
         $idArray = [];
-        foreach ($this->expense_data as $data) {
+        foreach ($this->income_data as $data) {
             $idArray[] = $data['id'];
         }
         $myString = implode(',', $idArray);
         //dd($myString);
-        return ExpenseInvoice::query()
+        return IncomeInvoice::query()
             ->with([
                 'businessUnit:id,name',
                 'branch:id,name',
@@ -46,7 +47,7 @@ class ExpenseInvoicesExport implements FromQuery, WithHeadings, WithMapping, Sho
     public function headings(): array
     {
         return [
-            'Business Unit', 'Branch', 'Project', 'Invoice No', 'Invoice Date', 'Total Amount', 'Return Total Amount',
+            'Business Unit', 'Branch', 'Project', 'Invoice No', 'Invoice Date', 'Total Amount',
             'Description', 'Upload User', 'Approved Manager', 'Manager Status', 'Approved Admin', 'Admin Status', 'Edit By'
         ];
     }
@@ -60,7 +61,6 @@ class ExpenseInvoicesExport implements FromQuery, WithHeadings, WithMapping, Sho
             $row->invoice_no ?? '',
             $row->invoice_date?? '',
             $row->total_amount?? '',
-            $row->return_total_amount?? '',
             $row->description?? '',
             $row->staff->name ?? '',
             $row->manager->name ?? '',
