@@ -1,6 +1,6 @@
 <header class="main-nav">
     <div class="sidebar-user text-center">
-        <a class="setting-primary" href="{{ route('user.profile') }}"><i data-feather="settings"></i></a><img class="img-90 rounded-circle" src="{{asset('assets/images/dashboard/1.png')}}" alt="" />
+        <a class="setting-primary" href="{{ route('user.profile') }}"><i data-feather="settings"></i></a><img class="img-90 rounded-circle" src="@if(Auth::user()->user_role == "Admin") {{asset('assets/images/logo/profile.png')}} @else {{asset('storage/'.Auth::user()->businessunit->bu_image)}} @endif" alt="" />
         {{-- <div class="badge-bottom"><span class="badge badge-primary">New</span></div> --}}
         <a href="javascript:void(0)"> <h6 class="mt-3 f-14 f-w-600">{{ Auth::user()->name }}</h6></a>
         <p class="mb-0 font-roboto">{{ Auth::user()->user_role }}</p>
@@ -19,11 +19,11 @@
                             <h6>Settings</h6>
                         </div>
                     </li>
+                    @if(Auth::user()->user_role == "Admin")
                     <li>
                         <a class="nav-link menu-title link-nav" href="{{ route('dashboard') }}"><i data-feather="home"></i><span>Dashboard</span></a>
                     </li>
 
-                    @if(Auth::user()->user_role == "Admin")
                     <li class="dropdown">
                         <a class="nav-link menu-title {{ prefixActive('business-unit') }}" href="javascript:void(0)"><i data-feather="server"></i><span>Business Units</span></a>
                         <ul class="nav-submenu menu-content" style="display: {{ prefixBlock('/business-unit') }};">

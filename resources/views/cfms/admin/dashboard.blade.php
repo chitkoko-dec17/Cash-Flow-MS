@@ -297,13 +297,15 @@
 
                             $.each(data.array_data, function(index, exinvoice) {
                                 console.log(exinvoice.id);
+                                var route = "{{ route('expense-invoice.show',':id') }}";
+                                route = route.replace(':id',exinvoice.id);
                                 var row = '<tbody><tr>' +
                                     '<td>' + exinvoice.invoice_no + '</td>' +
                                     '<td>' + exinvoice.invoice_date + '</td>' +
                                     '<td>' + exinvoice.upload_user_id + '</td>' +
                                     '<td>' + exinvoice.total_amount + '</td>' +
                                     '<td>' + exinvoice.admin_status + '</td>' +
-                                    '<td><a href="{{ route("expense-invoice.show",4) }}" class="btn btn-outline-success btn-sm action-btn pt-0 pb-0 " title="View" data-toggle="tooltip"><i class="fa fa-eye"></i></a></td>' +
+                                    '<td> <a href=' + route + ' class="btn btn-outline-success btn-sm action-btn pt-0 pb-0 " title="View" data-toggle="tooltip"><i class="fa fa-eye"></i></a></td>' +
                                 '</tr><tbody>';
                                     console.log(row);
                                 $('#expenseTable'+ buID).append(row);
@@ -329,13 +331,15 @@
 
                             $.each(data.array_data, function(index, incinvoice) {
                                 console.log(incinvoice.id);
+                                var route = "{{ route('income-invoice.show',':id') }}";
+                                route = route.replace(':id',incinvoice.id);
                                 var row = '<tbody><tr>' +
                                     '<td>' + incinvoice.invoice_no + '</td>' +
                                     '<td>' + incinvoice.invoice_date + '</td>' +
                                     '<td>' + incinvoice.upload_user_id + '</td>' +
                                     '<td>' + incinvoice.total_amount + '</td>' +
                                     '<td>' + incinvoice.admin_status + '</td>' +
-                                    '<td><a href="{{ route("income-invoice.show",4) }}" class="btn btn-outline-success btn-sm action-btn pt-0 pb-0 " title="View" data-toggle="tooltip"><i class="fa fa-eye"></i></a></td>' +
+                                    '<td> <a href=' + route + ' class="btn btn-outline-success btn-sm action-btn pt-0 pb-0 " title="View" data-toggle="tooltip"><i class="fa fa-eye"></i></a></td>' +
                                 '</tr><tbody>';
                                     console.log(row);
                                 $('#incomeTable'+ buID).append(row);
