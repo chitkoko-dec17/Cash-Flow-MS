@@ -26,50 +26,6 @@
                     </div>
                     <div class="collapse show" id="collapseicon" aria-labelledby="collapseicon" data-parent="#accordion">
                         <div class="card-body filter-cards-view animate-chk pt-0">
-                            {{-- <form class="row g-3">
-                                @csrf
-                                <div class="col-md-3 col-sm-12">
-                                    <div class="form-group">
-                                        <label for="business_unit_id" style="font-size:1.4rex;">Business Unit</label>
-                                        <select name="business_unit_id" class="form-select" id="business_unit_id">
-                                            <option value="">Select a business unit</option>
-                                            @foreach ($businessUnits as $businessUnit)
-                                                <option value="{{ $businessUnit->id }}">{{ $businessUnit->name }}
-                                                </option>
-                                            @endforeach
-                                        </select>
-                                    </div>
-                                </div>
-                                <div class="col-md-3 col-sm-12">
-                                    <div class="form-group">
-                                        <label for="branch_id" style="font-size:1.4rex;">Branch</label>
-                                        <select name="branch_id" class="form-select" id="branch_id">
-                                            <option value="">Select a branch</option>
-                                        </select>
-                                    </div>
-                                </div>
-                                <div class="col-md-3 col-sm-12">
-                                    <div class="form-group">
-                                        <label for="project_id" style="font-size:1.4rex;">Project</label>
-                                        <select name="project_id" class="form-select" id="project_id">
-                                            <option value="">Select a project</option>
-                                        </select>
-                                    </div>
-                                </div>
-                                <div class="col-md-3 col-sm-12">
-                                    <div class="form-group">
-                                        <label for="budget_id" style="font-size:1.4rex;">Budget Name</label>
-                                        <select name="budget_id" class="form-select" id="budget_id">
-                                            <option value="">Select a budget</option>
-                                        </select>
-                                    </div>
-                                </div>
-                                <div class="col-md-12 ">
-                                    <div class="form-group">
-                                        <input class="btn btn-primary" type="submit" value="Search">
-                                    </div>
-                                </div>
-                            </form> --}}
                             <form class="row g-3">
                                 @csrf
                                     <div class="row">
@@ -79,7 +35,11 @@
                                                 <select name="business_unit_id" class="form-select" id="business_unit_id">
                                                     <option value="">Select a business unit</option>
                                                     @foreach ($businessUnits as $businessUnit)
-                                                        <option value="{{ $businessUnit->id }}">{{ $businessUnit->name }}</option>
+                                                        @if($data['selected_business_unit_id'] == $businessUnit->id)
+                                                            <option value="{{ $businessUnit->id }}" selected>{{ $businessUnit->name }}</option>
+                                                        @else
+                                                            <option value="{{ $businessUnit->id }}">{{ $businessUnit->name }}</option>
+                                                        @endif
                                                     @endforeach
                                                 </select>
                                             </div>
@@ -124,6 +84,7 @@
             </div>
         </div>
         <!-- Charts -->
+        @if($data['est_budget'])
         <div class="row">
             <div class="col-xl-6 xl-50 box-col-6">
                 <div class="card">
@@ -135,11 +96,12 @@
             <div class="col-xl-6 xl-50 box-col-6">
                 <div class="card">
                     <div class="card-body">
-                        <div id="expenseComparisonChart"></div>
+                        <div id="stackedcolumnchart"></div>
                     </div>
                 </div>
             </div>
         </div>
+        @endif
     </div>
 @endsection
 
@@ -151,58 +113,81 @@
 
 @section('customJs')
     <script>
-        // Assuming you have data for actual expenses and expected expenses
-        var actualExpenses = [500, 600, 700, 800, 900, 1000, 1100]; // Replace with your actual data
-        var expectedExpenses = [450, 550, 650, 750, 850, 950, 1050]; // Replace with your expected data
+        @if($data['est_budget'])
 
-        var expenseComparisonChart = new ApexCharts(document.querySelector("#expenseComparisonChart"), {
-            chart: {
-                type: 'line',
-                height: 350
-            },
-            xaxis: {
-                categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul']
-            },
-            title: {
-                text: 'Actual vs. Expected Expenses'
-            },
-            subtitle: {
-                text: '2023 Expense Comparison'
-            },
-            series: [{
-                    name: 'Actual Expenses',
-                    data: actualExpenses
+        $(document).ready(function() {
+            $('#business_unit_id').trigger('change');
+            let budget_id = "{{ $data['selected_budget_id'] }}";
+
+
+            let item_counts = "{{ $data['est_budget']['amt'].','. $data['actual_expense']['amt']}}";
+            item_counts = item_counts.split(',');
+            let item_names = "{{ $data['est_budget']['name'].','. $data['actual_expense']['name']}}";
+            item_names = item_names.split(',');
+            var items = {
+                series: [{
+                  name: item_names,
+                  data: item_counts
+                }],
+                chart: {
+                  width: '80%',
+                  height: 450,
+                  type: 'bar',
+                  events: {
+                    click: function(chart, w, e) {
+                      // console.log(chart, w, e)
+                    }
+                  }
                 },
-                {
-                    name: 'Expected Expenses',
-                    data: expectedExpenses
+                // colors: colors,
+                plotOptions: {
+                  bar: {
+                    columnWidth: '45%',
+                    distributed: true,
+                  }
+                },
+                dataLabels: {
+                  enabled: false
+                },
+                legend: {
+                  show: false
+                },
+                xaxis: {
+                  categories: item_names,
+                  labels: {
+                    style: {
+                      // colors: colors,
+                      fontSize: '12px'
+                    }
+                  }
                 }
-            ]
+            };
+
+            var chart = new ApexCharts(document.querySelector("#stackedcolumnchart"), items);
+            chart.render();
         });
 
-        expenseComparisonChart.render();
-
         // Assuming you have data for actual expenses and expected expenses
-        var actualExpenses = 1200; // Replace with your actual data
-        var expectedExpenses = 1050; // Replace with your expected data
+        var actualExpenses = {{$data['actual_expense']['amt']}}; // Replace with your actual data
+        var expectedExpenses = {{ $data['est_budget']['amt'] }}; // Replace with your expected data
 
         var expenseComparisonPieChart = new ApexCharts(document.querySelector("#expenseComparisonPieChart"), {
             chart: {
                 type: 'pie',
                 height: 350
             },
-            labels: ['Actual Expenses', 'Expected Expenses'],
+            labels: ['Actual Expenses', '{{ $data["est_budget"]["name"] }}'],
             series: [actualExpenses, expectedExpenses],
             title: {
                 text: 'Expense Comparison'
             },
             subtitle: {
-                text: '2023 Expense Comparison'
+                text: '{{ $data["est_budget"]["name"] }}'
             }
         });
 
         expenseComparisonPieChart.render();
-
+        @endif
 
         // Attach a click event handler to the Apply button
         $('#applyFilters').click(function() {
@@ -311,7 +296,12 @@
                         budgetDropdown.append('<option value="">Select a budget</option>');
 
                         $.each(data.budget_data, function(index, budget) {
-                            budgetDropdown.append('<option value="' + budget.id + '">' + budget.name + '</option>');
+                            if(budget_id){
+                                budgetDropdown.append('<option value="' + budget.id + '" selected>' + budget.name + '</option>');
+                            }else{
+                                budgetDropdown.append('<option value="' + budget.id + '">' + budget.name + '</option>');
+                            }
+                            
                         });
                     }
                 });
