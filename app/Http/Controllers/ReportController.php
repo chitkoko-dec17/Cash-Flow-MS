@@ -90,7 +90,11 @@ class ReportController extends Controller
 
         $data = $queryExpInv->get();
         //dd($this->expense_data);
-        return view('cfms.report.expense',compact('businessUnits','expense_invoices','data','expense_invoices_data'));
+
+        $charts['expense_charts_item'] = $this->get_top_expense_items($request);
+        $charts['expense_charts_cate'] = $this->get_top_expense_items_cate($request);
+
+        return view('cfms.report.expense',compact('businessUnits','expense_invoices','data','expense_invoices_data', 'charts'));
     }
 
     public function income(Request $request)
@@ -193,5 +197,129 @@ class ReportController extends Controller
 
     public function budget(Request $request){
         return view('cfms.report.budget');
+    }
+
+    public function get_top_expense_items($filter){
+        $selected_business_unit_id = ($filter->business_unit_id) ? $filter->business_unit_id : "";
+        $selected_branch_id = ($filter->branch_id) ? $filter->branch_id : "";
+        $selected_project_id = ($filter->project_id) ? $filter->project_id : "";
+        $selected_from_date = ($filter->selected_from_date) ? $filter->selected_from_date : "";
+        $selected_to_date = ($filter->selected_to_date) ? $filter->selected_to_date : "";
+        $selected_status = ($filter->status) ? $filter->status : "";
+        $selected_chartFilter = ($filter->chartFilter) ? $filter->chartFilter : "";
+
+        $expense_item_counts = array();
+        $expense_item_names = array();
+
+        $query = DB::table('expense_invoices as exinv')
+                ->leftJoin('expense_invoice_items as exinvi','exinv.id','=','exinvi.invoice_id')
+                ->leftJoin('items as item','item.id','=','exinvi.item_id');
+
+        if($selected_business_unit_id || $selected_branch_id || $selected_project_id || $selected_from_date || $selected_to_date || $selected_status || $selected_chartFilter){
+
+            if($selected_business_unit_id) {
+                $query->where('exinv.business_unit_id', $selected_business_unit_id);
+            }
+
+            if($selected_branch_id) {
+                $query->where('exinv.branch_id', $selected_branch_id);
+            }
+
+            if($selected_project_id) {
+                $query->where('exinv.project_id', $selected_project_id);
+            }
+
+            if($selected_from_date) {
+                $query->whereDate('exinv.invoice_date', '>=', $selected_from_date);
+            }
+
+            if($selected_to_date) {
+                $query->whereDate('exinv.invoice_date', '<=', $selected_to_date);
+            }
+
+            if($selected_status) {
+                $query->Where('exinv.admin_status', $selected_status);
+            }
+
+            if($selected_chartFilter && $selected_chartFilter == "amount") {
+                $query->selectRaw('item.name, COALESCE(sum(exinvi.amount),0) total');
+            }else{
+                $query->selectRaw('item.name, COALESCE(sum(exinvi.qty),0) total');
+            }
+        }
+
+        $expense_items = $query->orderBy('total','desc')->groupBy('exinvi.item_id')->take(10)->get();
+
+        foreach($expense_items as $exp_item){
+            $expense_item_counts[] = $exp_item->total;
+            $expense_item_names[] = $exp_item->name;
+        }
+        $data['expense_item_counts'] = join(', ', $expense_item_counts);
+        $data['expense_item_names'] = join(', ', $expense_item_names);
+
+        // var_dump($data);exit;
+        return $data;
+    }
+
+    public function get_top_expense_items_cate($filter){
+        $selected_business_unit_id = ($filter->business_unit_id) ? $filter->business_unit_id : "";
+        $selected_branch_id = ($filter->branch_id) ? $filter->branch_id : "";
+        $selected_project_id = ($filter->project_id) ? $filter->project_id : "";
+        $selected_from_date = ($filter->selected_from_date) ? $filter->selected_from_date : "";
+        $selected_to_date = ($filter->selected_to_date) ? $filter->selected_to_date : "";
+        $selected_status = ($filter->status) ? $filter->status : "";
+        $selected_chartFilter = ($filter->chartFilter) ? $filter->chartFilter : "";
+
+        $expense_cate_counts = array();
+        $expense_cate_names = array();
+
+        $query = DB::table('expense_invoices as exinv')
+            ->leftJoin('expense_invoice_items as exinvic','exinv.id','=','exinvic.invoice_id')
+            ->leftJoin('item_categories as item_cate','item_cate.id','=','exinvic.category_id');
+
+        if($selected_business_unit_id || $selected_branch_id || $selected_project_id || $selected_from_date || $selected_to_date || $selected_status || $selected_chartFilter){
+
+            if($selected_business_unit_id) {
+                $query->where('exinv.business_unit_id', $selected_business_unit_id);
+            }
+
+            if($selected_branch_id) {
+                $query->where('exinv.branch_id', $selected_branch_id);
+            }
+
+            if($selected_project_id) {
+                $query->where('exinv.project_id', $selected_project_id);
+            }
+
+            if($selected_from_date) {
+                $query->whereDate('exinv.invoice_date', '>=', $selected_from_date);
+            }
+
+            if($selected_to_date) {
+                $query->whereDate('exinv.invoice_date', '<=', $selected_to_date);
+            }
+
+            if($selected_status) {
+                $query->Where('exinv.admin_status', $selected_status);
+            }
+
+            if($selected_chartFilter && $selected_chartFilter == "amount") {
+                $query->selectRaw('item_cate.name, COALESCE(sum(exinvic.amount),0) total');
+            }else{
+                $query->selectRaw('item_cate.name, COALESCE(sum(exinvic.qty),0) total');
+            }
+        }
+
+        $expense_items_cate = $query->orderBy('total','desc')->groupBy('exinvic.category_id')->take(10)->get();
+
+        foreach($expense_items_cate as $exp_item_cate){
+            $expense_cate_counts[] = $exp_item_cate->total;
+            $expense_cate_names[] = $exp_item_cate->name;
+        }
+        $data['expense_cate_counts'] = join(', ', $expense_cate_counts);
+        $data['expense_cate_names'] = join(', ', $expense_cate_names);
+
+        // var_dump($data);exit;
+        return $data;
     }
 }
