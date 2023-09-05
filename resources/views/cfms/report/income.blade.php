@@ -239,7 +239,6 @@
             item_names = item_names.split(',');
             var items = {
                 series: [{
-                  name: item_names,
                   data: item_counts
                 }],
                 chart: {
@@ -251,6 +250,9 @@
                       // console.log(chart, w, e)
                     }
                   }
+                },
+                title: {
+                    text: 'Items'
                 },
                 // colors: colors,
                 plotOptions: {
@@ -295,6 +297,9 @@
                       // console.log(chart, w, e)
                     }
                   }
+                },
+                title: {
+                    text: 'Item Categories'
                 },
                 // colors: colors,
                 plotOptions: {

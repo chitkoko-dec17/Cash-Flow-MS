@@ -17,7 +17,7 @@
 		<li class="breadcrumb-item">Apps</li>
 		<li class="breadcrumb-item active">Contacts</li>
 	@endcomponent
-	
+
 	<div class="container-fluid">
 	    <div class="email-wrap bookmark-wrap">
 	        <div class="row">
@@ -904,7 +904,7 @@
 	        </div>
 	    </div>
 	</div>
-	
+
 	@push('scripts')
 	<script src="{{asset('assets/js/notify/bootstrap-notify.min.js')}}"></script>
     <script src="{{asset('assets/js/sweet-alert/sweetalert.min.js')}}"></script>

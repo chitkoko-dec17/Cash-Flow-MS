@@ -126,6 +126,8 @@ Route::group(['middleware' => ['auth']], function() {
     Route::post('branch/get_projects', [CommonController::class, 'get_projects'])->name('get.projects');
     Route::post('business-unit/get_branches', [CommonController::class, 'get_branches'])->name('get.branches');
     Route::post('budget/get_budgets', [CommonController::class, 'get_budgets'])->name('get.budgets');
+    Route::post('invoice/get_expenseInvoices', [CommonController::class, 'get_expenseInvoices'])->name('get.expenseInvoices');
+    Route::post('invoice/get_incomeInvoices', [CommonController::class, 'get_incomeInvoices'])->name('get.incomeInvoices');
 
     //Temp fix route for user
     Route::prefix('user')->group( function(){

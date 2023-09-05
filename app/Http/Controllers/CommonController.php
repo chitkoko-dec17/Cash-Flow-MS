@@ -66,4 +66,20 @@ class CommonController extends Controller
         return response()->json(['budget_data' => $budgetData]);
     }
   }
+
+  public function get_expenseInvoices(Request $request)
+  {
+    if($request->ajax()){
+      $expenseInvoices = DB::table('expense_invoices')->where('business_unit_id',$request->business_unit_id)->take(6)->get();
+      return response()->json(['array_data'=>$expenseInvoices]);
+    }
+  }
+
+  public function get_incomeInvoices(Request $request)
+  {
+    if($request->ajax()){
+      $ncomeInvoices = DB::table('income_invoices')->where('business_unit_id',$request->business_unit_id)->take(6)->get();
+      return response()->json(['array_data'=>$ncomeInvoices]);
+    }
+  }
 }
