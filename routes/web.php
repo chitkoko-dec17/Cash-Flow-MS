@@ -100,8 +100,9 @@ Route::group(['middleware' => ['auth']], function() {
         Route::get('income', [ReportController::class, 'income'])->name('report.income');
         Route::get('budget', [ReportController::class, 'budget'])->name('report.budget');
     });
-    
-    Route::get('export/{data}', [ReportController::class, 'export'])->name('export');
+
+    Route::get('expense/{data}', [ReportController::class, 'exportexpense'])->name('exportexpense');
+    Route::get('income/{data}', [ReportController::class, 'exportincome'])->name('exportincome');
 
     //for expense invoice
     Route::resource('expense-invoice', ExpenseInvoiceController::class);

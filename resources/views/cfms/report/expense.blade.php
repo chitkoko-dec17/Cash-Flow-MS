@@ -142,7 +142,7 @@
                                         @php
                                             $encodedData = urlencode(json_encode($data));
                                         @endphp
-                                            <a class="btn btn-primary btn-sm" href="{{ route('export', ['data' => $encodedData]) }}" role="button">Export <i
+                                            <a class="btn btn-primary btn-sm" href="{{ route('exportexpense', ['data' => $encodedData]) }}" role="button">Export <i
                                                 class="fa fa-file-excel-o ms-1"></i></a>
                                         @else
                                             <button type="button" class="btn btn-primary btn-sm" disabled>Export <i
