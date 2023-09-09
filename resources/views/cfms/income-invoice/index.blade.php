@@ -137,7 +137,7 @@
                             </table>
                         </div>
                         @if (count($income_invoices) > 0)
-                        {{ $income_invoices->links('cfms.livewire-pagination-links') }}
+                        {{ $income_invoices->links('cfms.laravel-pagination-links') }}
                         @endif
                     </div>
                 </div>

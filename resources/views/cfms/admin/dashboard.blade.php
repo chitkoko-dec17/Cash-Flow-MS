@@ -31,8 +31,8 @@
                             <div class="media static-top-widget">
                                 <div class="align-self-center text-center"><i data-feather="database"></i></div>
                                 <div class="media-body">
-                                    <span class="m-0">Create Business Unit</span>
-                                    <h4 class="mb-0 counter">33</h4>
+                                    <span class="m-0">Business Unit</span>
+                                    <h4 class="mb-0 counter">{{ $countdata['business_unit'] }}</h4>
                                     <i class="icon-bg" data-feather="database"></i>
                                 </div>
                             </div>
@@ -47,8 +47,8 @@
                             <div class="media static-top-widget">
                                 <div class="align-self-center text-center"><i data-feather="shopping-bag"></i></div>
                                 <div class="media-body">
-                                    <span class="m-0">Create Expense Invoices</span>
-                                    <h4 class="mb-0 counter">42</h4>
+                                    <span class="m-0">Expense Invoices</span>
+                                    <h4 class="mb-0 counter">{{ $countdata['expense_inv'] }}</h4>
                                     <i class="icon-bg" data-feather="shopping-bag"></i>
                                 </div>
                             </div>
@@ -63,8 +63,8 @@
                             <div class="media static-top-widget">
                                 <div class="align-self-center text-center"><i data-feather="file"></i></div>
                                 <div class="media-body">
-                                    <span class="m-0">Create Income Invoices</span>
-                                    <h4 class="mb-0 counter">32</h4>
+                                    <span class="m-0">Income Invoices</span>
+                                    <h4 class="mb-0 counter">{{ $countdata['income_inv'] }}</h4>
                                     <i class="icon-bg" data-feather="file"></i>
                                 </div>
                             </div>
@@ -79,8 +79,8 @@
                             <div class="media static-top-widget">
                                 <div class="align-self-center text-center"><i data-feather="user-plus"></i></div>
                                 <div class="media-body">
-                                    <span class="m-0">Create New User</span>
-                                    <h4 class="mb-0 counter">123</h4>
+                                    <span class="m-0">Total User</span>
+                                    <h4 class="mb-0 counter">{{ $countdata['total_users'] }}</h4>
                                     <i class="icon-bg" data-feather="user-plus"></i>
                                 </div>
                             </div>

@@ -143,7 +143,7 @@
                             </table>
                         </div>
                         @if (count($expense_invoices) > 0)
-                        {{ $expense_invoices->links('cfms.livewire-pagination-links') }}
+                        {{ $expense_invoices->links('cfms.laravel-pagination-links') }}
                         @endif
                     </div>
                 </div>

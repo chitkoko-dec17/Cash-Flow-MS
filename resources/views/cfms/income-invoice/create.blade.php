@@ -226,6 +226,7 @@
                     method: 'POST',
                     data: {cate_id:cate_id, inv_type:2, _token:token},
                     success: function(data) {
+                        console.log(data);
                         // $('.item_id').find('option').remove();
                         main.closest('tr').find('select.item_id option').remove();
                         var selectbox = main.closest('tr').find('select.item_id');

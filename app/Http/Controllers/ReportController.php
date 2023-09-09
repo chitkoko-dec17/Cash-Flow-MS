@@ -249,6 +249,8 @@ class ReportController extends Controller
             $query->selectRaw('item.name, COALESCE(sum(exinvi.qty),0) as total');
         }
 
+        $expense_item_lists = $query->orderBy('total','desc')->groupBy('item.name')->groupBy('exinvi.item_id')->get();
+
         $expense_items = $query->orderBy('total','desc')->groupBy('item.name')->groupBy('exinvi.item_id')->take(10)->get();
 
         foreach($expense_items as $exp_item){
@@ -257,6 +259,7 @@ class ReportController extends Controller
         }
         $data['expense_item_counts'] = join(', ', $expense_item_counts);
         $data['expense_item_names'] = join(', ', $expense_item_names);
+        $data['expense_item_lists'] = $expense_item_lists;
 
         // var_dump($data);exit;
         return $data;
@@ -377,6 +380,8 @@ class ReportController extends Controller
             $query->selectRaw('item.name, COALESCE(sum(incinvi.qty),0) total');
         }
 
+        $income_item_lists = $query->orderBy('total','desc')->groupBy('item.name')->groupBy('incinvi.item_id')->get();
+
         $income_items = $query->orderBy('total','desc')->groupBy('item.name')->groupBy('incinvi.item_id')->take(10)->get();
 
         foreach($income_items as $exp_item){
@@ -385,6 +390,7 @@ class ReportController extends Controller
         }
         $data['income_item_counts'] = join(', ', $income_item_counts);
         $data['income_item_names'] = join(', ', $income_item_names);
+        $data['income_item_lists'] = $income_item_lists;
 
         // var_dump($data);exit;
         return $data;
