@@ -241,12 +241,12 @@ class ReportController extends Controller
             }
 
             if($selected_chartFilter && $selected_chartFilter == "amount") {
-                $query->selectRaw('item.name, COALESCE(sum(exinvi.amount),0) total');
+                $query->selectRaw('item.name, COALESCE(sum(exinvi.amount),0) as total');
             }else{
-                $query->selectRaw('item.name, COALESCE(sum(exinvi.qty),0) total');
+                $query->selectRaw('item.name, COALESCE(sum(exinvi.qty),0) as total');
             }
         }else{
-            $query->selectRaw('item.name, COALESCE(sum(exinvi.qty),0) total');
+            $query->selectRaw('item.name, COALESCE(sum(exinvi.qty),0) as total');
         }
 
         $expense_items = $query->orderBy('total','desc')->groupBy('item.name')->groupBy('exinvi.item_id')->take(10)->get();

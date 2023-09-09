@@ -130,7 +130,7 @@ class ExpenseInvoiceController extends Controller
 
         if($this->cuser_role == "Manager" && !$this->cuser_business_unit_id){
             return redirect('/expense-invoice')->with('error', "Manager should has business unit!");
-        }
+        } 
 
         $itemcategories = ItemCategory::where('business_unit_id', $this->cuser_business_unit_id)->get();
         // $items = Item::where('invoice_type_id', 0)->get();
