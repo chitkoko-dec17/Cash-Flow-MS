@@ -137,10 +137,6 @@ class ReturnInvoiceController extends Controller
             'docs'   =>  'mimes:jpg,png,jpeg,pdf,xls|max:3072'
         ]);
 
-        $file_name = time() . '.' . request()->docs->getClientOriginalExtension();
-
-        $upload_path = 'return_docs/';
-
         $expense_invoice = ExpenseInvoice::where('id', $request->invoice_id)->get();
 
         //update return total amout in expense table
@@ -158,6 +154,10 @@ class ReturnInvoiceController extends Controller
         $return_inv->edit_by = Auth::id();
 
         if($request->hasfile('docs')) {
+            $file_name = time() . '.' . request()->docs->getClientOriginalExtension();
+
+            $upload_path = 'return_docs/';
+
             $file_name = time() . '.' . request()->docs->getClientOriginalExtension();
             request()->docs->move(public_path($upload_path), $file_name);
 
