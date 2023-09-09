@@ -11,6 +11,8 @@ use App\Models\Item;
 use App\Models\ItemCategory;
 use App\Models\InvoiceDocument;
 use App\Models\Branch;
+use App\Models\BranchUser;
+use App\Models\ProjectUser;
 use App\Models\BusinessUnit;
 use Auth;
 use DB;
@@ -87,7 +89,7 @@ class IncomeInvoiceController extends Controller
         }
 
         //Fetch list of results
-        $income_invoices = $queryIncInv->paginate(25);
+        $income_invoices = $queryIncInv->orderBy('id','desc')->paginate(25);
 
         $data['user_role'] = $this->cuser_role;
         $data['business_unit_id'] = $this->cuser_business_unit_id;
@@ -307,13 +309,15 @@ class IncomeInvoiceController extends Controller
         $item_quantity = $request->quantity;
 
         $exp_invoice = IncomeInvoice::find($id);
-        $exp_invoice->branch_id = $request->branch_id;
-        $exp_invoice->project_id = ($request->project_id) ? $request->project_id : 0;
+        // $exp_invoice->branch_id = $request->branch_id;
+        // $exp_invoice->project_id = ($request->project_id) ? $request->project_id : 0;
         $exp_invoice->invoice_date = $request->invoice_date;
         $exp_invoice->total_amount = $request->total_amount;
         $exp_invoice->description = $request->description;
-        $exp_invoice->manager_status = $request->status;
-        $exp_invoice->admin_status = $request->status;
+        if(Auth::user()->role->name != "Staff"){
+            $exp_invoice->manager_status = $request->status;
+            $exp_invoice->admin_status = $request->status;
+        }
         if(Auth::user()->role->name == "Admin"){
             $exp_invoice->appoved_admin_id = Auth::id();
         }elseif(Auth::user()->role->name == "Manager") {

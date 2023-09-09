@@ -78,7 +78,7 @@ class ReturnInvoiceController extends Controller
         }
 
         //Fetch list of results
-        $return_invoices = $queryExpInv->paginate(25);
+        $return_invoices = $queryExpInv->orderBy('id','desc')->paginate(25);
 
         $data['user_role'] = $this->cuser_role;
         $data['business_unit_id'] = $this->cuser_business_unit_id;

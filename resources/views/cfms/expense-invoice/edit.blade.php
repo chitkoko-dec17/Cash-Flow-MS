@@ -37,7 +37,7 @@
                                             </div>
                                             <div class="mb-3 col-sm-4">
                                                 <label for="branch_id">Branch</label>
-                                                <select class="form-control form-select" id="branch_id" name="branch_id" readonly>
+                                                <select class="form-control form-select" id="branch_id" name="branch_id" disabled>
                                                     <option value="">Select Branch</option>
                                                     @foreach($branches as $optgroupLabel => $branchOptions)
                                                     <optgroup label="{{ $optgroupLabel }}">
@@ -84,7 +84,11 @@
                                                     @if($invoice->admin_status == $skey)
                                                     	<option value="{{ $skey }}" selected>{{ $statuse }}</option>
                                                     @else
-                                                    	<option value="{{ $skey }}">{{ $statuse }}</option>
+                                                        @if($data['user_role'] == "Manager" && $skey == "complete")
+
+                                                        @else
+                                                            <option value="{{ $skey }}">{{ $statuse }}</option>
+                                                        @endif
                                                     @endif
 
                                                   @endforeach
@@ -252,7 +256,11 @@
                                                             @if($invoice->admin_status == $skey)
                                                                 <option value="{{ $skey }}" selected>{{ $statuse }}</option>
                                                             @else
-                                                                <option value="{{ $skey }}">{{ $statuse }}</option>
+                                                                @if($data['user_role'] == "Manager" && $skey == "complete")
+                                                                
+                                                                @else
+                                                                    <option value="{{ $skey }}">{{ $statuse }}</option>
+                                                                @endif
                                                             @endif
 
                                                           @endforeach

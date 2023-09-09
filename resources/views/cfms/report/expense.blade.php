@@ -220,6 +220,60 @@
             </div>
         </div>
 
+        {{-- Item List Table result --}}
+        <div class="row">
+            <div class="col-xl-12 xl-100 box-col-12">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="row mb-3">
+                            <div class="col-md-12">
+                                <div class="row float-end">
+                                    <div class="">
+                                        @if (count($charts['expense_charts_item']['expense_item_lists']) > 0)
+                                            @php
+                                                $encodedData = urlencode(json_encode($charts['expense_charts_item']['expense_item_lists']));
+                                            @endphp
+                                            <a class="btn btn-primary btn-sm" href="{{ route('exportexpense', ['data' => $encodedData]) }}" role="button">Export <i
+                                                class="fa fa-file-excel-o ms-1"></i></a>
+                                        @endif
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="table-responsive">
+                                <table class="table table-hover table-bordered">
+                                    <thead>
+                                        <tr>
+                                            <th>Item Name</th>
+                                            <th>Total</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @if (count($charts['expense_charts_item']['expense_item_lists']) > 0)
+                                            @foreach ($charts['expense_charts_item']['expense_item_lists'] as $item)
+                                                <tr>
+                                                    <td>{{ $item->name }}</td>
+                                                    <td>{{ $item->total }}</td>
+                                                </tr>
+                                            @endforeach
+                                        @else
+                                            <tr>
+                                                <td colspan="2" align="center">
+                                                    No Expense Invoice Item Found.
+                                                </td>
+                                            </tr>
+                                        @endif
+                                    </tbody>
+                                </table>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
     </div>
 @endsection
 
