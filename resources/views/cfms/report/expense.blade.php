@@ -233,7 +233,7 @@
                                             @php
                                                 $encodedData = urlencode(json_encode($charts['expense_charts_item']['expense_item_lists']));
                                             @endphp
-                                            <a class="btn btn-primary btn-sm" href="{{ route('exportexpense', ['data' => $encodedData]) }}" role="button">Export <i
+                                            <a class="btn btn-primary btn-sm" href="{{ route('exportexpenseitem', ['data' => $encodedData]) }}" role="button">Export <i
                                                 class="fa fa-file-excel-o ms-1"></i></a>
                                         @endif
                                     </div>

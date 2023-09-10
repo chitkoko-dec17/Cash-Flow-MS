@@ -103,6 +103,8 @@ Route::group(['middleware' => ['auth']], function() {
 
     Route::get('expense/{data}', [ReportController::class, 'exportexpense'])->name('exportexpense');
     Route::get('income/{data}', [ReportController::class, 'exportincome'])->name('exportincome');
+    Route::get('expense-item-report/{data}', [ReportController::class, 'exportExpenseItems'])->name('exportexpenseitem');
+    Route::get('income-item-report/{data}', [ReportController::class, 'exportIncomeItems'])->name('exportincomeitem');
 
     //for expense invoice
     Route::resource('expense-invoice', ExpenseInvoiceController::class);

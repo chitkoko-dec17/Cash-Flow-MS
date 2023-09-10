@@ -3,7 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Exports\ExpenseInvoicesExport;
+use App\Exports\ExpenseItemsExport;
 use App\Exports\IncomeInvoicesExport;
+use App\Exports\IncomeItemsExport;
 use App\Models\BusinessUnit;
 use App\Models\ExpenseInvoice;
 use App\Models\IncomeInvoice;
@@ -182,7 +184,7 @@ class ReportController extends Controller
         }
     }
 
-    public function exportexpense($encodedData)
+    public function encodedData($encodedData)
     {
         //dd($encodedData);
         $data = json_decode(urldecode($encodedData), true); // json to array
@@ -196,6 +198,21 @@ class ReportController extends Controller
         $data = json_decode(urldecode($encodedData), true); // json to array
         $filename = 'report_income_invoices_' . now()->format('Y-m-d_His') . '.xlsx';
         return Excel::download(new IncomeInvoicesExport($data), $filename);
+    }
+
+    public function exportExpenseItems($encodedData){
+
+        $data = json_decode(urldecode($encodedData), true); // json to array
+        //dd($data);
+        $filename = 'report_expense_items_' . now()->format('Y-m-d_His') . '.xlsx';
+        return Excel::download(new ExpenseItemsExport($data), $filename);
+    }
+
+    public function exportIncomeItems($encodedData){
+        //dd($encodedData);
+        $data = json_decode(urldecode($encodedData), true); // json to array
+        $filename = 'report_income_items_' . now()->format('Y-m-d_His') . '.xlsx';
+        return Excel::download(new IncomeItemsExport($data), $filename);
     }
 
     public function get_top_expense_items($filter){
@@ -508,7 +525,7 @@ class ReportController extends Controller
             $data['est_budget']['name'] = $est_budget->name ."(". $start_year[0] ."-". $end_year[0].")";
             $data['actual_expense']['amt'] = $budgets_data[0]->sum_total_amount - $budgets_data[0]->sum_return_total_amount;
             $data['actual_expense']['name'] = "Actual Expense Amount";
-            
+
         }
 
         $data['selected_business_unit_id'] = $selected_business_unit_id;
