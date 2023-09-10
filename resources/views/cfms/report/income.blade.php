@@ -189,7 +189,7 @@
                                                     <td>{{ $inv->invoice_no }}</td>
                                                     <td>{{ $inv->invoice_date }}</td>
                                                     <td>{{ $inv->staff->name }}</td>
-                                                    <td>{{ $inv->admin_status }}</td>
+                                                    <td><span class="badge badge-primary {{ $inv->admin_status }}">{{ $inv->admin_status }}</span></td>
                                                     {{-- <td>{{ $inv->business_unit_id }}</td> --}}
                                                     <td width="25%">
                                                         <code>{{ isset($inv->businessUnit->name) ? $inv->businessUnit->name : '' }}

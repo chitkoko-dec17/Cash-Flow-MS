@@ -1,0 +1,19 @@
+.action-btn {
+    padding: 0.375rem 0.575rem;
+}
+.pending{
+    background-color: #ba895d;
+}
+.checking{
+    background-color: #717171;
+}
+.checkedup
+{
+    background-color: #e2c636;
+}
+.reject{
+    background-color: #d22d3d;
+}
+.complete{
+    background-color: #24695c;
+}

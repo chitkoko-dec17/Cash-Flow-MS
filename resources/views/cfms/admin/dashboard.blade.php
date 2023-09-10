@@ -304,7 +304,7 @@
                                     '<td>' + exinvoice.invoice_date + '</td>' +
                                     '<td>' + exinvoice.upload_user_id + '</td>' +
                                     '<td>' + exinvoice.total_amount + '</td>' +
-                                    '<td>' + exinvoice.admin_status + '</td>' +
+                                    '<td><span class="badge badge-primary '+  exinvoice.admin_status +'">' + exinvoice.admin_status + '</span></td>' +
                                     '<td> <a href=' + route + ' class="btn btn-outline-success btn-sm action-btn pt-0 pb-0 " title="View" data-toggle="tooltip"><i class="fa fa-eye"></i></a></td>' +
                                 '</tr><tbody>';
                                     console.log(row);
@@ -338,7 +338,7 @@
                                     '<td>' + incinvoice.invoice_date + '</td>' +
                                     '<td>' + incinvoice.upload_user_id + '</td>' +
                                     '<td>' + incinvoice.total_amount + '</td>' +
-                                    '<td>' + incinvoice.admin_status + '</td>' +
+                                    '<td><span class="badge badge-primary '+  incinvoice.admin_status +'">' + incinvoice.admin_status + '</span></td>' +
                                     '<td> <a href=' + route + ' class="btn btn-outline-success btn-sm action-btn pt-0 pb-0 " title="View" data-toggle="tooltip"><i class="fa fa-eye"></i></a></td>' +
                                 '</tr><tbody>';
                                     console.log(row);
