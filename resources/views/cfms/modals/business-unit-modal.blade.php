@@ -26,6 +26,13 @@
                         @enderror
                     </div>
                     <div class="form-group">
+                        <label for="bu_letter_image">Letter Head Image</label>
+                        <input wire:model="bu_letter_image" type="file" class="form-control" id="bu_letter_image">
+                        @error('bu_letter_image')
+                            <span class="text-danger">{{ $message }}</span>
+                        @enderror
+                    </div>
+                    <div class="form-group">
                         <label for="phone">Phone</label>
                         <input wire:model="phone" type="text" class="form-control" id="phone"
                             placeholder="Enter phone number">

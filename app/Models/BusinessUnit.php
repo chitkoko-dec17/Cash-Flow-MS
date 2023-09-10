@@ -13,6 +13,7 @@ class BusinessUnit extends Model
         'manager_id',
         'name',
         'bu_image',
+        'bu_letter_image',
         'phone',
         'address',
     ];

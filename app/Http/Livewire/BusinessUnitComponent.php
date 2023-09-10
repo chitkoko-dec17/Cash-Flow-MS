@@ -18,11 +18,13 @@ class BusinessUnitComponent extends Component
     public $manager_id;
     public $name;
     public $bu_image;
+    public $bu_letter_image;
     public $phone;
     public $address;
     public $businessUnitId;
     public $isOpen = false;
     public $imageUrl;
+    public $letterImageUrl;
     public $perPage = 10;
     public $search;
     public $byManager=null;
@@ -77,6 +79,7 @@ class BusinessUnitComponent extends Component
         $this->manager_id = '';
         $this->name = '';
         $this->bu_image = '';
+        $this->bu_letter_image = '';
         $this->phone = '';
         $this->address = '';
         $this->businessUnitId = '';
@@ -95,12 +98,26 @@ class BusinessUnitComponent extends Component
         }
     }
 
+    public function updatedBuLetterImage()
+    {
+        $this->validate([
+            'bu_letter_image' => 'nullable|image|mimes:jpg,png,jpeg|max:3072', // Assuming bu_letter_image is an uploaded image field
+        ]);
+
+        if ($this->bu_letter_image) {
+            $this->letterImageUrl = $this->bu_letter_image->temporaryUrl(); // Generate a temporary URL for the image preview
+        } else {
+            $this->letterImageUrl = null;
+        }
+    }
+
     public function store()
     {
         $this->validate([
             'manager_id' => 'required',
             'name' => 'required',
             'bu_image' => 'nullable|image|mimes:jpg,png,jpeg|max:3072', // Assuming bu_image is an uploaded image field
+            'bu_letter_image' => 'nullable|image|mimes:jpg,png,jpeg|max:3072',
             'phone' => 'required',
             'address' => 'required',
         ]);
@@ -109,10 +126,15 @@ class BusinessUnitComponent extends Component
             $imagePath = $this->bu_image->store('bu_images', 'public');
         }
 
+        if ($this->bu_letter_image) {
+            $letterImagePath = $this->bu_letter_image->store('bu_letter_images', 'public');
+        }
+
         BusinessUnit::updateOrCreate(['id' => $this->businessUnitId], [
             'manager_id' => $this->manager_id,
             'name' => $this->name,
             'bu_image' => $this->bu_image ? $imagePath : null,
+            'bu_letter_image' => $this->bu_letter_image ? $letterImagePath : null,
             'phone' => $this->phone,
             'address' => $this->address,
         ]);
@@ -127,6 +149,7 @@ class BusinessUnitComponent extends Component
         $this->closeModal();
         $this->resetInputFields();
         $this->imageUrl = null;
+        $this->letterImageUrl = null;
     }
 
     public function edit($id)
