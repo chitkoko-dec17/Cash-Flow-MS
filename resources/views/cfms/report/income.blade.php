@@ -2,6 +2,7 @@
 
 @push('css')
     <link rel="stylesheet" type="text/css" href="{{ asset('assets/css/select2.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ asset('assets/css/datatables.css') }}">
     <style>
         .myChart > div {
             margin: auto;
@@ -243,7 +244,7 @@
                         </div>
                         <div class="row">
                             <div class="table-responsive">
-                                <table class="table table-hover table-bordered">
+                                <table class="table table-hover table-bordered" id="item-table">
                                     <thead>
                                         <tr>
                                             <th>Item Name</th>
@@ -284,6 +285,15 @@
     <script src="{{ asset('assets/js/select2/select2.full.min.js') }}"></script>
     <script src="{{ asset('assets/js/select2/select2-custom.js') }}"></script>
     <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+	<script src="{{ asset('assets/js/datatable/datatables/jquery.dataTables.min.js') }}"></script>
+    <script>
+        $('#item-table').DataTable({
+            "paging":   true,
+            "ordering": false,
+            "info":     true,
+            "searching": false
+        });
+    </script>
 @endpush
 
 @section('customJs')
