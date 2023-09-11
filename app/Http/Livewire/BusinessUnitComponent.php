@@ -46,7 +46,10 @@ class BusinessUnitComponent extends Component
         ->paginate($this->perPage);
 
         $role = Role::where('name', 'Manager')->first();
-        $managers = User::where('role_id', $role->id)->pluck('name', 'id');
+        $managersWithBusinessUnit = BusinessUnit::pluck('manager_id')->toArray();
+        $managers = User::where('role_id', $role->id)
+                    ->whereNotIn('id', $managersWithBusinessUnit)
+                    ->pluck('name', 'id');
 
 
         return view('livewire.business-unit',compact('businessUnits','managers'));
