@@ -47,18 +47,23 @@
                             <span class="text-danger">{{ $message }}</span>
                         @enderror
                     </div>
-                    <div class="form-group">
-                        <label for="manager">Manager</label>
-                        <select wire:model="manager_id" class="form-control" id="manager_id">
-                            <option value="">Select a manager</option>
-                            @foreach ($managers as $managerId => $managerName)
-                                <option value="{{ $managerId }}">{{ $managerName }}</option>
-                            @endforeach
-                        </select>
-                        @error('manager_id')
-                            <span class="text-danger">{{ $message }}</span>
-                        @enderror
-                    </div>
+                    @if ($businessUnitId)
+                        <label for="editManager">Manager</label>
+                        <input id="editManager" type="text" class="form-control" value="{{ $editManager }}" disabled>
+                    @else
+                        <div class="form-group">
+                            <label for="manager">Manager</label>
+                            <select wire:model="manager_id" class="form-control" id="manager_id">
+                                <option value="">Select a manager</option>
+                                @foreach ($managers as $managerId => $managerName)
+                                    <option value="{{ $managerId }}">{{ $managerName }}</option>
+                                @endforeach
+                            </select>
+                            @error('manager_id')
+                                <span class="text-danger">{{ $message }}</span>
+                            @enderror
+                        </div>
+                    @endif
                 </div>
                 <div class="modal-footer">
                     <button wire:click="closeModal" class="btn btn-secondary" type="button"

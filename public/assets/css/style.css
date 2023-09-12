@@ -2499,8 +2499,11 @@ table tbody .border-bottom-warning td {
   .custom-card .card-header {
     padding: 0; }
     .custom-card .card-header img {
-      -webkit-transform: scale(1.5);
-              transform: scale(1.5); }
+        height: 300px;
+        width: 100%;
+        object-fit: cover;
+        -webkit-transform: scale(1.1);
+              transform: scale(1.1); }
   .custom-card .card-profile {
     text-align: center; }
     .custom-card .card-profile img {

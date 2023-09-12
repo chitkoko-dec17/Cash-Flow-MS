@@ -8,6 +8,7 @@ use App\Models\User;
 use Livewire\Component;
 use Livewire\WithFileUploads;
 use Livewire\WithPagination;
+use Psy\Readline\Hoa\Console;
 
 class BusinessUnitComponent extends Component
 {
@@ -32,6 +33,7 @@ class BusinessUnitComponent extends Component
     public $sortColumnName= 'name';
     public $confirmingDelete = false;
     public $businessUnitIdToDelete , $selectedName;
+    public $detailBusinessUnit, $editManager;
     /**
      * render the post data
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View
@@ -51,14 +53,26 @@ class BusinessUnitComponent extends Component
                     ->whereNotIn('id', $managersWithBusinessUnit)
                     ->pluck('name', 'id');
 
+         // Fetch the current business unit being edited
+        $businessUnit = BusinessUnit::find($this->businessUnitId);
 
-        return view('livewire.business-unit',compact('businessUnits','managers'));
+        // Set the $businessUnitManagerId variable
+        $businessUnitManagerId = $businessUnit ? $businessUnit->manager_id : null;
+
+        return view('livewire.business-unit',compact('businessUnits','managers','businessUnitManagerId'));
     }
 
     public function create()
     {
         $this->resetInputFields();
         $this->openModal();
+    }
+
+    public function detailModal($businessUnit){
+        //dd($businessUnit);
+        $this->detailBusinessUnit = $businessUnit;
+
+        $this->dispatchBrowserEvent('openDetailModal');
     }
 
     public function openModal()
@@ -72,7 +86,8 @@ class BusinessUnitComponent extends Component
         $this->isOpen = false;
         $this->dispatchBrowserEvent('closeModal');
         $this->dispatchBrowserEvent('closeConfirmModal');
-
+        $this->dispatchBrowserEvent('closeDetailModal');
+        $this->detailBusinessUnit = null;
         $this->resetValidation(); // Reset form validation errors
         $this->resetInputFields(); // Clear input fields
     }
@@ -159,7 +174,7 @@ class BusinessUnitComponent extends Component
     {
         $businessUnit = BusinessUnit::findOrFail($id);
         $this->businessUnitId = $id;
-        $this->manager_id = $businessUnit->manager_id;
+        $this->editManager = $businessUnit->manager->name;
         $this->name = $businessUnit->name;
         $this->phone = $businessUnit->phone;
         $this->address = $businessUnit->address;
@@ -188,7 +203,6 @@ class BusinessUnitComponent extends Component
         $this->selectedName = $name;
         $this->dispatchBrowserEvent('openConfirmModal');
     }
-
 
     public function checkPic(){
         // $book = Book::find($id);
