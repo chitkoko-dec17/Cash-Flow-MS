@@ -1,4 +1,4 @@
-<form wire:submit.prevent="store">
+<form wire:submit.prevent="{{ $businessUnitId ? 'update': 'create'}}">
     <div wire:ignore.self class="modal fade addBusinessUnit" id="businessUnitModal" tabindex="-1"role="dialog"
         aria-labelledby="businessUnitModal" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered" role="document">
