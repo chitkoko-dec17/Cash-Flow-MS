@@ -175,6 +175,7 @@ class BusinessUnitComponent extends Component
         $businessUnit = BusinessUnit::findOrFail($id);
         $this->businessUnitId = $id;
         $this->editManager = $businessUnit->manager->name;
+        $this->manager_id = $businessUnit->manager_id;
         $this->name = $businessUnit->name;
         $this->phone = $businessUnit->phone;
         $this->address = $businessUnit->address;

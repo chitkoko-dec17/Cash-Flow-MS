@@ -65,5 +65,26 @@ class UserController extends Controller
         return back()->with("success", "Password changed successfully!");
     }
 
-    
+    //user edit
+    public function user_profile($id){
+
+        $user = User::find($id);
+        return view('cfms.user.user_password_edit', compact('user'));
+    }
+
+    public function user_updatePassword(Request $request, $id)
+    {
+        //Validation
+        $request->validate([
+            'new_password' => 'required|min:6',
+            'confirmpassword' => 'required|same:new_password',
+        ]);
+
+        //Update the new Password
+        User::whereId($id)->update([
+            'password' => Hash::make($request->new_password)
+        ]);
+
+        return back()->with("success", "Password changed successfully!");
+    }
 }

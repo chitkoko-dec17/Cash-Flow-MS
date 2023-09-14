@@ -13,7 +13,7 @@
 
 	                <div class="text-center profile-details">
 	                    <a href="#"><h4>{{ isset($detailBusinessUnit) ? $detailBusinessUnit['name'] : '' }}</h4></a>
-	                    <h6>{{ isset ($detailBusinessUnit) ? $detailBusinessUnit['manager']['name'] : '' }}</h6>
+	                    <h6>{{ isset($detailBusinessUnit) ? $detailBusinessUnit['manager']['name'] : '' }}</h6>
 	                </div>
 	                <div class="card-footer row">
 	                    <div class="col-6 col-sm-6">
