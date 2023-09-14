@@ -20,14 +20,14 @@
                     </div>
                     <div class="form-group">
                         <label for="bu_image">Business Unit Image</label>
-                        <input wire:model="bu_image" type="file" class="form-control" id="bu_image">
+                        <input wire:model="bu_image" type="file" class="form-control" id="bu_image{{ $iteration }}">
                         @error('bu_image')
                             <span class="text-danger">{{ $message }}</span>
                         @enderror
                     </div>
                     <div class="form-group">
                         <label for="bu_letter_image">Letter Head Image</label>
-                        <input wire:model="bu_letter_image" type="file" class="form-control" id="bu_letter_image">
+                        <input wire:model="bu_letter_image" type="file" class="form-control" id="bu_letter_image{{ $iteration }}">
                         @error('bu_letter_image')
                             <span class="text-danger">{{ $message }}</span>
                         @enderror
