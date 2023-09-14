@@ -2,6 +2,7 @@
 
 @push('css')
     <link rel="stylesheet" type="text/css" href="{{ asset('assets/css/select2.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ asset('assets/css/datatables.css') }}">
     <style>
         .myChart > div {
             margin: auto;
@@ -188,7 +189,7 @@
                                                     <td>{{ $inv->invoice_no }}</td>
                                                     <td>{{ $inv->invoice_date }}</td>
                                                     <td>{{ $inv->staff->name }}</td>
-                                                    <td>{{ $inv->admin_status }}</td>
+                                                    <td><span class="badge badge-primary {{ $inv->admin_status }}">{{ $inv->admin_status }}</span></td>
                                                     {{-- <td>{{ $inv->business_unit_id }}</td> --}}
                                                     <td width="25%">
                                                         <code>{{ isset($inv->businessUnit->name) ? $inv->businessUnit->name : '' }}
@@ -221,6 +222,62 @@
             </div>
         </div>
 
+        {{-- Item List Table result --}}
+        <div class="row">
+            <div class="col-xl-12 xl-100 box-col-12">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="row mb-3">
+                            <div class="col-md-12">
+                                <div class="row float-end">
+                                    <div class="">
+                                        @if (count($charts['income_charts_item']['income_item_lists']) > 0)
+                                            @php
+                                                $encodedData = urlencode(json_encode($charts['income_charts_item']['income_item_lists']));
+                                            @endphp
+                                            <a class="btn btn-primary btn-sm" href="{{ route('exportincomeitem', ['data' => $encodedData]) }}" role="button">Export <i
+                                                class="fa fa-file-excel-o ms-1"></i></a>
+                                        @endif
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="table-responsive">
+                                <table class="table table-hover table-bordered" id="item-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Item Name</th>
+                                            <th>Total</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @if (count($charts['income_charts_item']['income_item_lists']) > 0)
+                                            @foreach ($charts['income_charts_item']['income_item_lists'] as $item)
+                                                @if($item->name != "")
+                                                <tr>
+                                                    <td>{{ $item->name }}</td>
+                                                    <td>{{ $item->total }}</td>
+                                                </tr>
+                                                @endif
+                                            @endforeach
+                                        @else
+                                            <tr>
+                                                <td colspan="2" align="center">
+                                                    No Income Invoice Item Found.
+                                                </td>
+                                            </tr>
+                                        @endif
+                                    </tbody>
+                                </table>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
     </div>
 @endsection
 
@@ -228,6 +285,15 @@
     <script src="{{ asset('assets/js/select2/select2.full.min.js') }}"></script>
     <script src="{{ asset('assets/js/select2/select2-custom.js') }}"></script>
     <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+	<script src="{{ asset('assets/js/datatable/datatables/jquery.dataTables.min.js') }}"></script>
+    <script>
+        $('#item-table').DataTable({
+            "paging":   true,
+            "ordering": false,
+            "info":     true,
+            "searching": false
+        });
+    </script>
 @endpush
 
 @section('customJs')

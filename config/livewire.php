@@ -54,7 +54,7 @@ return [
     |
     */
 
-    'asset_url' => 'http://localhost/cashflow/public',
+    'asset_url' => null,
 
     /*
     |--------------------------------------------------------------------------
@@ -68,7 +68,7 @@ return [
     |
     */
 
-    'app_url' => 'http://localhost/cashflow/public',
+    'app_url' => null,
 
     /*
     |--------------------------------------------------------------------------

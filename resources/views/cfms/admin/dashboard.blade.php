@@ -31,8 +31,8 @@
                             <div class="media static-top-widget">
                                 <div class="align-self-center text-center"><i data-feather="database"></i></div>
                                 <div class="media-body">
-                                    <span class="m-0">Create Business Unit</span>
-                                    <h4 class="mb-0 counter">33</h4>
+                                    <span class="m-0">Business Unit</span>
+                                    <h4 class="mb-0 counter">{{ $countdata['business_unit'] }}</h4>
                                     <i class="icon-bg" data-feather="database"></i>
                                 </div>
                             </div>
@@ -47,8 +47,8 @@
                             <div class="media static-top-widget">
                                 <div class="align-self-center text-center"><i data-feather="shopping-bag"></i></div>
                                 <div class="media-body">
-                                    <span class="m-0">Create Expense Invoices</span>
-                                    <h4 class="mb-0 counter">42</h4>
+                                    <span class="m-0">Expense Invoices</span>
+                                    <h4 class="mb-0 counter">{{ $countdata['expense_inv'] }}</h4>
                                     <i class="icon-bg" data-feather="shopping-bag"></i>
                                 </div>
                             </div>
@@ -63,8 +63,8 @@
                             <div class="media static-top-widget">
                                 <div class="align-self-center text-center"><i data-feather="file"></i></div>
                                 <div class="media-body">
-                                    <span class="m-0">Create Income Invoices</span>
-                                    <h4 class="mb-0 counter">32</h4>
+                                    <span class="m-0">Income Invoices</span>
+                                    <h4 class="mb-0 counter">{{ $countdata['income_inv'] }}</h4>
                                     <i class="icon-bg" data-feather="file"></i>
                                 </div>
                             </div>
@@ -79,8 +79,8 @@
                             <div class="media static-top-widget">
                                 <div class="align-self-center text-center"><i data-feather="user-plus"></i></div>
                                 <div class="media-body">
-                                    <span class="m-0">Create New User</span>
-                                    <h4 class="mb-0 counter">123</h4>
+                                    <span class="m-0">Total User</span>
+                                    <h4 class="mb-0 counter">{{ $countdata['total_users'] }}</h4>
                                     <i class="icon-bg" data-feather="user-plus"></i>
                                 </div>
                             </div>
@@ -304,7 +304,7 @@
                                     '<td>' + exinvoice.invoice_date + '</td>' +
                                     '<td>' + exinvoice.upload_user_id + '</td>' +
                                     '<td>' + exinvoice.total_amount + '</td>' +
-                                    '<td>' + exinvoice.admin_status + '</td>' +
+                                    '<td><span class="badge badge-primary '+  exinvoice.admin_status +'">' + exinvoice.admin_status + '</span></td>' +
                                     '<td> <a href=' + route + ' class="btn btn-outline-success btn-sm action-btn pt-0 pb-0 " title="View" data-toggle="tooltip"><i class="fa fa-eye"></i></a></td>' +
                                 '</tr><tbody>';
                                     console.log(row);
@@ -338,7 +338,7 @@
                                     '<td>' + incinvoice.invoice_date + '</td>' +
                                     '<td>' + incinvoice.upload_user_id + '</td>' +
                                     '<td>' + incinvoice.total_amount + '</td>' +
-                                    '<td>' + incinvoice.admin_status + '</td>' +
+                                    '<td><span class="badge badge-primary '+  incinvoice.admin_status +'">' + incinvoice.admin_status + '</span></td>' +
                                     '<td> <a href=' + route + ' class="btn btn-outline-success btn-sm action-btn pt-0 pb-0 " title="View" data-toggle="tooltip"><i class="fa fa-eye"></i></a></td>' +
                                 '</tr><tbody>';
                                     console.log(row);

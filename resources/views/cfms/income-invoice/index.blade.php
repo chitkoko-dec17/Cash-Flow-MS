@@ -76,7 +76,7 @@
                                         @else
                                             <option value="{{ $skey }}">{{ $statuse }}</option>
                                         @endif
-                                        
+
                                     @endforeach
                                 </select>
                             </div>
@@ -107,7 +107,7 @@
                                                 <td>{{ $inv->invoice_date }}</td>
                                                 <td>{{ $inv->staff->name }}</td>
                                                 <td>{{ $inv->total_amount }}</td>
-                                                <td>{{ $inv->admin_status }}</td>
+                                                <td><span class="badge badge-primary {{ $inv->admin_status }}">{{ $inv->admin_status }}</span></td>
                                                 <td>
                                                     <a href="{{ route('income-invoice.show', $inv->id) }}"
                                                         class="btn btn-outline-success btn-sm action-btn" title="View"
@@ -137,7 +137,7 @@
                             </table>
                         </div>
                         @if (count($income_invoices) > 0)
-                        {{ $income_invoices->links('cfms.livewire-pagination-links') }}
+                        {{ $income_invoices->links('cfms.laravel-pagination-links') }}
                         @endif
                     </div>
                 </div>

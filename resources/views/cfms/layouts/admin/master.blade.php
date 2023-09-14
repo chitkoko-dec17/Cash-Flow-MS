@@ -28,11 +28,6 @@
         rel="stylesheet">
     <!-- Font Awesome-->
     @includeIf('cfms.layouts.admin.partials.css')
-    <style>
-        .action-btn {
-            padding: 0.375rem 0.575rem;
-        }
-    </style>
 </head>
 
 <body>

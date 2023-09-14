@@ -1,4 +1,4 @@
-<form wire:submit.prevent="store">
+<form wire:submit.prevent="{{ $businessUnitId ? 'update': 'create'}}">
     <div wire:ignore.self class="modal fade addBusinessUnit" id="businessUnitModal" tabindex="-1"role="dialog"
         aria-labelledby="businessUnitModal" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered" role="document">
@@ -26,6 +26,13 @@
                         @enderror
                     </div>
                     <div class="form-group">
+                        <label for="bu_letter_image">Letter Head Image</label>
+                        <input wire:model="bu_letter_image" type="file" class="form-control" id="bu_letter_image">
+                        @error('bu_letter_image')
+                            <span class="text-danger">{{ $message }}</span>
+                        @enderror
+                    </div>
+                    <div class="form-group">
                         <label for="phone">Phone</label>
                         <input wire:model="phone" type="text" class="form-control" id="phone"
                             placeholder="Enter phone number">
@@ -40,18 +47,23 @@
                             <span class="text-danger">{{ $message }}</span>
                         @enderror
                     </div>
-                    <div class="form-group">
-                        <label for="manager">Manager</label>
-                        <select wire:model="manager_id" class="form-control" id="manager_id">
-                            <option value="">Select a manager</option>
-                            @foreach ($managers as $managerId => $managerName)
-                                <option value="{{ $managerId }}">{{ $managerName }}</option>
-                            @endforeach
-                        </select>
-                        @error('manager_id')
-                            <span class="text-danger">{{ $message }}</span>
-                        @enderror
-                    </div>
+                    @if ($businessUnitId)
+                        <label for="editManager">Manager</label>
+                        <input id="editManager" type="text" class="form-control" value="{{ $editManager }}" disabled>
+                    @else
+                        <div class="form-group">
+                            <label for="manager">Manager</label>
+                            <select wire:model="manager_id" class="form-control" id="manager_id">
+                                <option value="">Select a manager</option>
+                                @foreach ($managers as $managerId => $managerName)
+                                    <option value="{{ $managerId }}">{{ $managerName }}</option>
+                                @endforeach
+                            </select>
+                            @error('manager_id')
+                                <span class="text-danger">{{ $message }}</span>
+                            @enderror
+                        </div>
+                    @endif
                 </div>
                 <div class="modal-footer">
                     <button wire:click="closeModal" class="btn btn-secondary" type="button"

@@ -107,7 +107,7 @@
                                                 <td>{{ $inv->invoice_date }}</td>
                                                 <td>{{ $inv->staff->name }}</td>
                                                 <td>{{ $inv->total_amount }}</td>
-                                                <td>{{ $inv->admin_status }}</td>
+                                                <td><span class="badge badge-primary {{ $inv->admin_status }}">{{ $inv->admin_status }}</span></td>
                                                 <td>
                                                     <a href="{{ route('expense-invoice.show', $inv->id) }}"
                                                         class="btn btn-outline-success btn-sm action-btn" title="View"
@@ -143,7 +143,7 @@
                             </table>
                         </div>
                         @if (count($expense_invoices) > 0)
-                        {{ $expense_invoices->links('cfms.livewire-pagination-links') }}
+                        {{ $expense_invoices->links('cfms.laravel-pagination-links') }}
                         @endif
                     </div>
                 </div>
