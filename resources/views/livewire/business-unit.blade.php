@@ -1,13 +1,11 @@
 <div class="row">
-
-
     <div class="card">
         <div class="card-header pb-10">
             <span class="float-start">
                 <h6 class="mb-2">Business Unit </h6>
                 <code>လုပ်ငန်းစာရင်းများ</code>
             </span>
-            <button wire:click="create" class="btn btn-primary float-end" type="button" data-bs-toggle="modal"
+            <button wire:click="createModal" class="btn btn-primary float-end" type="button" data-bs-toggle="modal"
                 data-bs-target="#businessUnitModal"><i class="fa fa-edit"></i> Create New Business Unit</button>
             {{-- <button wire:click="detailModal" class="btn btn-primary float-end" type="button" data-bs-toggle="modal"
                 data-bs-target="#businessUnitDetailModal"><i class="fa fa-eye"></i> View Business Unit</button> --}}

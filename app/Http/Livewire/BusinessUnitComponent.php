@@ -62,7 +62,7 @@ class BusinessUnitComponent extends Component
         return view('livewire.business-unit',compact('businessUnits','managers','businessUnitManagerId'));
     }
 
-    public function create()
+    public function createModal()
     {
         $this->resetInputFields();
         $this->openModal();
@@ -94,42 +94,18 @@ class BusinessUnitComponent extends Component
 
     private function resetInputFields()
     {
-        $this->manager_id = '';
-        $this->name = '';
-        $this->bu_image = '';
-        $this->bu_letter_image = '';
-        $this->phone = '';
-        $this->address = '';
-        $this->businessUnitId = '';
-    }
-
-    public function updatedBuImage()
-    {
-        $this->validate([
-            'bu_image' => 'nullable|image|mimes:jpg,png,jpeg|max:3072', // Assuming bu_image is an uploaded image field
+        $this->reset([
+            'manager_id',
+            'name',
+            'bu_image',
+            'bu_letter_image',
+            'phone',
+            'address',
+            'businessUnitId',
         ]);
-
-        if ($this->bu_image) {
-            $this->imageUrl = $this->bu_image->temporaryUrl(); // Generate a temporary URL for the image preview
-        } else {
-            $this->imageUrl = null;
-        }
     }
 
-    public function updatedBuLetterImage()
-    {
-        $this->validate([
-            'bu_letter_image' => 'nullable|image|mimes:jpg,png,jpeg|max:3072', // Assuming bu_letter_image is an uploaded image field
-        ]);
-
-        if ($this->bu_letter_image) {
-            $this->letterImageUrl = $this->bu_letter_image->temporaryUrl(); // Generate a temporary URL for the image preview
-        } else {
-            $this->letterImageUrl = null;
-        }
-    }
-
-    public function store()
+    public function create()
     {
         $this->validate([
             'manager_id' => 'required',
@@ -140,34 +116,57 @@ class BusinessUnitComponent extends Component
             'address' => 'required',
         ]);
 
-        if ($this->bu_image) {
-            $imagePath = $this->bu_image->store('bu_images', 'public');
-        }
+        $businessUnitImage = $this->bu_image ? $this->bu_image->store('bu_images','public') : null;
+        $letterheadImage = $this->bu_letter_image ? $this->bu_letter_image->store('bu_letter_images','public') : null;
 
-        if ($this->bu_letter_image) {
-            $letterImagePath = $this->bu_letter_image->store('bu_letter_images', 'public');
-        }
-
-        BusinessUnit::updateOrCreate(['id' => $this->businessUnitId], [
+        BusinessUnit::create([
             'manager_id' => $this->manager_id,
             'name' => $this->name,
-            'bu_image' => $this->bu_image ? $imagePath : null,
-            'bu_letter_image' => $this->bu_letter_image ? $letterImagePath : null,
+            'bu_image' => $businessUnitImage,
+            'bu_letter_image' => $letterheadImage,
             'phone' => $this->phone,
             'address' => $this->address,
         ]);
 
-        ($this->businessUnitId) ?  $this->emit('buCreateOrUpdated','edit') : $this->emit('buCreateOrUpdated','create');
-
-        // session()->flash(
-        //     'message',
-        //     $this->businessUnitId ? 'Business Unit updated successfully.' : 'Business Unit created successfully.'
-        // );
-
+        $this->emit('buCreateOrUpdated','create');
         $this->closeModal();
         $this->resetInputFields();
-        $this->imageUrl = null;
-        $this->letterImageUrl = null;
+    }
+
+    public function update()
+    {
+        $this->validate([
+            'manager_id' => 'required',
+            'name' => 'required',
+            'bu_image' => 'nullable|image|mimes:jpg,png,jpeg|max:3072', // Assuming bu_image is an uploaded image field
+            'bu_letter_image' => 'nullable|image|mimes:jpg,png,jpeg|max:3072',
+            'phone' => 'required',
+            'address' => 'required',
+        ]);
+
+        $bu =  BusinessUnit::find($this->businessUnitId);
+        $bu->update([
+            'manager_id' => $this->manager_id,
+            'name' => $this->name,
+            'phone' => $this->phone,
+            'address' => $this->address,
+        ]);
+
+        if($this->bu_image) {
+            unlink(storage_path('app/public/'. $bu->bu_image));
+            $businessUnitImage = $this->bu_image->store('bu_images','public');
+            $bu->update(['bu_image' => $businessUnitImage]);
+        }
+
+        if($this->bu_letter_image) {
+            unlink(storage_path('app/public/'. $bu->bu_letter_image));
+            $letterheadImage = $this->bu_letter_image->store('bu_letter_images','public');
+            $bu->update(['bu_letter_image' => $letterheadImage]);
+        }
+
+        $this->emit('buCreateOrUpdated','edit');
+        $this->resetInputFields();
+        $this->closeModal();
     }
 
     public function edit($id)
@@ -180,14 +179,19 @@ class BusinessUnitComponent extends Component
         $this->phone = $businessUnit->phone;
         $this->address = $businessUnit->address;
 
+        $this->bu_image = null;
+        $this->bu_letter_image = null;
+
         $this->openModal();
     }
 
     public function delete()
     {
-        // $bu = BusinessUnit::findOrFail($id);
-        // Storage::delete($bu->bu_image);
-        BusinessUnit::find($this->businessUnitIdToDelete)->delete();
+        $bu = BusinessUnit::findOrFail($this->businessUnitIdToDelete);
+
+        unlink(storage_path('app/public/'. $bu->bu_image));
+        unlink(storage_path('app/public/'. $bu->bu_letter_image));
+        $bu->delete();
         $this->emit('buCreateOrUpdated','delete');
 
         $this->confirmingDelete = false;
@@ -203,21 +207,6 @@ class BusinessUnitComponent extends Component
         $this->businessUnitIdToDelete = $deleteID;
         $this->selectedName = $name;
         $this->dispatchBrowserEvent('openConfirmModal');
-    }
-
-    public function checkPic(){
-        // $book = Book::find($id);
-        // if($request->hasfile('cover_image')) {
-        //     $old_book_cover = $book->cover_image;
-
-        //     if(file_exists(public_path($old_book_cover))){
-        //         unlink(public_path($old_book_cover));
-        //     }
-        //     $file_name = time() . '.' . request()->cover_image->getClientOriginalExtension();
-
-        //     request()->cover_image->move(public_path('images/bookcover'), $file_name);
-        //     $book->cover_image = $image_path.$file_name;
-        // }
     }
 
     public function sortBy($columnName){
