@@ -31,11 +31,11 @@
             </div>
 
             <div class="row">
-                <div class="table-responsive">
+                <div class="table-container">
                     <table class="table table-hover table-bordered">
                         <thead>
                             <tr>
-                                <th>Name
+                                <th class="fixed-column">Name
                                     <span wire:click="sortBy('name')" class="float-end" style="cursor: pointer;">
                                         <i class="fa fa-sort text-muted"></i>
                                     </span>
@@ -52,9 +52,9 @@
                             @if (count($itemcategories) > 0)
                                 @foreach ($itemcategories as $itemcategory)
                                     <tr>
-                                        <td>{{$itemcategory->name}}</td>
+                                        <td class="fixed-column">{{$itemcategory->name}}</td>
                                         <td><span class="badge badge-primary">{{ isset($itemcategory->businessUnit->name) ? $itemcategory->businessUnit->name : "" }}</span></td>
-                                        <td>
+                                        <td class="action-buttons">
                                             <button wire:click="edit({{ $itemcategory->id }})"
                                                 class="btn btn-outline-info btn-sm  action-btn" title="Edit"
                                                 data-toggle="tooltip"><i class="fa fa-pencil"></i></button>

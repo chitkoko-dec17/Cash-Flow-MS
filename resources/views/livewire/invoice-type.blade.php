@@ -11,11 +11,11 @@
         <div class="card-body pt-0">
 
             <div class="row">
-                <div class="table-responsive">
+                <div class="table-container">
                     <table class="table table-hover table-bordered">
                         <thead>
                             <tr>
-                                <th>Name</th>
+                                <th class="fixed-column">Name</th>
                                 <th>Action</th>
                             </tr>
                         </thead>
@@ -23,8 +23,8 @@
                             @if (count($invoicetypes) > 0)
                                 @foreach ($invoicetypes as $invtype)
                                     <tr>
-                                        <td>{{$invtype->name}}</td>
-                                        <td>
+                                        <td class="fixed-column">{{$invtype->name}}</td>
+                                        <td class="action-buttons">
                                             <button wire:click="edit({{ $invtype->id }})"
                                                         class="btn btn-outline-info btn-sm  action-btn" title="Edit"
                                                         data-toggle="tooltip"><i class="fa fa-pencil"></i></button>

@@ -11,10 +11,10 @@
         <div class="card-body pt-0">
 
             <div class="row">
-                <div class="table-responsive">
+                <div class="table-container">
                     <table class="table table-hover table-bordered">
                         <thead>
-                            <tr>
+                            <tr class="fixed-column">
                                 <th>Name</th>
                                 <th>Action</th>
                             </tr>
@@ -23,8 +23,8 @@
                             @if (count($roles) > 0)
                                         @foreach ($roles as $role)
                                             <tr>
-                                                <td>{{$role->name}}</td>
-                                                <td>
+                                                <td class="fixed-column">{{$role->name}}</td>
+                                                <td class="action-buttons">
                                                     <button wire:click="edit({{ $role->id }})"
                                                         class="btn btn-outline-info btn-sm  action-btn" title="Edit"
                                                         data-toggle="tooltip"><i class="fa fa-pencil"></i></button>

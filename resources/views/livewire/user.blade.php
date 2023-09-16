@@ -31,11 +31,11 @@
             </div>
 
             <div class="row">
-                <div class="table-responsive">
+                <div class="table-container">
                     <table class="table table-hover table-bordered">
                         <thead>
                             <tr>
-                                <th>Name</th>
+                                <th class="fixed-column">Name</th>
                                 <th>Role</th>
                                 <th>Email</th>
                                 <th>Branch</th>
@@ -47,18 +47,18 @@
                             @if (count($users) > 0)
                                 @foreach ($users as $user)
                                     <tr>
-                                        <td>{{$user->name}}</td>
+                                        <td class="fixed-column">{{$user->name}}</td>
                                         <td>{{$user->role->name}}</td>
                                         <td>{{$user->email}}</td>
                                         <td>{{isset($user->branchUser->branch->name) ? $user->branchUser->branch->name : ''}} </td>
                                         <td>{{isset($user->projectUser->project->name) ? $user->projectUser->project->name : ''}}</td>
-                                        <td>
+                                        <td class="action-buttons">
                                             <button wire:click="" class="btn btn-outline-success btn-sm action-btn"
                                                 title="View" data-toggle="tooltip"><i class="fa fa-eye"></i></button>
                                             <button wire:click="edit({{ $user->id }})"
                                                 class="btn btn-outline-info btn-sm  action-btn" title="Edit"
                                                 data-toggle="tooltip"><i class="fa fa-pencil"></i></button>
-                                            <a href="{{ route('user.password', $user->id) }}" 
+                                            <a href="{{ route('user.password', $user->id) }}"
                                                 class="btn btn-outline-warning btn-sm  action-btn" title="Edit Password"
                                                 data-toggle="tooltip"><i class="fa fa-key"></i></a>
                                             <button wire:click="confirmDelete({{ $user->id }}, '{{ $user->name }}')"

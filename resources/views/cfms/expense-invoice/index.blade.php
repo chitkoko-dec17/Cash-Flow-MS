@@ -87,11 +87,11 @@
                     </div>
 
                     <div class="row mt-4">
-                        <div class="table-responsive">
+                        <div class="table-container">
                             <table class="table table-hover table-bordered">
                                 <thead>
                                     <tr>
-                                        <th>Invoice No.</th>
+                                        <th class="fixed-column">Invoice No.</th>
                                         <th>Date</th>
                                         <th>Create By</th>
                                         <th>Total Amount</th>
@@ -103,12 +103,12 @@
                                     @if (count($expense_invoices) > 0)
                                         @foreach ($expense_invoices as $inv)
                                             <tr>
-                                                <td>{{ $inv->invoice_no }}</td>
+                                                <td class="fixed-column">{{ $inv->invoice_no }}</td>
                                                 <td>{{ $inv->invoice_date }}</td>
                                                 <td>{{ $inv->staff->name }}</td>
                                                 <td>{{ $inv->total_amount }}</td>
                                                 <td><span class="badge badge-primary {{ $inv->admin_status }}">{{ $inv->admin_status }}</span></td>
-                                                <td>
+                                                <td class="action-buttons">
                                                     <a href="{{ route('expense-invoice.show', $inv->id) }}"
                                                         class="btn btn-outline-success btn-sm action-btn" title="View"
                                                         data-toggle="tooltip"><i class="fa fa-eye"></i></a>

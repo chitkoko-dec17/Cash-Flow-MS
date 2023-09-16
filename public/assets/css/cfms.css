@@ -17,3 +17,25 @@
 .complete{
     background-color: #24695c;
 }
+
+/* Edit table scroll */
+.table-container {
+    max-width: 100%; /* Ensure the table container is not wider than the viewport */
+    overflow-x: auto; /* Enable horizontal scrolling */
+}
+
+.action-buttons {
+    white-space: nowrap;
+}
+
+.action-buttons button {
+    margin-right: 5px;
+}
+
+/* Style the fixed column to remain the same width */
+.fixed-column {
+    position: sticky;
+    left: 0;
+    background-color: #fff!important;
+}
+/* End Edit table scroll */

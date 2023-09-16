@@ -33,12 +33,12 @@
             </div>
 
             <div class="row">
-                <div class="table-responsive">
+                <div class="table-container">
                     <table class="table table-hover table-bordered">
                         <thead>
                             <tr>
                                 <th scope="col">Image</th>
-                                <th scope="col">
+                                <th class="fixed-column" scope="col">
                                     Name
                                     <span wire:click="sortBy('name')" class="float-end" style="cursor: pointer;">
                                         <i class="fa fa-sort text-muted"></i>
@@ -62,11 +62,11 @@
                                                 No Image
                                             @endif
                                         </td>
-                                        <td>{{ $businessUnit->name }}</td>
+                                        <td class="fixed-column">{{ $businessUnit->name }}</td>
                                         <td>{{ $businessUnit->phone }}</td>
                                         <td>{{ $businessUnit->address }}</td>
                                         <td><span class="badge badge-primary">{{ isset( $businessUnit->manager->name) ? $businessUnit->manager->name : '' }}</span></td>
-                                        <td>
+                                        <td class="action-buttons">
 
                                             <button wire:click="detailModal({{ $businessUnit }})" class="btn btn-outline-success btn-sm action-btn"
                                                 title="View" data-toggle="tooltip"><i class="fa fa-eye"></i></button>
