@@ -25,6 +25,30 @@
                         </div>
                         @if ($role_id == '3')
                             <div class="mb-3 col-sm-4">
+                                <label for="business_unit_id">Business Unit</label>
+                                <select wire:model="business_unit_id" class="form-select" id="business_unit_id">
+                                    <option value="">Select a business unit</option>
+                                    @foreach ($businessUnits as $businessUnit)
+                                        <option value="{{ $businessUnit->id }}">{{ $businessUnit->name }}</option>
+                                    @endforeach
+                                </select>
+                                @error('business_unit_id')
+                                    <span class="text-danger">{{ $message }}</span>
+                                @enderror
+                            </div>
+                            <div class="mb-3 col-sm-4">
+                                <label for="branch_id">Branch</label>
+                                <select wire:model="branch_id" class="form-select" id="branch_id">
+                                    <option value="">Select a branch</option>
+                                    @foreach ($branches as $branch)
+                                        <option value="{{ $branch->id }}">{{ $branch->name }}</option>
+                                    @endforeach
+                                </select>
+                                @error('branch_id')
+                                    <span class="text-danger">{{ $message }}</span>
+                                @enderror
+                            </div>
+                            {{-- <div class="mb-3 col-sm-4">
                                 <label for="branch" class="form-label">Select Branch</label>
                                 <select wire:model="selectedBranch" class="form-select" id="branch" name="branch">
                                     <option value="">Select Branch</option>
@@ -35,19 +59,19 @@
                                         @endforeach
                                     </optgroup>
                                     @endforeach
-                                    {{-- @foreach($branches as $branch)
-                                    <option value="{{ $branch->id }}">{{ $branch->name }}</option>
-                                    @endforeach --}}
                                 </select>
-                            </div>
+                            </div> --}}
                             <div class="mb-3 col-sm-4">
-                                <label for="project" class="form-label">Select Project</label>
-                                <select wire:model="selectedProject" class="form-select" id="project" name="project">
-                                    <option value="">Select Project</option>
-                                    @foreach($projects as $project)
-                                    <option value="{{ $project->id }}">{{ $project->name }}</option>
+                                <label for="project_id">Project</label>
+                                <select wire:model="project_id" class="form-select" id="project_id">
+                                    <option value="">Select a project</option>
+                                    @foreach ($projects as $project)
+                                        <option value="{{ $project->id }}">{{ $project->name }}</option>
                                     @endforeach
                                 </select>
+                                @error('project_id')
+                                    <span class="text-danger">{{ $message }}</span>
+                                @enderror
                             </div>
                         @endif
                         <div class="mb-3 col-sm-4">
