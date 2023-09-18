@@ -32,7 +32,8 @@
             </ul>
           </div>
         </li> --}}
-        <li class="onhover-dropdown">
+        {{-- Notification icon --}}
+        {{-- <li class="onhover-dropdown">
           <div class="notification-box"><i data-feather="bell"></i><span class="dot-animated"></span></div>
           <ul class="notification-dropdown onhover-show-div">
             <li>
@@ -75,7 +76,7 @@
               </div>
             </li>
           </ul>
-        </li>
+        </li> --}}
         <li>
             <div class="mode"><i class="fa fa-moon-o"></i></div>
         </li>
