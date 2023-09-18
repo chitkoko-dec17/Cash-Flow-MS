@@ -41,6 +41,8 @@ class Dashboard extends Controller
         } else {
             $businessUnits = []; // No BusinessUnit found
         }
+    } else {
+        return redirect('/expense-invoice');
     }
 
     $income_inv = IncomeInvoice::where('admin_status', 'complete')->get();
