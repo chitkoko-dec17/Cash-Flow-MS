@@ -8,7 +8,7 @@
     <div class="left-menu-header col">
       <ul>
         <li>
-            <h5>Cash Flow Management System</h5>
+            {{-- <h5>Cash Flow Management System</h5> --}}
         </li>
       </ul>
     </div>
