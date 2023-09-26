@@ -26,6 +26,7 @@ class BusinessUnitComponent extends Component
     public $isOpen = false;
     public $imageUrl;
     public $letterImageUrl;
+    public $iteration = 0;
     public $perPage = 10;
     public $search;
     public $byManager=null;
@@ -103,6 +104,8 @@ class BusinessUnitComponent extends Component
             'address',
             'businessUnitId',
         ]);
+
+        $this->iteration++;
     }
 
     public function create()
@@ -127,6 +130,10 @@ class BusinessUnitComponent extends Component
             'phone' => $this->phone,
             'address' => $this->address,
         ]);
+
+        $this->bu_image = null;
+        $this->bu_letter_image = null;
+        $this->iteration++;
 
         $this->emit('buCreateOrUpdated','create');
         $this->closeModal();
@@ -163,6 +170,10 @@ class BusinessUnitComponent extends Component
             $letterheadImage = $this->bu_letter_image->store('bu_letter_images','public');
             $bu->update(['bu_letter_image' => $letterheadImage]);
         }
+
+        $this->bu_image = null;
+        $this->bu_letter_image = null;
+        $this->iteration++;
 
         $this->emit('buCreateOrUpdated','edit');
         $this->resetInputFields();

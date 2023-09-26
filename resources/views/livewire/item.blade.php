@@ -31,11 +31,11 @@
             </div>
 
             <div class="row">
-                <div class="table-responsive">
+                <div class="table-container">
                     <table class="table table-hover table-bordered">
                         <thead>
                             <tr>
-                                <th>Name
+                                <th class="fixed-column">Name
                                     <span wire:click="sortBy('name')" class="float-end" style="cursor: pointer;">
                                         <i class="fa fa-sort text-muted"></i>
                                     </span>
@@ -59,11 +59,11 @@
                             @if (count($items) > 0)
                                 @foreach ($items as $item)
                                     <tr>
-                                        <td>{{$item->name}}</td>
+                                        <td class="fixed-column">{{$item->name}}</td>
                                         <td>{{ isset($item->invoiceType->name) ? $item->invoiceType->name : ''}}</td>
                                         <td>{{ isset($item->category->businessUnit->name) ? $item->category->businessUnit->name : ''}}</td>
                                         <td>{{ isset($item->category->name) ? $item->category->name : ''}}</td>
-                                        <td>
+                                        <td class="action-buttons">
                                             <button wire:click="edit({{ $item->id }})"
                                                 class="btn btn-outline-info btn-sm  action-btn" title="Edit"
                                                 data-toggle="tooltip"><i class="fa fa-pencil"></i></button>

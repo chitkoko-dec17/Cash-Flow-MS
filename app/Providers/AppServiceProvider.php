@@ -28,7 +28,7 @@ class AppServiceProvider extends ServiceProvider
     {
         Schema::defaultStringLength(191);
         Paginator::useBootstrap(); // for pure laravel pagination
-        $project_title = '| Cash Flow Management System';
+        $project_title = '| Nay Myanmar';
         View::share('title', $project_title);
     }
 }

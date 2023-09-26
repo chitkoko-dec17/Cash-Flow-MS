@@ -31,11 +31,11 @@
             </div>
 
             <div class="row">
-                <div class="table-responsive">
+                <div class="table-container">
                     <table class="table table-hover table-bordered">
                         <thead>
                             <tr>
-                                <th>Budget Type
+                                <th class="fixed-column">Budget Type
                                 </th>
                                 <th>Name
                                 </th>
@@ -51,12 +51,12 @@
                             @if (count($budgets) > 0)
                                 @foreach ($budgets as $budget)
                                     <tr>
-                                        <td>{{ isset($budget->org->name) ? $budget->org->name : '' }}</td>
+                                        <td class="fixed-column">{{ isset($budget->org->name) ? $budget->org->name : '' }}</td>
                                         <td><code>{{ $budget->name }}</code></td>
                                         <td>{{ $budget->start_date }}</td>
                                         <td>{{ $budget->end_date }}</td>
                                         <td>{{ $budget->total_amount }}</td>
-                                        <td>
+                                        <td class="action-buttons">
                                             <button wire:click="edit({{ $budget->id }})"
                                                 class="btn btn-outline-info btn-sm  action-btn" title="Edit"
                                                 data-toggle="tooltip"><i class="fa fa-pencil"></i></button>

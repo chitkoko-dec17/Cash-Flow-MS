@@ -89,14 +89,7 @@
     <h1 class="text-center m-0 p-0">Income Invoice</h1>
 </div>
 <div class="add-detail mt-10">
-    <div class="w-50 float-left mt-10">
-        <!-- <p class="m-0 pt-5 text-bold w-100">Invoice Id - <span class="gray-color">#{{ $invoice_no }}</span></p>
-        <p class="m-0 pt-5 text-bold w-100">Order Id - <span class="gray-color">162695CDFS</span></p>
-        <p class="m-0 pt-5 text-bold w-100">Order Date - <span class="gray-color">03-06-2022</span></p> -->
-    </div>
-    <div class="w-50 float-left logo mt-10">
-        <!-- <img src="https://www.nicesnippets.com/image/imgpsh_fullsize.png"> <span>Nicesnippets.com</span> -->     
-    </div>
+    <img src="/storage/{{ $invoice->businessUnit->bu_letter_image }}">
     <div style="clear: both;"></div>
 </div>
 <div class="table-section bill-tbl w-100 mt-10">

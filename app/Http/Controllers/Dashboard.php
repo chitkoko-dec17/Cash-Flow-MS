@@ -8,9 +8,12 @@ use Illuminate\Http\Request;
 use App\Models\User;
 use App\Models\ExpenseInvoice;
 use App\Models\IncomeInvoice;
+use Auth;
 
 class Dashboard extends Controller
 {
+    private $cuser_role = null;
+    private $cuser_business_unit_id = null;
   /**
    * Create a new controller instance.
    *
@@ -23,7 +26,24 @@ class Dashboard extends Controller
 
   public function index()
   {
-    $businessUnits = BusinessUnit::all();
+    //$businessUnits = null;
+    $this->cuser_role = Auth::user()->user_role;
+    $this->cuser_business_unit_id = Auth::user()->user_business_unit;
+
+    if($this->cuser_role == "Admin"){
+        $businessUnits = BusinessUnit::all();
+    } elseif ($this->cuser_role == "Manager"){
+        $bu = BusinessUnit::find($this->cuser_business_unit_id);
+
+        // Check if a BusinessUnit was found
+        if ($bu) {
+            $businessUnits = [$bu]; // Wrap the single BusinessUnit in an array
+        } else {
+            $businessUnits = []; // No BusinessUnit found
+        }
+    } else {
+        return redirect('/expense-invoice');
+    }
 
     $income_inv = IncomeInvoice::where('admin_status', 'complete')->get();
     $expense_inv = ExpenseInvoice::where('admin_status', 'complete')->get();

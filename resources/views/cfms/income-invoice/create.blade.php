@@ -72,55 +72,57 @@
                                         <!-- Invoice Items -->
                                         <div class="form-group">
                                             <label for="invoiceItems">Invoice Items</label>
-                                            <table class="table table-bordered" id="invoiceItems">
-                                                <thead>
-                                                    <tr>
-                                                        <th>Category</th>
-                                                        <th>Item</th>
-                                                        <th width="60">Quantity</th>
-                                                        <th >Unit Price (MMK)</th>
-                                                        <th>Total</th>
-                                                        <th></th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody>
-                                                    <tr>
-                                                        <td>
-                                                            <select class="form-select category_id" name="category_ids[]" id="category_id">
-                                                                <option value="">Select Category</option>
-                                                                @foreach($itemcategories as $cate)
-                                                                    <option value="{{ $cate->id }}">{{ $cate->name }}</option>
-                                                                @endforeach
-                                                            </select>
-                                                        </td>
-                                                        <td>
-                                                            <select class="form-select js-example-basic-single item_id" name="items[]">
-                                                                <option value="">Select Item</option>
-                                                            </select>
-                                                        </td>
-                                                        <td><input type="number" class="form-control quantity"
-                                                                name="quantity[]" min="1" value="1"></td>
-                                                        <td><input type="number" class="form-control amount"
-                                                                name="amount[]" step="0.01" value="0"></td>
-                                                        <td class="total">0.00 MMK</td>
-                                                        <td>
-                                                            <button type="button"
-                                                                class="btn btn-danger btn-sm action-btn remove-btn"><i
-                                                                    class="fa fa-trash"></i></button>
-                                                        </td>
-                                                    </tr>
-                                                </tbody>
-                                                <tfoot>
-                                                    <tr>
-                                                        <td colspan="4" class="text-right"><strong>Total:</strong></td>
-                                                        <td colspan="2" class="totalAmount">0.00 MMK</td>
-                                                        <input type="hidden" name="total_amount" id="total_amount" value="">
-                                                        @error('total_amount')
-                                                            <span class="text-danger">{{ $message }}</span>
-                                                        @enderror
-                                                    </tr>
-                                                </tfoot>
-                                            </table>
+                                            <div class="table-container">
+                                                <table class="table table-bordered" id="invoiceItems">
+                                                    <thead>
+                                                        <tr>
+                                                            <th>Category</th>
+                                                            <th class="fixed-column">Item</th>
+                                                            <th width="60">Quantity</th>
+                                                            <th >Unit Price (MMK)</th>
+                                                            <th>Total</th>
+                                                            <th></th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        <tr>
+                                                            <td>
+                                                                <select class="form-select category_id" name="category_ids[]" id="category_id">
+                                                                    <option value="">Select Category</option>
+                                                                    @foreach($itemcategories as $cate)
+                                                                        <option value="{{ $cate->id }}">{{ $cate->name }}</option>
+                                                                    @endforeach
+                                                                </select>
+                                                            </td>
+                                                            <td class="fixed-column">
+                                                                <select class="form-select js-example-basic-single item_id" name="items[]">
+                                                                    <option value="">Select Item</option>
+                                                                </select>
+                                                            </td>
+                                                            <td><input type="number" class="form-control quantity"
+                                                                    name="quantity[]" min="1" value="1"></td>
+                                                            <td><input type="number" class="form-control amount"
+                                                                    name="amount[]" step="0.01" value="0"></td>
+                                                            <td class="total">0.00 MMK</td>
+                                                            <td class="action-buttons">
+                                                                <button type="button"
+                                                                    class="btn btn-danger btn-sm action-btn remove-btn"><i
+                                                                        class="fa fa-trash"></i></button>
+                                                            </td>
+                                                        </tr>
+                                                    </tbody>
+                                                    <tfoot>
+                                                        <tr>
+                                                            <td colspan="4" class="text-right"><strong>Total:</strong></td>
+                                                            <td colspan="2" class="totalAmount">0.00 MMK</td>
+                                                            <input type="hidden" name="total_amount" id="total_amount" value="">
+                                                            @error('total_amount')
+                                                                <span class="text-danger">{{ $message }}</span>
+                                                            @enderror
+                                                        </tr>
+                                                    </tfoot>
+                                                </table>
+                                            </div>
                                             <button type="button" class="btn btn-light mt-2" id="add-item-btn"><i
                                                     class="fa fa-plus"></i> Add Item</button>
                                         </div>
@@ -147,7 +149,7 @@
 @endsection
 
 @push('scripts')
-    
+
     <script>
         let jcates = '';
         @foreach($itemcategories as $cate)
@@ -168,7 +170,7 @@
                                 `+jcates+`
                             </select>
                         </td>
-                        <td>
+                        <td class="fixed-column">
                             <select class="form-select js-example-basic-single item_id" name="items[]">
                                 <option value="">Select Item</option>
                             </select>
@@ -176,7 +178,7 @@
                         <td><input type="number" class="form-control quantity" name="quantity[]" min="1" value="1"></td>
                         <td><input type="number" class="form-control amount" name="amount[]" step="0.01" value="0"></td>
                         <td class="total">0.00 MMK</td>
-                        <td><button type="button" class="btn btn-danger btn-sm action-btn remove-btn"><i class="fa fa-trash"></i></button></td>
+                        <td class="action-buttons"><button type="button" class="btn btn-danger btn-sm action-btn remove-btn"><i class="fa fa-trash"></i></button></td>
                     </tr>
                 `;
                 $("#invoiceItems tbody").append(newRow);

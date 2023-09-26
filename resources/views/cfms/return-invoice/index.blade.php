@@ -76,7 +76,7 @@
                                         @else
                                             <option value="{{ $skey }}">{{ $statuse }}</option>
                                         @endif
-                                        
+
                                     @endforeach
                                 </select>
                             </div> -->
@@ -87,11 +87,11 @@
                     </div>
 
                     <div class="row mt-4">
-                        <div class="table-responsive">
+                        <div class="table-container">
                             <table class="table table-hover table-bordered">
                                 <thead>
                                     <tr>
-                                        <th>Expense Invoice No.</th>
+                                        <th class="fixed-column">Expense Invoice No.</th>
                                         <th>Date</th>
                                         <th>Total Amount</th>
                                         <th>Create By</th>
@@ -102,11 +102,11 @@
                                     @if (count($return_invoices) > 0)
                                         @foreach ($return_invoices as $inv)
                                             <tr>
-                                                <td>{{ $inv->expense_inv->invoice_no }}</td>
+                                                <td class="fixed-column">{{ $inv->expense_inv->invoice_no }}</td>
                                                 <td>{{ $inv->invoice_date }}</td>
                                                 <td>{{ $inv->total_amount }}</td>
                                                 <td>{{ $inv->user->name }}</td>
-                                                <td>
+                                                <td class="action-buttons">
                                                     <a href="{{ route('return-invoice.show', $inv->id) }}"
                                                         class="btn btn-outline-success btn-sm action-btn" title="View"
                                                         data-toggle="tooltip"><i class="fa fa-eye"></i></a>

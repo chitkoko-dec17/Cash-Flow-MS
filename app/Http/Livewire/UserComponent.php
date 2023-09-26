@@ -27,41 +27,7 @@ class UserComponent extends Component
     public $role;
     public $branches = [];
     public $projects = [];
-    public $businessUnits;
-    public $selectedBranch,$selectedProject;
-
-    public function updatedRoleId($value)
-    {
-        // Clear branch and project selections when the role is changed
-        $this->reset(['branches', 'projects','selectedBranch', 'selectedProject']);
-
-        // Fetch branches and projects based on the selected role
-        if ($value === '3') {
-            $this->businessUnits = BusinessUnit::all();
-
-            foreach ($this->businessUnits as $businessUnit) {
-                $optgroupLabel = $businessUnit->name;
-                $branchOptions = Branch::where('business_unit_id', $businessUnit->id)->pluck('name', 'id')->toArray();
-                $this->branches[$optgroupLabel] = $branchOptions;
-            }
-
-            // $this->branches = Branch::all();
-            $this->projects = [];
-        } else {
-            $this->branches = [];
-            $this->projects = [];
-        }
-    }
-
-    public function updatedSelectedBranch($value)
-    {
-        if ($value) {
-            // Fetch projects based on the selected branch
-            $this->projects = Project::where('branch_id', $value)->get();
-        } else {
-            $this->projects = [];
-        }
-    }
+    public $business_unit_id,$branch_id,$project_id,$user_buId;
 
     /**
      * render the post data
@@ -73,7 +39,50 @@ class UserComponent extends Component
         ->orderBy($this->sortColumnName,$this->sortDirectionBy)
         ->paginate($this->perPage);
         $roles = Role::all();
-        return view('livewire.user',compact('users', 'roles'));
+        $businessUnits = BusinessUnit::all();
+        return view('livewire.user',compact('users', 'roles','businessUnits'));
+    }
+
+    public function updatedRoleId($value)
+    {
+        // Clear branch and project selections when the role is changed
+        $this->reset(['branches', 'projects','branch_id', 'project_id','business_unit_id']);
+
+        // // Fetch branches and projects based on the selected role
+        // if ($value === '3') {
+        //     $this->businessUnits = BusinessUnit::all();
+
+        //     foreach ($this->businessUnits as $businessUnit) {
+        //         $optgroupLabel = $businessUnit->name;
+        //         $branchOptions = Branch::where('business_unit_id', $businessUnit->id)->pluck('name', 'id')->toArray();
+        //         $this->branches[$optgroupLabel] = $branchOptions;
+        //     }
+
+        //     // $this->branches = Branch::all();
+        //     $this->projects = [];
+        // } else {
+        //     $this->branches = [];
+        //     $this->projects = [];
+        // }
+    }
+
+    public function updatedBusinessUnitId($value){
+        if ($value) {
+        // Fetch item_category based on the selected bu
+        $this->branches = Branch::where('business_unit_id', $value)->get();
+        } else {
+            $this->branches = [];
+        }
+    }
+
+    public function updatedBranchId($value)
+    {
+        if ($value) {
+            // Fetch projects based on the selected branch
+            $this->projects = Project::where('branch_id', $value)->get();
+        } else {
+            $this->projects = [];
+        }
     }
 
     public function create()
@@ -145,25 +154,25 @@ class UserComponent extends Component
         $toSave->save();
 
         // Handle user's association with the branch
-        if ($this->role_id === '3' && !empty($this->selectedBranch)) {
-            $branch = Branch::find($this->selectedBranch);
+        if ($this->role_id === '3' && !empty($this->branch_id)) {
+            $branch = Branch::find($this->branch_id);
             if ($branch) {
                 // Create or update the user's association with the branch in the branch_user table
                 BranchUser::updateOrCreate(
                     ['user_id' => $toSave->id],
-                    ['branch_id' => $this->selectedBranch]
+                    ['branch_id' => $this->branch_id]
                 );
             }
         }
 
         // Handle user's association with the project
-        if (!empty($this->selectedProject)) {
-            $project = Project::find($this->selectedProject);
+        if (!empty($this->project_id)) {
+            $project = Project::find($this->project_id);
             if ($project) {
                 // Create or update the user's association with the project in the project_user table
                 ProjectUser::updateOrCreate(
                     ['user_id' => $toSave->id],
-                    ['project_id' => $this->selectedProject]
+                    ['project_id' => $this->project_id]
                 );
             }
         }
@@ -191,11 +200,27 @@ class UserComponent extends Component
         $this->phone = $user->phone;
         $this->address = $user->address;
         $this->userId = $id;
-        $this->selectedBranch = $user->branchUser ? $user->branchUser->branch->id : '';
-        $this->selectedProject = $user->projectUser ? $user->projectUser->project->id : '';
+        $this->branch_id = $user->branchUser ? $user->branchUser->branch->id : '';
+        $this->project_id = $user->projectUser ? $user->projectUser->project->id : '';
 
-        $this->updatedRoleId($user->role->id);
-        $this->updatedSelectedBranch( $user->branchUser ? $user->branchUser->branch->id : '');
+        if($user){
+            if($user->branchUser){
+                $branch = $user->branchUser->branch;
+                if($branch){
+                    $this->user_buId = $branch->business_unit_id;
+                }
+            }elseif($user->projectUser){
+                $project = $user->projectUser->branch;
+                if($project){
+                    $this->user_buId = $project->business_unit_id;
+                }
+            }
+        }
+        $this->business_unit_id = $this->user_buId;
+
+        //$this->updatedRoleId($user->role->id);
+        $this->updatedBusinessUnitId($this->user_buId);
+        $this->updatedBranchId( $user->branchUser ? $user->branchUser->branch->id : '');
 
         $this->openModal();
     }

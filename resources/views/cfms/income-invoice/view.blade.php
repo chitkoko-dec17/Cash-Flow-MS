@@ -97,14 +97,14 @@
                             </div>
                             <!-- End Invoice Mid-->
                             <div>
-                                <div class="table-responsive invoice-table" id="table">
+                                <div class="table-container invoice-table" id="table">
                                     <table class="table table-bordered table-striped">
                                         <tbody>
                                             <tr>
                                                 <td class="item">
                                                     <h6 class="p-2 mb-0">Category</h6>
                                                 </td>
-                                                <td class="Hours">
+                                                <td class="Hours fixed-column">
                                                     <h6 class="p-2 mb-0">Item</h6>
                                                 </td>
                                                 <td class="Hours">
@@ -135,6 +135,7 @@
                                                                     style="pointer:hand;">
                                                                     <span class="badge badge-primary">
                                                                         {{ $invitem->item->name }}
+                                                                        <i class="fa fa-search-plus"></i>
                                                                     </span>
                                                                 </a>
                                                                 @else

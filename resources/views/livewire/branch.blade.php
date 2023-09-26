@@ -32,11 +32,11 @@
                         </div>
                     </div>
                     <div class="row">
-                        <div class="table-responsive ">
+                        <div class="table-container">
                             <table class="table table-hover table-bordered">
                                 <thead>
                                     <tr>
-                                        <th scope="col">Branch Name
+                                        <th class="fixed-column" scope="col">Branch Name
                                             <span wire:click="sortBy('name')" class="float-end" style="cursor: pointer;">
                                                 <i class="fa fa-sort text-muted"></i>
                                             </span>
@@ -64,11 +64,11 @@
                                     @if (count($branches) > 0)
                                         @foreach ($branches as $branch)
                                             <tr>
-                                                <td>{{ $branch->name}}</td>
+                                                <td class="fixed-column">{{ $branch->name}}</td>
                                                 <td><span class="badge badge-primary">{{ isset($branch->businessUnit->name) ? $branch->businessUnit->name : "" }}</span></td>
                                                 <td>{{ $branch->phone}}</td>
                                                 <td>{{ $branch->address}}</td>
-                                                <td>
+                                                <td class="action-buttons">
                                                     <button wire:click="" class="btn btn-outline-success btn-sm action-btn"
                                                         title="View" data-toggle="tooltip"><i class="fa fa-eye"></i></button>
                                                     <button wire:click="edit({{ $branch->id }})"

@@ -26,13 +26,13 @@
         width: 100%;
     }
     .w-50{
-        width:50%;   
+        width:50%;
     }
     .w-85{
-        width:85%;   
+        width:85%;
     }
     .w-15{
-        width:15%;   
+        width:15%;
     }
     .logo img{
         width:45px;
@@ -86,17 +86,11 @@
 </style>
 <body>
 <div class="head-title">
-    <h1 class="text-center m-0 p-0">Expense Invoice</h1>
+    <!-- <h1 class="text-center m-0 p-0">Expense Invoice</h1> -->
 </div>
 <div class="add-detail mt-10">
-    <div class="w-50 float-left mt-10">
-        <!-- <p class="m-0 pt-5 text-bold w-100">Invoice Id - <span class="gray-color">#{{ $invoice_no }}</span></p>
-        <p class="m-0 pt-5 text-bold w-100">Order Id - <span class="gray-color">162695CDFS</span></p>
-        <p class="m-0 pt-5 text-bold w-100">Order Date - <span class="gray-color">03-06-2022</span></p> -->
-    </div>
-    <div class="w-50 float-left logo mt-10">
-        <!-- <img src="https://www.nicesnippets.com/image/imgpsh_fullsize.png"> <span>Nicesnippets.com</span> -->     
-    </div>
+
+    <img src="/storage/{{ $invoice->businessUnit->bu_letter_image }}">
     <div style="clear: both;"></div>
 </div>
 <div class="table-section bill-tbl w-100 mt-10">
@@ -144,38 +138,40 @@
     </table>
 </div> -->
 <div class="table-section bill-tbl w-100 mt-10">
-    <table class="table w-100 mt-10">
-        <tr>
-            <th class="w-50">Category</th>
-            <th class="w-50">Item</th>
-            <th class="w-50">Qty</th>
-            <th class="w-50">Unit Price (MMK)</th>
-            <th class="w-50">Total</th>
-        </tr>
-        @if (count($invoice_items) > 0)
-            @foreach ($invoice_items as $invitem)
-                <tr align="center">
-                    <td>{{ $invitem->category->name }}</td>
-                    <td>{{ $invitem->item->name }}</td>
-                    <td>{{ $invitem->qty }}</td>
-                    <td>{{ $invitem->amount }}</td>
-                    <td>{{ $invitem->qty * $invitem->amount }}</td>
-                </tr>
-            @endforeach
-        @endif
-        <tr>
-            <td colspan="5">
-                <div class="total-part">
-                    <div class="total-left w-85 float-left" align="right">
-                        <p>Total Payable</p>
+    <div class="table-container">
+        <table class="table w-100 mt-10">
+            <tr>
+                <th class="w-50">Category</th>
+                <th class="w-50">Item</th>
+                <th class="w-50">Qty</th>
+                <th class="w-50">Unit Price (MMK)</th>
+                <th class="w-50">Total</th>
+            </tr>
+            @if (count($invoice_items) > 0)
+                @foreach ($invoice_items as $invitem)
+                    <tr align="center">
+                        <td>{{ $invitem->category->name }}</td>
+                        <td>{{ $invitem->item->name }}</td>
+                        <td>{{ $invitem->qty }}</td>
+                        <td>{{ $invitem->amount }}</td>
+                        <td>{{ $invitem->qty * $invitem->amount }}</td>
+                    </tr>
+                @endforeach
+            @endif
+            <tr>
+                <td colspan="5">
+                    <div class="total-part">
+                        <div class="total-left w-85 float-left" align="right">
+                            <p>Total Payable</p>
+                        </div>
+                        <div class="total-right w-15 float-left text-bold" align="right">
+                            <p>{{ $invoice->total_amount }}</p>
+                        </div>
+                        <div style="clear: both;"></div>
                     </div>
-                    <div class="total-right w-15 float-left text-bold" align="right">
-                        <p>{{ $invoice->total_amount }}</p>
-                    </div>
-                    <div style="clear: both;"></div>
-                </div> 
-            </td>
-        </tr>
-    </table>
+                </td>
+            </tr>
+        </table>
+    </div>
 </div>
 </html>
