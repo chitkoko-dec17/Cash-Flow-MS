@@ -10,6 +10,11 @@
                     <button class="btn-close" type="button" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
+                    @if ($role_id == '3')
+                        <div class="alert alert-warning" role="alert">
+                            Business Unit, Branch and Project can't edit.
+                        </div>
+                    @endif
                     <div class="row">
                         <div class="mb-3 col-sm-4">
                             <label for="role_id">Role</label>

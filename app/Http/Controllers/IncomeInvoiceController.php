@@ -300,7 +300,6 @@ class IncomeInvoiceController extends Controller
     public function update(Request $request, $id)
     {
         $request->validate([
-            'branch_id'  =>  'required',
             'invoice_date'  =>  'required',
             'total_amount'  =>  'required'
         ]);
