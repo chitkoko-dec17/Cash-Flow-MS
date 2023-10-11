@@ -165,7 +165,7 @@
                                                                                 <div class="col-xl-12 recent-order-sec">
                                                                                     <div class="card">
                                                                                         <div class="card-body">
-                                                                                            <div class="table-responsive">
+                                                                                            <div class="table-container">
                                                                                                 <h5>Recent Expense Invoices
                                                                                                 </h5>
                                                                                                 <table class="table table-bordernone" id="expenseTable{{$businessUnit->id}}">
@@ -190,7 +190,7 @@
                                                                                 <div class="col-xl-12 recent-order-sec">
                                                                                     <div class="card">
                                                                                         <div class="card-body">
-                                                                                            <div class="table-responsive">
+                                                                                            <div class="table-container">
                                                                                                 <h5>Recent Income Invoices
                                                                                                 </h5>
                                                                                                 <table class="table table-bordernone" id="incomeTable{{$businessUnit->id}}">
@@ -299,13 +299,15 @@
                                 console.log(exinvoice.id);
                                 var route = "{{ route('expense-invoice.show',':id') }}";
                                 route = route.replace(':id',exinvoice.id);
+                                var edit_route = "{{ route('expense-invoice.edit',':id') }}";
+                                edit_route = edit_route.replace(':id',exinvoice.id);
                                 var row = '<tbody><tr>' +
                                     '<td>' + exinvoice.invoice_no + '</td>' +
                                     '<td>' + exinvoice.invoice_date + '</td>' +
                                     '<td>' + exinvoice.upload_user_id + '</td>' +
                                     '<td>' + exinvoice.total_amount + '</td>' +
                                     '<td><span class="badge badge-primary '+  exinvoice.admin_status +'">' + exinvoice.admin_status + '</span></td>' +
-                                    '<td> <a href=' + route + ' class="btn btn-outline-success btn-sm action-btn pt-0 pb-0 " title="View" data-toggle="tooltip"><i class="fa fa-eye"></i></a></td>' +
+                                    '<td class="action-buttons"> <a href=' + route + ' class="btn btn-outline-success btn-sm action-btn pt-0 pb-0 " title="View" data-toggle="tooltip"><i class="fa fa-eye"></i></a> <a href=' + edit_route + ' class="btn btn-outline-info btn-sm action-btn pt-0 pb-0 " title="Edit" data-toggle="tooltip"><i class="fa fa-pencil"></i></a></td> ' +
                                 '</tr><tbody>';
                                     console.log(row);
                                 $('#expenseTable'+ buID).append(row);
@@ -333,13 +335,15 @@
                                 console.log(incinvoice.id);
                                 var route = "{{ route('income-invoice.show',':id') }}";
                                 route = route.replace(':id',incinvoice.id);
+                                var edit_route = "{{ route('income-invoice.edit',':id') }}";
+                                edit_route = edit_route.replace(':id',incinvoice.id);
                                 var row = '<tbody><tr>' +
                                     '<td>' + incinvoice.invoice_no + '</td>' +
                                     '<td>' + incinvoice.invoice_date + '</td>' +
                                     '<td>' + incinvoice.upload_user_id + '</td>' +
                                     '<td>' + incinvoice.total_amount + '</td>' +
                                     '<td><span class="badge badge-primary '+  incinvoice.admin_status +'">' + incinvoice.admin_status + '</span></td>' +
-                                    '<td> <a href=' + route + ' class="btn btn-outline-success btn-sm action-btn pt-0 pb-0 " title="View" data-toggle="tooltip"><i class="fa fa-eye"></i></a></td>' +
+                                    '<td class="action-buttons"> <a href=' + route + ' class="btn btn-outline-success btn-sm action-btn pt-0 pb-0 " title="View" data-toggle="tooltip"><i class="fa fa-eye"></i></a> <a href=' + edit_route + ' class="btn btn-outline-info btn-sm action-btn pt-0 pb-0 " title="Edit" data-toggle="tooltip"><i class="fa fa-pencil"></i></a></td>' +
                                 '</tr><tbody>';
                                     console.log(row);
                                 $('#incomeTable'+ buID).append(row);
