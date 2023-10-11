@@ -325,12 +325,14 @@ class IncomeInvoiceController extends Controller
         $exp_invoice->edit_by = Auth::id();
         $exp_invoice->save();
 
-        foreach($request->invitem as $itind => $item){
+        if(!empty($request->invitem)){
+            foreach($request->invitem as $itind => $item){
 
-            $exp_invoice_item = IncomeInvoiceItem::find($item);
-            $exp_invoice_item->qty = $item_quantity[$itind];
-            $exp_invoice_item->amount = $item_amount[$itind];
-            $exp_invoice_item->save();
+                $exp_invoice_item = IncomeInvoiceItem::find($item);
+                $exp_invoice_item->qty = $item_quantity[$itind];
+                $exp_invoice_item->amount = $item_amount[$itind];
+                $exp_invoice_item->save();
+            }
         }
 
         $items = $request->items_up;
