@@ -15,7 +15,7 @@
 		<li class="breadcrumb-item"><a href="{{ route('user.index') }}">User</a></li>
 		<li class="breadcrumb-item active">Update Password</li>
 	@endcomponent
-	
+
 	<div class="container-fluid">
 	    <div class="edit-profile">
 	        <div class="row">
@@ -45,6 +45,13 @@
 						                <span class="text-danger">{{ $message }}</span>
 					              	@enderror
 	                            </div>
+
+                                <div class="form-group">
+                                    <div class="checkbox">
+                                        <input id="showPasswordCheckBox" type="checkbox" />
+                                        <label for="showPasswordCheckBox">Show password</label>
+                                    </div>
+                                </div>
 	                            <div class="form-footer">
 	                                <button class="btn btn-primary btn-block">Update</button>
 	                            </div>
