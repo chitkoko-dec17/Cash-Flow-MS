@@ -52,7 +52,7 @@
                         <div class="form-group">
                             <button class="btn btn-primary btn-block" type="submit">Sign in</button>
                         </div>
-                        
+
                     </form>
                 </div>
             </div>
@@ -60,7 +60,7 @@
     </div>
 </section>
 
-	
+
     @push('scripts')
     @endpush
 
