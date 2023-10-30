@@ -32,7 +32,7 @@
 
                                             <div class="mb-3 col-sm-4">
                                                 <label for="total_amount">Total Amount</label>
-                                                <input type="text" class="form-control" id="total_amount" name="total_amount" value="{{$invoice->total_amount }}">
+                                                <input type="text" class="form-control" id="total_amount" name="total_amount" value="{{ number_format($invoice->total_amount,2) }}">
                                             </div>
                                         </div>
                                         <div class="form-group">

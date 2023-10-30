@@ -106,7 +106,7 @@
                                                 <td class="fixed-column">{{ $inv->invoice_no }}</td>
                                                 <td>{{ $inv->invoice_date }}</td>
                                                 <td>{{ $inv->staff->name }}</td>
-                                                <td>{{ $inv->total_amount }}</td>
+                                                <td>{{ number_format($inv->total_amount,2) }}</td>
                                                 <td><span class="badge badge-primary {{ $inv->admin_status }}">{{ $inv->admin_status }}</span></td>
                                                 <td class="action-buttons">
                                                     <a href="{{ route('income-invoice.show', $inv->id) }}"

@@ -101,6 +101,7 @@
                                     <table class="table table-bordered table-striped">
                                         <tbody>
                                             <tr>
+                                                <td>No.</td>
                                                 <td class="item">
                                                     <h6 class="p-2 mb-0">Category</h6>
                                                 </td>
@@ -117,9 +118,13 @@
                                                     <h6 class="p-2 mb-0">Total</h6>
                                                 </td>
                                             </tr>
+                                            @php
+                                                $item_no = 1;
+                                            @endphp
                                             @if (count($invoice_items) > 0)
                                                 @foreach ($invoice_items as $invitem)
                                                     <tr>
+                                                        <td>{{ $item_no }}</td>
                                                         <td>
                                                             <label>{{ $invitem->category->name }}</label>
                                                         </td>
@@ -147,13 +152,16 @@
                                                             <p class="itemtext digits">{{ $invitem->qty }}</p>
                                                         </td>
                                                         <td>
-                                                            <p class="itemtext digits">{{ $invitem->amount }}</p>
+                                                            <p class="itemtext digits">{{ number_format($invitem->amount,2) }}</p>
                                                         </td>
                                                         <td>
                                                             <p class="itemtext digits">
-                                                                {{ $invitem->qty * $invitem->amount }}</p>
+                                                                {{ number_format($invitem->qty * $invitem->amount,2) }}</p>
                                                         </td>
                                                     </tr>
+                                                    @php
+                                                        $item_no++;
+                                                    @endphp
                                                 @endforeach
                                             @endif
 
@@ -161,11 +169,12 @@
                                                 <td></td>
                                                 <td></td>
                                                 <td></td>
+                                                <td></td>
                                                 <td class="Rate">
                                                     <h6 class="mb-0 p-2">Total</h6>
                                                 </td>
                                                 <td class="payment digits">
-                                                    <h6 class="mb-0 p-2">{{ $invoice->total_amount }}</h6>
+                                                    <h6 class="mb-0 p-2">{{ number_format($invoice->total_amount,2) }}</h6>
                                                 </td>
                                             </tr>
                                         </tbody>
