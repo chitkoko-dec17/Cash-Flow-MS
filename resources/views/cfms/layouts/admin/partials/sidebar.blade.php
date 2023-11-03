@@ -44,6 +44,7 @@
                         <ul class="nav-submenu menu-content" style="display: {{ prefixBlock('/item') }};">
                             <li><a href="{{ url('itemcategory') }}" class="{{routeActive('itemcategory')}}">Item Category</a></li>
                             <li><a href="{{ url('item') }}" class="{{routeActive('item')}}">Item</a></li>
+                            <li><a href="{{ url('item-unit') }}" class="{{routeActive('item-unit')}}">Item Unit</a></li>
                         </ul>
                     </li>
                     @endif
