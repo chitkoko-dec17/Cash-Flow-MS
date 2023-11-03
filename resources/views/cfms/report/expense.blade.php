@@ -196,7 +196,7 @@
                                                             {{ isset($inv->project->name) ? ' - ' . $inv->project->name : '' }}</code>
                                                     </td>
                                                     <td width="20%">
-                                                        {{ app(\App\Http\Controllers\ReportController::class)->calculateTotal($inv) }}
+                                                        {{  number_format(app(\App\Http\Controllers\ReportController::class)->calculateTotal($inv),2) }}
                                                     </td>
                                                     {{-- <td width="20%">{{ $inv->total_amount }} -
                                                     {{ $inv->return_total_amount }} =
@@ -400,12 +400,19 @@
                 $('table tbody tr').each(function() {
                     var amountText = $(this).find('td:eq(5)')
                 .text(); // Assuming "Amount" is in the 6th column (index 5)
-                    var amountValue = parseFloat(amountText.replace('MMK', '').trim());
+                    var amountValue = parseFloat(amountText.replace('MMK', '').replace(/,/g, '').trim());
                     if (!isNaN(amountValue)) {
                         totalSum += amountValue;
                     }
                 });
-                $('.total-amount strong').text(totalSum.toFixed(2) + ' MMK');
+                // Format the totalSum using toLocaleString
+                var formattedTotalSum = totalSum.toLocaleString('en-US', {
+                    style: 'currency',
+                    currency: 'MMK',
+                    minimumFractionDigits: 2,
+                    maximumFractionDigits: 2,
+                });
+                $('.total-amount strong').text(formattedTotalSum);
             }
 
             calculateTotalSum();

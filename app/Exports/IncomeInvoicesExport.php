@@ -60,7 +60,7 @@ class IncomeInvoicesExport implements FromQuery, WithHeadings, WithMapping, Shou
             $row->project->name ?? '',
             $row->invoice_no ?? '',
             $row->invoice_date?? '',
-            $row->total_amount?? '',
+            number_format($row->total_amount?? '',2),
             $row->description?? '',
             $row->staff->name ?? '',
             $row->manager->name ?? '',
