@@ -108,8 +108,8 @@
                                                             <th class="fixed-column">Item</th>
                                                             <th>Payment</th>
                                                             <th>Description</th>
-                                                            <th width="100">Quantity</th>
-                                                            <th width="100">Unit Price (MMK)</th>
+                                                            <th>Quantity & Unit</th>
+                                                            <th>Unit Price (MMK)</th>
                                                             <th>Total</th>
                                                             <th></th>
                                                         </tr>
@@ -145,11 +145,11 @@
                                                             </td>
                                                             <td>
                                                                 <div class="row" style="justify-content: center;">
-                                                                    <div class="m-0 p-0 pe-2 col-sm-12 col-md-12 col-lg-12">
+                                                                    <div class="m-0 p-0 ps-2 pe-2 col-sm-12 col-md-12 col-lg-7">
                                                                         <input type="number" class="form-control quantity"
                                                                     name="quantity[]" min="1" value="{{$invitem->qty}}">
                                                                     </div>
-                                                                    <div class="m-0 p-0 col-sm-12 col-md-12 col-lg-12">
+                                                                    <div class="m-0 p-0 ps-2 pe-2 col-sm-12 col-md-12 col-lg-5">
                                                                         <select class="form-select" name="unit_ids[]">
                                                                             @foreach($itemunits as $unit)
                                                                                 @if($invitem->unit_id == $unit->id)
@@ -412,10 +412,10 @@
                         </td>
                         <td>
                             <div class="row" style="justify-content: center;">
-                                <div class="m-0 p-0 pe-2 col-sm-12 col-md-12 col-lg-12">
+                                <div class="m-0 p-0 ps-2 pe-2 col-sm-12 col-md-12 col-lg-7">
                                     <input type="number" class="form-control quantity" name="quantity_up[]" min="1" value="1">
                                 </div>
-                                <div class="m-0 p-0 col-sm-12 col-md-12 col-lg-12">
+                                <div class="m-0 p-0 ps-2 pe-2 col-sm-12 col-md-12 col-lg-5">
                                     <select class="form-select" name="unit_ids_up[]">
                                         `+junits+`
                                     </select>

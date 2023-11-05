@@ -105,10 +105,10 @@
                                                             </td>
                                                             <td>
                                                                 <div class="row" style="justify-content: center;">
-                                                                    <div class="m-0 p-0 pe-2 col-sm-12 col-md-12 col-lg-12">
+                                                                    <div class="m-0 p-0 ps-2 pe-2 col-sm-12 col-md-12 col-lg-7">
                                                                         <input type="number" class="form-control quantity" name="quantity[]" min="1" value="1">
                                                                     </div>
-                                                                    <div class="m-0 p-0 col-sm-12 col-md-12 col-lg-12">
+                                                                    <div class="m-0 p-0 ps-2 pe-2 col-sm-12 col-md-12 col-lg-5">
                                                                         <select class="form-select" name="unit_ids[]">
                                                                             @foreach($itemunits as $unit)
                                                                                 <option value="{{ $unit->id }}">{{ $unit->name }}</option>
@@ -207,10 +207,10 @@
                         </td>
                         <td>
                             <div class="row" style="justify-content: center;">
-                                <div class="m-0 p-0 pe-2 col-sm-12 col-md-12 col-lg-12">
+                                <div class="m-0 p-0 ps-2 pe-2 col-sm-12 col-md-12 col-lg-7">
                                     <input type="number" class="form-control quantity" name="quantity[]" min="1" value="1">
                                 </div>
-                                <div class="m-0 p-0 col-sm-12 col-md-12 col-lg-12">
+                                <div class="m-0 p-0 ps-2 pe-2 col-sm-12 col-md-12 col-lg-5">
                                     <select class="form-select" name="unit_ids[]">
                                         `+junits+`
                                     </select>
