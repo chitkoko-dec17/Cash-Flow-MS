@@ -14,12 +14,13 @@ use App\Models\Branch;
 use App\Models\BranchUser;
 use App\Models\ProjectUser;
 use App\Models\BusinessUnit;
+use App\Models\ItemUnit;
 use Auth;
 use DB;
 
 class IncomeInvoiceController extends Controller
 {
-    private $statuses = array("pending" => "Pending","checking" => "Checking","checkedup" => "Checked Up","reject" => "Reject","complete" => "Complete");
+    private $statuses = array("pending" => "Pending","checking" => "Checking","checkedup" => "Checked Up","reject" => "Reject","ready_to_claim" => "Ready To Claim","claimed" => "Claimed","complete" => "Complete");
     private $cuser_role = null;
     private $cuser_business_unit_id = null;
 
@@ -124,6 +125,7 @@ class IncomeInvoiceController extends Controller
         }
 
         $itemcategories = ItemCategory::where('business_unit_id', $this->cuser_business_unit_id)->get();
+        $itemunits = ItemUnit::get();
 
         $statuses = $this->statuses;
 
@@ -147,7 +149,7 @@ class IncomeInvoiceController extends Controller
             $data['project_id'] = isset($project_user->project_id) ? $project_user->project_id : 0;
         }
 
-        return view('cfms.income-invoice.create', compact('itemcategories','statuses','branches', 'data'));
+        return view('cfms.income-invoice.create', compact('itemcategories','statuses','branches', 'data', 'itemunits'));
     }
 
     /**
@@ -176,6 +178,9 @@ class IncomeInvoiceController extends Controller
 
         $item_quantity = $request->quantity;
         $item_amount = $request->amount;
+        $item_unit_ids = $request->unit_ids;
+        $item_description = $request->idescription;
+        $item_payment_type = $request->payment_type;
 
         $inc_invoice= IncomeInvoice::create([
                 'business_unit_id' => isset($this->cuser_business_unit_id) ? $this->cuser_business_unit_id : 0,
@@ -202,6 +207,9 @@ class IncomeInvoiceController extends Controller
                 'item_id' => $item,
                 'qty' => $item_quantity[$itind],
                 'amount' => $item_amount[$itind],
+                'unit_id' => $item_unit_ids[$itind],
+                'item_description' => $item_description[$itind],
+                'payment_type' => $item_payment_type[$itind],
             ]);
         }
 
@@ -279,6 +287,7 @@ class IncomeInvoiceController extends Controller
         $invoice_items = IncomeInvoiceItem::where('invoice_id', $id)->get();
         $invoice_docs = InvoiceDocument::where('invoice_no', $invoice_no)->get();
         $invoice_notes = InvoiceNote::where('invoice_no', $invoice_no)->get();
+        $itemunits = ItemUnit::get();
 
         //for submit btn control
         if(Auth::user()->user_role == "Staff" && $invoice->admin_status != "pending"){
@@ -287,7 +296,7 @@ class IncomeInvoiceController extends Controller
         $data['submit_btn_control'] = $submit_btn_control;
         $data['user_role'] = Auth::user()->user_role;
 
-        return view('cfms.income-invoice.edit', compact('invoice', 'invoice_items','invoice_docs','invoice_no','itemcategories','branches', 'statuses', 'invoice_notes', 'data'));
+        return view('cfms.income-invoice.edit', compact('invoice', 'invoice_items','invoice_docs','invoice_no','itemcategories','branches', 'statuses', 'invoice_notes', 'data', 'itemunits'));
     }
 
     /**
@@ -306,6 +315,9 @@ class IncomeInvoiceController extends Controller
 
         $item_amount = $request->amount;
         $item_quantity = $request->quantity;
+        $item_unit_ids = $request->unit_ids;
+        $item_description = $request->idescription;
+        $item_payment_type = $request->payment_type;
 
         $exp_invoice = IncomeInvoice::find($id);
         // $exp_invoice->branch_id = $request->branch_id;
@@ -328,16 +340,22 @@ class IncomeInvoiceController extends Controller
         if(!empty($request->invitem)){
             foreach($request->invitem as $itind => $item){
 
-                $exp_invoice_item = IncomeInvoiceItem::find($item);
-                $exp_invoice_item->qty = $item_quantity[$itind];
-                $exp_invoice_item->amount = $item_amount[$itind];
-                $exp_invoice_item->save();
+                $inc_invoice_item = IncomeInvoiceItem::find($item);
+                $inc_invoice_item->qty = $item_quantity[$itind];
+                $inc_invoice_item->amount = $item_amount[$itind];
+                $inc_invoice_item->unit_id = $item_unit_ids[$itind];
+                $inc_invoice_item->item_description = $item_description[$itind];
+                $inc_invoice_item->payment_type = $item_payment_type[$itind];
+                $inc_invoice_item->save();
             }
         }
 
         $items = $request->items_up;
         $item_amount_up = $request->amount_up;
         $item_quantity_up = $request->quantity_up;
+        $item_unit_ids_up = $request->unit_ids_up;
+        $item_description_up = $request->idescription_up;
+        $item_payment_type_up = $request->payment_type_up;
 
         if(!empty($request->category_ids_up)){
             foreach($request->category_ids_up as $itind => $category_id){
@@ -348,6 +366,9 @@ class IncomeInvoiceController extends Controller
                     'item_id' => $items[$itind],
                     'qty' => $item_quantity_up[$itind],
                     'amount' => $item_amount_up[$itind],
+                    'unit_id' => $item_unit_ids_up[$itind],
+                    'item_description' => $item_description_up[$itind],
+                    'payment_type' => $item_payment_type_up[$itind],
                 ]);
             }
         }

@@ -20,6 +20,9 @@ class ExpenseInvoiceItem extends Model
         'item_id',
         'qty',
         'amount',
+        'unit_id',
+        'item_description',
+        'payment_type'
     ];
 
     public function category()
@@ -35,5 +38,10 @@ class ExpenseInvoiceItem extends Model
     public function invoice()
     {
         return $this->belongsTo(ExpenseInvoice::class, 'invoice_id');
+    }
+
+    public function unit()
+    {
+        return $this->belongsTo(ItemUnit::class, 'unit_id');
     }
 }

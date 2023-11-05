@@ -108,6 +108,12 @@
                                                 <td class="Hours fixed-column">
                                                     <h6 class="p-2 mb-0">Item</h6>
                                                 </td>
+                                                <td>
+                                                    <h6 class="p-2 mb-0">Payment</h6>
+                                                </td>
+                                                <td>
+                                                    <h6 class="p-2 mb-0">Description</h6>
+                                                </td>
                                                 <td class="Hours">
                                                     <h6 class="p-2 mb-0">Quantity</h6>
                                                 </td>
@@ -149,7 +155,13 @@
                                                             </label>
                                                         </td>
                                                         <td>
-                                                            <p class="itemtext digits">{{ $invitem->qty }}</p>
+                                                            <p class="itemtext">{{ ($invitem->payment_type == "bank") ? 'Bank' : 'Cash'  }}</p>
+                                                        </td>
+                                                        <td>
+                                                            <p class="itemtext">{{ $invitem->item_description }}</p>
+                                                        </td>
+                                                        <td>
+                                                            <p class="itemtext digits">{{ $invitem->qty }} {{ ($invitem->unit_id) ? $invitem->unit->name : ''; }}</p>
                                                         </td>
                                                         <td>
                                                             <p class="itemtext digits">{{ number_format($invitem->amount, 2) }}</p>
@@ -166,6 +178,8 @@
                                             @endif
 
                                             <tr>
+                                                <td></td>
+                                                <td></td>
                                                 <td></td>
                                                 <td></td>
                                                 <td></td>

@@ -115,7 +115,7 @@
                                                     <a href="{{ route('income-invoice.edit', $inv->id) }}"
                                                         class="btn btn-outline-info btn-sm  action-btn" title="Edit"
                                                         data-toggle="tooltip"><i class="fa fa-pencil"></i></a>
-                                                    @if($data['user_role'] != "Staff")
+                                                    @if($data['user_role'] != "Staff" || ($data['user_role'] == "Staff" && $inv->admin_status == 'pending'))
                                                     <a href="javascript:void(0)" data-toggle="modal"
                                                         data-target="#deleteModal"
                                                         class="btn btn-outline-danger btn-sm  action-btn delete-inv"

@@ -16,7 +16,7 @@
                         <thead>
                             <tr>
                                 <th class="fixed-column">Name</th>
-                                <th>Action</th>
+                                <!-- <th>Action</th> -->
                             </tr>
                         </thead>
                         <tbody>
@@ -24,11 +24,11 @@
                                 @foreach ($invoicetypes as $invtype)
                                     <tr>
                                         <td class="fixed-column">{{$invtype->name}}</td>
-                                        <td class="action-buttons">
+                                        <!-- <td class="action-buttons">
                                             <button wire:click="edit({{ $invtype->id }})"
                                                         class="btn btn-outline-info btn-sm  action-btn" title="Edit"
                                                         data-toggle="tooltip"><i class="fa fa-pencil"></i></button>
-                                        </td>
+                                        </td> -->
                                     </tr>
                                 @endforeach
                             @else

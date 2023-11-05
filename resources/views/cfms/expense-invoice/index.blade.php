@@ -121,7 +121,7 @@
                                                         title="Go Return Invoice" data-toggle="tooltip"><i
                                                             class="fa fa-file"></i></a>
                                                     @endif
-                                                    @if($data['user_role'] != "Staff")
+                                                    @if($data['user_role'] != "Staff" || ($data['user_role'] == "Staff" && $inv->admin_status == 'pending'))
                                                     <a href="javascript:void(0)" data-toggle="modal"
                                                         data-target="#deleteModal"
                                                         class="btn btn-outline-danger btn-sm  action-btn delete-inv"
