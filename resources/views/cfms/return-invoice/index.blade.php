@@ -104,7 +104,7 @@
                                             <tr>
                                                 <td class="fixed-column">{{ $inv->expense_inv->invoice_no }}</td>
                                                 <td>{{ $inv->invoice_date }}</td>
-                                                <td>{{ $inv->total_amount }}</td>
+                                                <td>{{ number_format($inv->total_amount,2) }}</td>
                                                 <td>{{ $inv->user->name }}</td>
                                                 <td class="action-buttons">
                                                     <a href="{{ route('return-invoice.show', $inv->id) }}"

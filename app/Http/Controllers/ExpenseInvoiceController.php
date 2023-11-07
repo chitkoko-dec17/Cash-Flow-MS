@@ -14,12 +14,13 @@ use App\Models\Branch;
 use App\Models\BranchUser;
 use App\Models\ProjectUser;
 use App\Models\BusinessUnit;
+use App\Models\ItemUnit;
 use Auth;
 use DB;
 
 class ExpenseInvoiceController extends Controller
 {
-    private $statuses = array("pending" => "Pending","checking" => "Checking","checkedup" => "Checked Up","reject" => "Reject","complete" => "Complete");
+    private $statuses = array("pending" => "Pending","checking" => "Checking","checkedup" => "Checked Up","reject" => "Reject","ready_to_claim" => "Ready To Claim","claimed" => "Claimed","complete" => "Complete");
     private $cuser_role = null;
     private $cuser_business_unit_id = null;
     /**
@@ -133,6 +134,7 @@ class ExpenseInvoiceController extends Controller
         } 
 
         $itemcategories = ItemCategory::where('business_unit_id', $this->cuser_business_unit_id)->get();
+        $itemunits = ItemUnit::get();
         // $items = Item::where('invoice_type_id', 0)->get();
         $statuses = $this->statuses;
 
@@ -157,7 +159,7 @@ class ExpenseInvoiceController extends Controller
         }
         // var_dump($data);exit;
 
-        return view('cfms.expense-invoice.create', compact('itemcategories','statuses','branches', 'data'));
+        return view('cfms.expense-invoice.create', compact('itemcategories','statuses','branches', 'data','itemunits'));
     }
 
     /**
@@ -186,6 +188,9 @@ class ExpenseInvoiceController extends Controller
 
         $item_quantity = $request->quantity;
         $item_amount = $request->amount;
+        $item_unit_ids = $request->unit_ids;
+        $item_description = $request->idescription;
+        $item_payment_type = $request->payment_type;
 
         $exp_invoice= ExpenseInvoice::create([
                 'business_unit_id' => isset($this->cuser_business_unit_id) ? $this->cuser_business_unit_id : 0,
@@ -213,6 +218,9 @@ class ExpenseInvoiceController extends Controller
                 'item_id' => $item,
                 'qty' => $item_quantity[$itind],
                 'amount' => $item_amount[$itind],
+                'unit_id' => $item_unit_ids[$itind],
+                'item_description' => $item_description[$itind],
+                'payment_type' => $item_payment_type[$itind],
             ]);
         }
 
@@ -292,6 +300,7 @@ class ExpenseInvoiceController extends Controller
         $invoice_items = ExpenseInvoiceItem::where('invoice_id', $id)->get();
         $invoice_docs = InvoiceDocument::where('invoice_no', $invoice_no)->get();
         $invoice_notes = InvoiceNote::where('invoice_no', $invoice_no)->get();
+        $itemunits = ItemUnit::get();
 
         //for submit btn control
         if(Auth::user()->user_role == "Staff" && $invoice->admin_status != "pending"){
@@ -300,7 +309,7 @@ class ExpenseInvoiceController extends Controller
         $data['submit_btn_control'] = $submit_btn_control;
         $data['user_role'] = Auth::user()->user_role;
 
-        return view('cfms.expense-invoice.edit', compact('invoice', 'invoice_items','invoice_docs','invoice_no','itemcategories','branches', 'statuses', 'invoice_notes', 'data'));
+        return view('cfms.expense-invoice.edit', compact('invoice', 'invoice_items','invoice_docs','invoice_no','itemcategories','branches', 'statuses', 'invoice_notes', 'data', 'itemunits'));
     }
 
     /**
@@ -319,6 +328,9 @@ class ExpenseInvoiceController extends Controller
 
         $item_amount = $request->amount;
         $item_quantity = $request->quantity;
+        $item_unit_ids = $request->unit_ids;
+        $item_description = $request->idescription;
+        $item_payment_type = $request->payment_type;
 
         $exp_invoice = ExpenseInvoice::find($id);
         // $exp_invoice->branch_id = $request->branch_id;
@@ -344,6 +356,9 @@ class ExpenseInvoiceController extends Controller
                 $exp_invoice_item = ExpenseInvoiceItem::find($item);
                 $exp_invoice_item->qty = $item_quantity[$itind];
                 $exp_invoice_item->amount = $item_amount[$itind];
+                $exp_invoice_item->unit_id = $item_unit_ids[$itind];
+                $exp_invoice_item->item_description = $item_description[$itind];
+                $exp_invoice_item->payment_type = $item_payment_type[$itind];
                 $exp_invoice_item->save();
             }
         }        
@@ -351,6 +366,9 @@ class ExpenseInvoiceController extends Controller
         $items = $request->items_up;
         $item_amount_up = $request->amount_up;
         $item_quantity_up = $request->quantity_up;
+        $item_unit_ids_up = $request->unit_ids_up;
+        $item_description_up = $request->idescription_up;
+        $item_payment_type_up = $request->payment_type_up;
 
         if(!empty($request->category_ids_up)){
             foreach($request->category_ids_up as $itind => $category_id){
@@ -361,6 +379,9 @@ class ExpenseInvoiceController extends Controller
                     'item_id' => $items[$itind],
                     'qty' => $item_quantity_up[$itind],
                     'amount' => $item_amount_up[$itind],
+                    'unit_id' => $item_unit_ids_up[$itind],
+                    'item_description' => $item_description_up[$itind],
+                    'payment_type' => $item_payment_type_up[$itind],
                 ]);
             }
         }

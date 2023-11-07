@@ -19,6 +19,7 @@ use App\Http\Controllers\CommonController;
 use App\Http\Controllers\ReportController;
 use App\Http\Livewire\ReportComponent;
 use App\Http\Controllers\UserController;
+use App\Http\Livewire\ItemUnitComponent;
 
 /*
 |--------------------------------------------------------------------------
@@ -87,6 +88,7 @@ Route::group(['middleware' => ['auth']], function() {
     Route::get('/role',RoleComponent::class)->name('role.index');
     Route::get('/itemcategory',ItemCategoryComponent::class)->name('itemcategory.index');
     Route::get('/item',ItemComponent::class)->name('item.index');
+    Route::get('/item-unit',ItemUnitComponent::class)->name('item-unit.index');
     Route::get('/invoicetype',InvoiceTypeComponent::class)->name('invoicetype.index');
     Route::get('/business-unit',BusinessUnitComponent::class)->name('business-unit.index');
     Route::get('/branch',BranchComponent::class)->name('branch.index');

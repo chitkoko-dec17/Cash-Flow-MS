@@ -106,7 +106,7 @@
                                                 <td class="fixed-column">{{ $inv->invoice_no }}</td>
                                                 <td>{{ $inv->invoice_date }}</td>
                                                 <td>{{ $inv->staff->name }}</td>
-                                                <td>{{ $inv->total_amount }}</td>
+                                                <td>{{ number_format($inv->total_amount, 2); }}</td>
                                                 <td><span class="badge badge-primary {{ $inv->admin_status }}">{{ $inv->admin_status }}</span></td>
                                                 <td class="action-buttons">
                                                     <a href="{{ route('expense-invoice.show', $inv->id) }}"
@@ -121,7 +121,7 @@
                                                         title="Go Return Invoice" data-toggle="tooltip"><i
                                                             class="fa fa-file"></i></a>
                                                     @endif
-                                                    @if($data['user_role'] != "Staff")
+                                                    @if($data['user_role'] != "Staff" || ($data['user_role'] == "Staff" && $inv->admin_status == 'pending'))
                                                     <a href="javascript:void(0)" data-toggle="modal"
                                                         data-target="#deleteModal"
                                                         class="btn btn-outline-danger btn-sm  action-btn delete-inv"

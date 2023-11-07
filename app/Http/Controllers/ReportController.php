@@ -200,6 +200,14 @@ class ReportController extends Controller
         return Excel::download(new IncomeInvoicesExport($data), $filename);
     }
 
+    public function exportexpense($encodedData)
+    {
+        //dd($encodedData);
+        $data = json_decode(urldecode($encodedData), true); // json to array
+        $filename = 'report_expense_invoices_' . now()->format('Y-m-d_His') . '.xlsx';
+        return Excel::download(new ExpenseInvoicesExport($data), $filename);
+    }
+
     public function exportExpenseItems($encodedData){
 
         $data = json_decode(urldecode($encodedData), true); // json to array

@@ -141,31 +141,43 @@
     <div class="table-container">
         <table class="table w-100 mt-10">
             <tr>
+                <th class="w-10">No</th>
                 <th class="w-50">Category</th>
                 <th class="w-50">Item</th>
+                <th class="w-30">Payment</th>
+                <th class="w-50">Description</th>
                 <th class="w-50">Qty</th>
-                <th class="w-50">Unit Price (MMK)</th>
+                <th class="w-30">Unit Price (MMK)</th>
                 <th class="w-50">Total</th>
             </tr>
             @if (count($invoice_items) > 0)
+                @php
+                    $item_no = 1;
+                @endphp
                 @foreach ($invoice_items as $invitem)
                     <tr align="center">
+                        <td>{{ $item_no }}</td>
                         <td>{{ $invitem->category->name }}</td>
                         <td>{{ $invitem->item->name }}</td>
-                        <td>{{ $invitem->qty }}</td>
-                        <td>{{ $invitem->amount }}</td>
-                        <td>{{ $invitem->qty * $invitem->amount }}</td>
+                        <td>{{ ($invitem->payment_type == "bank") ? 'Bank' : 'Cash'  }}</td>
+                        <td>{{ $invitem->item_description }}</td>
+                        <td>{{ $invitem->qty }} {{ ($invitem->unit_id) ? $invitem->unit->name : ''; }}</td>
+                        <td>{{ number_format($invitem->amount, 2) }}</td>
+                        <td>{{ number_format($invitem->qty * $invitem->amount, 2) }}</td>
                     </tr>
+                @php
+                    $item_no++;
+                @endphp
                 @endforeach
             @endif
             <tr>
-                <td colspan="5">
+                <td colspan="8">
                     <div class="total-part">
                         <div class="total-left w-85 float-left" align="right">
                             <p>Total Payable</p>
                         </div>
                         <div class="total-right w-15 float-left text-bold" align="right">
-                            <p>{{ $invoice->total_amount }}</p>
+                            <p>{{ number_format($invoice->total_amount,2) }}</p>
                         </div>
                         <div style="clear: both;"></div>
                     </div>

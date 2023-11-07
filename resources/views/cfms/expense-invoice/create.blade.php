@@ -75,16 +75,20 @@
                                                 <table class="table table-bordered" id="invoiceItems">
                                                     <thead>
                                                         <tr>
+                                                            <th>No.</th>
                                                             <th>Category</th>
                                                             <th>Item</th>
-                                                            <th width="60">Quantity</th>
-                                                            <th >Unit Price (MMK)</th>
+                                                            <th>Quantity & Unit</th>
+                                                            <th>Unit Price (MMK)</th>
+                                                            <th>Payment</th>
+                                                            <th>Description</th>
                                                             <th>Total</th>
                                                             <th></th>
                                                         </tr>
                                                     </thead>
                                                     <tbody>
                                                         <tr>
+                                                            <td></td>
                                                             <td>
                                                                 <select class="form-select category_id" name="category_ids[]" id="category_id">
                                                                     <option value="">Select Category</option>
@@ -98,10 +102,33 @@
                                                                     <option value="">Select Item</option>
                                                                 </select>
                                                             </td>
-                                                            <td><input type="number" class="form-control quantity"
-                                                                    name="quantity[]" min="1" value="1"></td>
-                                                            <td><input type="number" class="form-control amount"
-                                                                    name="amount[]" step="0.01" value="0"></td>
+                                                            <td>
+                                                                <div class="row" style="justify-content: center;">
+                                                                    <div class="m-0 p-0 ps-2 pe-2 col-sm-12 col-md-12 col-lg-7">
+                                                                        <input type="number" class="form-control quantity" name="quantity[]" min="1" value="1">
+                                                                    </div>
+                                                                    <div class="m-0 p-0 ps-2 pe-2 col-sm-12 col-md-12 col-lg-5">
+                                                                        <select class="form-select" name="unit_ids[]">
+                                                                            @foreach($itemunits as $unit)
+                                                                                <option value="{{ $unit->id }}">{{ $unit->name }}</option>
+                                                                            @endforeach
+                                                                        </select>
+                                                                    </div>
+                                                                </div>
+                                                            </td>
+                                                            <td>
+                                                                <input type="text" class="form-control amount"
+                                                                    name="amount[]" step="0.01" value="0">
+                                                            </td>
+                                                            <td>
+                                                                <select class="form-select" name="payment_type[]">
+                                                                    <option value="cash">Cash</option>
+                                                                    <option value="bank">Bank</option>
+                                                                </select>
+                                                            </td>
+                                                            <td>
+                                                                <textarea class="form-control" id="itemDescription" name="idescription[]" rows="2"></textarea>
+                                                            </td>
                                                             <td class="total">0.00 MMK</td>
                                                             <td class="action-buttons">
                                                                 <button type="button"
@@ -112,7 +139,7 @@
                                                     </tbody>
                                                     <tfoot>
                                                         <tr>
-                                                            <td colspan="4" class="text-right"><strong>Total:</strong></td>
+                                                            <td colspan="7" class="text-right" style="text-align: right;"><strong>Total:</strong></td>
                                                             <td colspan="2" class="totalAmount">0.00 MMK</td>
                                                             <input type="hidden" name="total_amount" id="total_amount" value="">
                                                             @error('total_amount')
@@ -151,8 +178,12 @@
 
     <script>
         let jcates = '';
+        let junits = '';
         @foreach($itemcategories as $cate)
             jcates += '<option value="{{ $cate->id }}">{{ $cate->name }}</option>';
+        @endforeach
+        @foreach($itemunits as $unit)
+            junits += '<option value="{{ $unit->id }}">{{ $unit->name }}</option>';
         @endforeach
         $(document).ready(function() {
             @if($data['user_role'] == "Staff")
@@ -163,6 +194,7 @@
             $("#add-item-btn").click(function() {
                 const newRow = `
                     <tr>
+                        <td></td>
                         <td>
                             <select class="form-select category_id" name="category_ids[]">
                                 <option value="">Select Category</option>
@@ -174,8 +206,28 @@
                                 <option value="">Select Item</option>
                             </select>
                         </td>
-                        <td><input type="number" class="form-control quantity" name="quantity[]" min="1" value="1"></td>
-                        <td><input type="number" class="form-control amount" name="amount[]" step="0.01" value="0"></td>
+                        <td>
+                            <div class="row" style="justify-content: center;">
+                                <div class="m-0 p-0 ps-2 pe-2 col-sm-12 col-md-12 col-lg-7">
+                                    <input type="number" class="form-control quantity" name="quantity[]" min="1" value="1">
+                                </div>
+                                <div class="m-0 p-0 ps-2 pe-2 col-sm-12 col-md-12 col-lg-5">
+                                    <select class="form-select" name="unit_ids[]">
+                                        `+junits+`
+                                    </select>
+                                </div>
+                            </div>
+                        </td>
+                        <td><input type="text" class="form-control amount" name="amount[]" step="0.01" value="0"></td>
+                        <td>
+                            <select class="form-select" name="payment_type[]">
+                                <option value="cash">Cash</option>
+                                <option value="bank">Bank</option>
+                            </select>
+                        </td>
+                        <td>
+                            <textarea class="form-control" id="itemDescription" name="idescription[]" rows="2"></textarea>
+                        </td>
                         <td class="total">0.00 MMK</td>
                         <td class="action-buttons"><button type="button" class="btn btn-danger btn-sm action-btn remove-btn"><i class="fa fa-trash"></i></button></td>
                     </tr>

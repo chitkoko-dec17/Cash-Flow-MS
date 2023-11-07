@@ -55,7 +55,7 @@
                                         <td><code>{{ $budget->name }}</code></td>
                                         <td>{{ $budget->start_date }}</td>
                                         <td>{{ $budget->end_date }}</td>
-                                        <td>{{ $budget->total_amount }}</td>
+                                        <td>{{ number_format($budget->total_amount, 2); }}</td>
                                         <td class="action-buttons">
                                             <button wire:click="edit({{ $budget->id }})"
                                                 class="btn btn-outline-info btn-sm  action-btn" title="Edit"
