@@ -131,7 +131,7 @@ class ExpenseInvoiceController extends Controller
 
         if($this->cuser_role == "Manager" && !$this->cuser_business_unit_id){
             return redirect('/expense-invoice')->with('error', "Manager should has business unit!");
-        } 
+        }
 
         $itemcategories = ItemCategory::where('business_unit_id', $this->cuser_business_unit_id)->get();
         $itemunits = ItemUnit::get();
@@ -144,9 +144,9 @@ class ExpenseInvoiceController extends Controller
         if($this->cuser_role != "Staff"){
             foreach ($businessUnits as $businessUnit) {
                 $optgroupLabel = $businessUnit->name;
-                
+
                 $branchOptions = Branch::where('business_unit_id', $businessUnit->id)->pluck('name', 'id')->toArray();
-                
+
                 $branches[$optgroupLabel] = $branchOptions;
             }
         }
@@ -295,7 +295,7 @@ class ExpenseInvoiceController extends Controller
             $branchOptions = Branch::where('business_unit_id', $invoice->business_unit_id)->pluck('name', 'id')->toArray();
             $branches[$optgroupLabel] = $branchOptions;
         }
-        
+
         $invoice_no = 'EXINV-'.$invoice->invoice_no;
         $invoice_items = ExpenseInvoiceItem::where('invoice_id', $id)->get();
         $invoice_docs = InvoiceDocument::where('invoice_no', $invoice_no)->get();
@@ -361,7 +361,7 @@ class ExpenseInvoiceController extends Controller
                 $exp_invoice_item->payment_type = $item_payment_type[$itind];
                 $exp_invoice_item->save();
             }
-        }        
+        }
 
         $items = $request->items_up;
         $item_amount_up = $request->amount_up;
@@ -385,7 +385,7 @@ class ExpenseInvoiceController extends Controller
                 ]);
             }
         }
-        
+
 
         if($request->hasfile('docs')) {
 
@@ -470,6 +470,18 @@ class ExpenseInvoiceController extends Controller
 
     public function delete_edit_item($id){
         $exp_invoice_item = ExpenseInvoiceItem::find($id);
+
+        $expense_invoice = $exp_invoice_item->invoice;
+
+        // Calculate the amount to subtract based on quantity and unit price
+        $amount_to_subtract = $exp_invoice_item->qty * $exp_invoice_item->amount;
+
+        // Subtract the calculated amount from the total amount
+        $expense_invoice->total_amount -= $amount_to_subtract;
+
+        // Save the updated total amount
+        $expense_invoice->save();
+
         $exp_invoice_item->delete();
         return back()->with("success", "Successfully delete the invoice item.");
     }

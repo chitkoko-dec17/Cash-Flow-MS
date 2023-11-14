@@ -135,9 +135,9 @@ class IncomeInvoiceController extends Controller
         if($this->cuser_role != "Staff"){
             foreach ($businessUnits as $businessUnit) {
                 $optgroupLabel = $businessUnit->name;
-                
+
                 $branchOptions = Branch::where('business_unit_id', $businessUnit->id)->pluck('name', 'id')->toArray();
-                
+
                 $branches[$optgroupLabel] = $branchOptions;
             }
         }
@@ -235,7 +235,7 @@ class IncomeInvoiceController extends Controller
 
                 $i++;
             }
-            
+
         }
         return redirect('/income-invoice')->with('success', 'New Income Invoice Added successfully.');
     }
@@ -282,7 +282,7 @@ class IncomeInvoiceController extends Controller
             $branchOptions = Branch::where('business_unit_id', $invoice->business_unit_id)->pluck('name', 'id')->toArray();
             $branches[$optgroupLabel] = $branchOptions;
         }
-        
+
         $invoice_no = 'INCINV-'.$invoice->invoice_no;
         $invoice_items = IncomeInvoiceItem::where('invoice_id', $id)->get();
         $invoice_docs = InvoiceDocument::where('invoice_no', $invoice_no)->get();
@@ -372,7 +372,7 @@ class IncomeInvoiceController extends Controller
                 ]);
             }
         }
-        
+
 
         if($request->hasfile('docs')) {
 
@@ -454,8 +454,20 @@ class IncomeInvoiceController extends Controller
     }
 
     public function delete_edit_item($id){
-        $exp_invoice_item = IncomeInvoiceItem::find($id);
-        $exp_invoice_item->delete();
+        $inc_invoice_item = IncomeInvoiceItem::find($id);
+
+        $income_invoice = $inc_invoice_item->invoice;
+
+        // Calculate the amount to subtract based on quantity and unit price
+        $amount_to_subtract = $inc_invoice_item->qty * $inc_invoice_item->amount;
+
+        // Subtract the calculated amount from the total amount
+        $income_invoice->total_amount -= $amount_to_subtract;
+
+        // Save the updated total amount
+        $income_invoice->save();
+
+        $inc_invoice_item->delete();
         return back()->with("success", "Successfully delete the invoice item.");
     }
 
