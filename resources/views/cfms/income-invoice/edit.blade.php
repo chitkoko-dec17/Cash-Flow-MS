@@ -445,17 +445,17 @@
                 const quantity = $(this).closest("tr").find(".quantity").val();
                 const amount = $(this).closest("tr").find(".amount").val();
                 const total = parseFloat(quantity) * parseFloat(amount);
-                $(this).closest("tr").find(".total").text(total.toFixed(2) + "MMK");
+                $(this).closest("tr").find(".total").text(total.toFixed(2) + " MMK");
                 calculateTotal();
             });
 
             function calculateTotal() {
                 let totalAmount = 0;
                 $("#invoiceItems tbody tr").each(function() {
-                    const total = parseFloat($(this).find(".total").text().replace("MMK", ""));
+                    const total = parseFloat($(this).find(".total").text().replace("MMK", "").replace(/,/g, ""));
                     totalAmount += isNaN(total) ? 0 : total;
                 });
-                $(".totalAmount").text(totalAmount.toFixed(2) + "MMK");
+                $(".totalAmount").text(totalAmount.toFixed(2) + " MMK");
                 $("#total_amount").val(totalAmount.toFixed(0));
             }
         });
