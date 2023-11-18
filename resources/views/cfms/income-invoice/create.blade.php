@@ -68,6 +68,36 @@
                                                     <span class="text-danger">{{ $message }}</span>
                                                 @enderror
                                             </div>
+
+                                            <div class="mb-3 col-sm-4">
+                                                <label for="currency">Currency</label>
+                                                <select class="form-control form-select" id="currency" name="currency" required>
+                                                    <option value="MMK" selected>Myanmar Kyat (MMK)</option>
+                                                    <option value="USD">US Dollar ($)</option>
+                                                    <option value="YUAN">Chinese Yuan (¥)</option>
+                                                    <option value="BAHT">Thai Baht (฿)</option>
+                                                </select>
+                                                @error('currency')
+                                                    <span class="text-danger">{{ $message }}</span>
+                                                @enderror
+                                            </div>
+
+                                            <div class="mb-3 col-sm-4" id="exchange_rate_group">
+                                                <label for="exchange_rate">Exchange Rate (MMK)</label>
+                                                <input type="number" class="form-control" name="" value="1" placeholder="0" required></td>
+                                                @error('exchange_rate')
+                                                    <span class="text-danger">{{ $message }}</span>
+                                                @enderror
+                                            </div>
+
+                                            <div class="mb-3 col-sm-4">
+                                                <label for="for_date">For Date</label>
+                                                <input type="date" class="form-control" id="for_date"
+                                                    name="for_date" value="{{ date('Y-m-d') }}" required>
+                                                @error('for_date')
+                                                    <span class="text-danger">{{ $message }}</span>
+                                                @enderror
+                                            </div>
                                         </div>
                                         <!-- Invoice Items -->
                                         <div class="form-group">
@@ -176,6 +206,18 @@
 @push('scripts')
 
     <script>
+        // Initially hide the "exchange_rate" input (MMK is Default)
+        $("#exchange_rate_group").hide();
+
+        $("#currency").change(function () {
+            // Show or hide the "To Currency" dropdown based on the selected "From Currency"
+            if ($("#currency").val() === 'MMK') {
+                $("#exchange_rate_group").hide();
+            } else {
+                $("#exchange_rate_group").show();
+            }
+        });
+
         let jcates = '';
         let junits = '';
         @foreach($itemcategories as $cate)
@@ -314,6 +356,7 @@
                 });
             }
         });
+
 
     </script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
