@@ -273,7 +273,7 @@
                                             <label for="docs">Invoice Files</label>
                                             <input type="file" class="form-control" id="docs" name="docs[]" multiple>
                                         </div>
-                                        
+
                                         {{-- <button type="button" id="btn_expense" class="btn btn-light float-end"><i class="fa fa-plus"></i> Add Expenses</button> --}}
                                         <div class="form-group">
                                             <div class="switch-container">
@@ -380,7 +380,7 @@
                                     </form>
 
 
-                                        
+
                                 </div>
                             </div>
                         </div>
@@ -504,7 +504,7 @@
                     <tr>
                         <td></td>
                         <td>
-                            <select class="form-select category_id" name="exp_category_ids[]">
+                            <select class="form-select exp_category_id" name="exp_category_ids[]">
                                 <option value="">Select Category</option>
                                 `+jcates+`
                             </select>
