@@ -194,7 +194,7 @@
                                                             </td>
                                                             <td><input type="number" class="form-control amount"
                                                                     name="amount[]" step="0.01" value="{{$invitem->amount}}"></td>
-                                                            <td class="total">{{ number_format($invitem->qty * $invitem->amount,2) }} MMK</td>
+                                                            <td class="total">{{ number_format($invitem->qty * $invitem->amount,2) }} {{$invoice->currency}}</td>
                                                             <td class="action-buttons">
                                                                 @if($data['submit_btn_control'] == true)
                                                                 <button type="button"
@@ -212,7 +212,7 @@
                                                     <tfoot>
                                                         <tr>
                                                             <td colspan="7" class="text-right"><strong>Total:</strong></td>
-                                                            <td colspan="2" class="totalAmount">{{ number_format($invoice->total_amount,2) }} MMK</td>
+                                                            <td colspan="2" class="totalAmount">{{ number_format($invoice->total_amount,2) }} {{$invoice->currency}}</td>
                                                             <input type="hidden" name="total_amount" id="total_amount" value="{{ number_format($invoice->total_amount,2) }}">
                                                             @error('total_amount')
                                                                 <span class="text-danger">{{ $message }}</span>

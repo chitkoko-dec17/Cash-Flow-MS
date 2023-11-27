@@ -1,11 +1,12 @@
 @php
     $img_url = '';
+    $bu_img = asset('assets/images/logo/profile.png');
     if(Auth::user()->user_role == "Admin"){
         $img_url = asset('assets/images/logo/profile.png');
     }elseif(Auth::user()->user_role == "Manager"){
-        $img_url = asset('storage/'.Auth::user()->businessunit->bu_image); 
+        $img_url = isset(Auth::user()->businessunit->bu_image) ? asset('storage/'.Auth::user()->businessunit->bu_image) : $bu_img;
     }else{
-        $img_url = asset('storage/'.Auth::user()->branchUser->branch->businessUnit->bu_image);
+        $img_url = isset(Auth::user()->branchUser->branch->businessUnit->bu_image) ? asset('storage/'.Auth::user()->branchUser->branch->businessUnit->bu_image) : $bu_img;
     }
 
 @endphp
