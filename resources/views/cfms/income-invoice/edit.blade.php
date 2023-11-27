@@ -305,7 +305,7 @@
                                                             <td><input type="number" class="form-control amount"
                                                                     name="exp_amount[]" step="0.01" value="{{$exp_invitem->amount}}"></td>
 
-                                                            <td>{{ number_format($exp_invitem->qty * $exp_invitem->amount,2) }} {{$invoice->currency}}</td>
+                                                            <td><span class="exp_total">{{ number_format($exp_invitem->qty * $exp_invitem->amount,2) }}</span> {{$invoice->currency}}</td>
                                                             <td class="action-buttons">
                                                             </td>
                                                         </tr>
@@ -510,6 +510,7 @@
         let jcates = '';
         let junits = '';
         let project_id = '{{ $invoice->project_id }}';
+        let currency = '{{ $invoice->currency }}';
         @foreach($itemcategories as $cate)
             jcates += '<option value="{{ $cate->id }}">{{ $cate->name }}</option>';
         @endforeach
@@ -556,7 +557,7 @@
                             </div>
                         </td>
                         <td><input type="text" class="form-control amount" name="amount_up[]" step="0.01" value="0"></td>
-                        <td class="total">0.00 MMK</td>
+                        <td class="total">0.00 `+currency+`</td>
                         <td class="action-buttons"><button type="button" class="btn btn-danger btn-sm action-btn remove-btn"><i class="fa fa-trash"></i></button></td>
                     </tr>
                 `;
@@ -578,18 +579,20 @@
                 const quantity = $(this).closest("tr").find(".quantity").val();
                 const amount = $(this).closest("tr").find(".amount").val();
                 const total = parseFloat(quantity) * parseFloat(amount);
-                $(this).closest("tr").find(".total").text(total.toFixed(2) + " MMK");
+                $(this).closest("tr").find(".total").text(total.toFixed(2) + " "+currency);
                 calculateTotal();
             });
 
             function calculateTotal() {
                 let totalAmount = 0;
                 $("#invoiceItems tbody tr").each(function() {
-                    const total = parseFloat($(this).find(".total").text().replace("MMK", "").replace(/,/g, ""));
+                    const total = parseFloat($(this).find(".total").text().replace(currency, "").replace(/,/g, ""));
                     totalAmount += isNaN(total) ? 0 : total;
                 });
-                $(".totalAmount").text(totalAmount.toFixed(2) + " MMK");
+                $(".totalAmount").text(totalAmount.toFixed(2) + " "+currency);
                 $("#total_amount").val(totalAmount.toFixed(0));
+
+                calculateNetTotal();
             }
         });
 
@@ -661,6 +664,23 @@
             let href = $(this).attr('data-attr');
             $('#delete-inv-item').attr('action', href);
         });
+
+        function calculateNetTotal(){
+            let incomeTotalAmount = 0;
+            $("#invoiceItems tbody tr").each(function() {
+                const total = parseFloat($(this).find(".total").text().replace(/,/g, ''));
+                incomeTotalAmount += isNaN(total) ? 0 : total;
+            });
+            let expenseTotalAmount = 0;
+            $("#expenseItems tbody tr").each(function() {
+                const total = parseFloat($(this).find(".exp_total").text().replace(/,/g, ''));
+                expenseTotalAmount += isNaN(total) ? 0 : total;
+            });
+            let netTotalAmount = incomeTotalAmount - expenseTotalAmount;
+
+            $(".netTotalAmount").text(netTotalAmount.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }));
+            $("#net_total_amount").val(netTotalAmount.toFixed(0));
+        }
     </script>
 @endpush
 

@@ -307,7 +307,7 @@
                                                         <tr>
                                                             <td></td>
                                                             <td>
-                                                                <select class="form-select category_id" name="exp_category_ids[]" id="category_id">
+                                                                <select class="form-select exp_category_id" name="exp_category_ids[]" id="exp_category_id">
                                                                     <option value="">Select Category</option>
                                                                     @foreach($itemcategories as $cate)
                                                                         <option value="{{ $cate->id }}">{{ $cate->name }}</option>
@@ -645,8 +645,34 @@
                     method: 'POST',
                     data: {cate_id:cate_id, inv_type:2, _token:token},
                     success: function(data) {
-                        console.log(data);
                         // $('.item_id').find('option').remove();
+                        main.closest('tr').find('select.item_id option').remove();
+                        var selectbox = main.closest('tr').find('select.item_id');
+
+                        selectbox.append('<option selected="selected">Select Item</option>');
+                        $.each(data.array_data, function(value, text){
+                            // console.log(text);
+                          selectbox.append('<option value="' + text.id + '">' + text.name + '</option>');
+                        });
+                    }
+                });
+            }
+        }
+
+        //for expense items
+        $(document).on('change','.exp_category_id',function(){
+            get_exp_items($(this));
+        });
+
+        function get_exp_items(main){
+            var cate_id = main.val();
+            var token = $("input[name='_token']").val();
+            if(cate_id){
+                $.ajax({
+                    url: "<?php echo route('get.items') ?>",
+                    method: 'POST',
+                    data: {cate_id:cate_id, inv_type:1, _token:token},
+                    success: function(data) {
                         main.closest('tr').find('select.item_id option').remove();
                         var selectbox = main.closest('tr').find('select.item_id');
 

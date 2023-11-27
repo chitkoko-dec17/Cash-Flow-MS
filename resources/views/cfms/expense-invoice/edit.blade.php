@@ -408,6 +408,7 @@
         let jcates = '';
         let junits = '';
         let project_id = '{{ $invoice->project_id }}';
+        let currency = '{{ $invoice->currency }}';
         @foreach($itemcategories as $cate)
             jcates += '<option value="{{ $cate->id }}">{{ $cate->name }}</option>';
         @endforeach
@@ -454,7 +455,7 @@
                             </div>
                         </td>
                         <td><input type="text" class="form-control amount" name="amount_up[]" step="0.01" value="0"></td>
-                        <td class="total">0.00 MMK</td>
+                        <td class="total">0.00 `+currency+`</td>
                         <td class="action-buttons"><button type="button" class="btn btn-danger btn-sm action-btn remove-btn"><i class="fa fa-trash"></i></button></td>
                     </tr>
                 `;
@@ -476,17 +477,17 @@
                 const quantity = $(this).closest("tr").find(".quantity").val();
                 const amount = $(this).closest("tr").find(".amount").val();
                 const total = parseFloat(quantity) * parseFloat(amount);
-                $(this).closest("tr").find(".total").text(total.toFixed(2) + " MMK");
+                $(this).closest("tr").find(".total").text(total.toFixed(2) + " "+currency);
                 calculateTotal();
             });
 
             function calculateTotal() {
                 let totalAmount = 0;
                 $("#invoiceItems tbody tr").each(function() {
-                    const total = parseFloat($(this).find(".total").text().replace("MMK", "").replace(/,/g, ""));
+                    const total = parseFloat($(this).find(".total").text().replace(currency, "").replace(/,/g, ""));
                     totalAmount += isNaN(total) ? 0 : total;
                 });
-                $(".totalAmount").text(totalAmount.toFixed(2) + " MMK");
+                $(".totalAmount").text(totalAmount.toFixed(2) + " "+currency);
                 $("#total_amount").val(totalAmount.toFixed(0));
             }
         });

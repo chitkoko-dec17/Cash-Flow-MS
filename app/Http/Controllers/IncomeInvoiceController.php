@@ -364,6 +364,7 @@ class IncomeInvoiceController extends Controller
         $exp_invoice->total_amount = $request->total_amount;
         $exp_invoice->description = $request->description;
         $exp_invoice->for_date = $request->for_date;
+        $exp_invoice->net_total = $request->net_total_amount;
         if(Auth::user()->role->name != "Staff"){
             $exp_invoice->manager_status = $request->status;
             $exp_invoice->admin_status = $request->status;
