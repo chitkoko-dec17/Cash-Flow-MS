@@ -199,6 +199,9 @@ class ExpenseInvoiceController extends Controller
                 'invoice_no' => $invoice_no,
                 'invoice_date' => $request->invoice_date,
                 'total_amount' => $request->total_amount,
+                'currency' => $request->currency,
+                'exchange_rate' => $request->exchange_rate,
+                'for_date' => $request->for_date,
                 'return_total_amount' => 0,
                 'description' => $request->description,
                 'upload_user_id' => Auth::id(),
@@ -215,6 +218,7 @@ class ExpenseInvoiceController extends Controller
             ExpenseInvoiceItem::create([
                 'category_id' => $item_cate->category_id,
                 'invoice_id' => $exp_invoice->id,
+                'invoice_type' => 'expense',
                 'item_id' => $item,
                 'qty' => $item_quantity[$itind],
                 'amount' => $item_amount[$itind],
@@ -338,6 +342,7 @@ class ExpenseInvoiceController extends Controller
         $exp_invoice->invoice_date = $request->invoice_date;
         $exp_invoice->total_amount = $request->total_amount;
         $exp_invoice->description = $request->description;
+        $exp_invoice->for_date = $request->for_date;
         if(Auth::user()->role->name != "Staff"){
             $exp_invoice->manager_status = $request->status;
             $exp_invoice->admin_status = $request->status;

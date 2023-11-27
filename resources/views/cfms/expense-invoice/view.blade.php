@@ -64,7 +64,7 @@
                                     @endif
                                 </div>
                                 <div class="col-xl-8">
-                                    <div class="text-xl-end" id="project">
+                                    <div class="text-xl-end">
                                         <h6>Description</h6>
                                         <p>
                                             {{ $invoice->description }}
@@ -87,7 +87,7 @@
                                     @endif
                                 </div>
                                 <div class="col-xl-8">
-                                    <div class="text-xl-end" id="project">
+                                    <div class="text-xl-end">
                                         <h6>Status</h6>
                                         <p>
                                             {{ $invoice->admin_status }}
@@ -96,6 +96,41 @@
                                 </div>
                             </div>
                             <!-- End Invoice Mid-->
+
+                            <div class="row invo-profile">
+                                <div class="col-xl-4"></div>
+                                <div class="col-xl-8">
+                                    <div class="text-xl-end">
+                                        <h6>Currency</h6>
+                                        <p>
+                                            {{ $invoice->currency }}
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row invo-profile">
+                                <div class="col-xl-4"></div>
+                                <div class="col-xl-8">
+                                    <div class="text-xl-end">
+                                        <h6>Exchange Rate</h6>
+                                        <p>
+                                            {{ $invoice->exchange_rate }}
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row invo-profile">
+                                <div class="col-xl-4"></div>
+                                <div class="col-xl-8">
+                                    <div class="text-xl-end">
+                                        <h6>For Date</h6>
+                                        <p>
+                                            {{ $invoice->for_date }}
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+
                             <div>
                                 <div class="table-container invoice-table" id="table">
                                     <table class="table table-bordered table-striped">

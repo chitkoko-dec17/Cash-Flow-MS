@@ -157,9 +157,9 @@
                                                 <label for="currency">Currency</label>
                                                 <select class="form-control form-select" id="currency" name="currency" required>
                                                     <option value="MMK" selected>Myanmar Kyat (MMK)</option>
-                                                    <option value="$">US Dollar ($)</option>
-                                                    <option value="¥">Chinese Yuan (¥)</option>
-                                                    <option value="฿">Thai Baht (฿)</option>
+                                                    <option value="USD">US Dollar ($)</option>
+                                                    <option value="CNY">Chinese Yuan (¥)</option>
+                                                    <option value="THB">Thai Baht (฿)</option>
                                                 </select>
                                                 @error('currency')
                                                     <span class="text-danger">{{ $message }}</span>
@@ -168,7 +168,7 @@
 
                                             <div class="mb-3 col-sm-4" id="exchange_rate_group">
                                                 <label for="exchange_rate">Exchange Rate (MMK)</label>
-                                                <input id="exchange_rate" type="number" class="form-control" name="" value="1" placeholder="0" required></td>
+                                                <input id="exchange_rate" type="number" class="form-control" name="exchange_rate" value="1" placeholder="0" required></td>
                                                 @error('exchange_rate')
                                                     <span class="text-danger">{{ $message }}</span>
                                                 @enderror
@@ -176,7 +176,7 @@
 
                                             <div class="mb-3 col-sm-4">
                                                 <label for="for_date">For Date</label>
-                                                <input type="month" class="form-control" id="for_date"
+                                                <input type="date" class="form-control" id="for_date"
                                                     name="for_date" value="{{ date('Y-m-d') }}" required>
                                                 @error('for_date')
                                                     <span class="text-danger">{{ $message }}</span>
@@ -273,7 +273,7 @@
                                             <label for="docs">Invoice Files</label>
                                             <input type="file" class="form-control" id="docs" name="docs[]" multiple>
                                         </div>
-                                        <button type="submit" class="btn btn-primary">Save Income</button>
+                                        
                                         {{-- <button type="button" id="btn_expense" class="btn btn-light float-end"><i class="fa fa-plus"></i> Add Expenses</button> --}}
                                         <div class="form-group">
                                             <div class="switch-container">
@@ -284,13 +284,9 @@
                                                 </label>
                                             </div>
                                         </div>
-                                    </form>
 
-
-                                    <!-- Expense Items Form -->
-                                    <form action="" id="income-expense-form" class="mt-4 income-expense-form">
                                         <!-- Expense Items -->
-                                        <div class="form-group">
+                                        <div class="form-group" id="income-expense-form">
                                             <label for="expenseItems" class="expense-item-title mt-2">Expense Items</label>
                                             <div class="table-container">
                                                 <table class="table table-bordered" id="expenseItems">
@@ -311,7 +307,7 @@
                                                         <tr>
                                                             <td></td>
                                                             <td>
-                                                                <select class="form-select category_id" name="category_ids[]" id="category_id">
+                                                                <select class="form-select category_id" name="exp_category_ids[]" id="category_id">
                                                                     <option value="">Select Category</option>
                                                                     @foreach($itemcategories as $cate)
                                                                         <option value="{{ $cate->id }}">{{ $cate->name }}</option>
@@ -319,17 +315,17 @@
                                                                 </select>
                                                             </td>
                                                             <td>
-                                                                <select class="form-select js-example-basic-single item_id" name="items[]">
+                                                                <select class="form-select js-example-basic-single item_id" name="exp_items[]">
                                                                     <option value="">Select Item</option>
                                                                 </select>
                                                             </td>
                                                             <td>
                                                                 <div class="row" style="justify-content: center;">
                                                                     <div class="m-0 p-0 ps-2 pe-2 col-sm-12 col-md-12 col-lg-7">
-                                                                        <input type="number" class="form-control quantity" name="quantity[]" min="1" value="1">
+                                                                        <input type="number" class="form-control quantity" name="exp_quantity[]" min="1" value="1">
                                                                     </div>
                                                                     <div class="m-0 p-0 ps-2 pe-2 col-sm-12 col-md-12 col-lg-5">
-                                                                        <select class="form-select" name="unit_ids[]">
+                                                                        <select class="form-select" name="exp_unit_ids[]">
                                                                             @foreach($itemunits as $unit)
                                                                                 <option value="{{ $unit->id }}">{{ $unit->name }}</option>
                                                                             @endforeach
@@ -338,15 +334,15 @@
                                                                 </div>
                                                             </td>
                                                             <td><input type="number" class="form-control amount"
-                                                                    name="amount[]" step="0.01" value="0"></td>
+                                                                    name="exp_amount[]" step="0.01" value="0"></td>
                                                             <td>
-                                                                <select class="form-select" name="payment_type[]">
+                                                                <select class="form-select" name="exp_payment_type[]">
                                                                     <option value="cash">Cash</option>
                                                                     <option value="bank">Bank</option>
                                                                 </select>
                                                             </td>
                                                             <td>
-                                                                <textarea class="form-control" id="itemDescription" name="idescription[]" rows="2"></textarea>
+                                                                <textarea class="form-control" id="itemDescription" name="exp_idescription[]" rows="2"></textarea>
                                                             </td>
                                                             <td><span class="exp_total">0.00 </span> <span class="currency_sign">MMK</span></td>
                                                             <td class="action-buttons">
@@ -379,16 +375,12 @@
                                             <button type="button" class="btn btn-light mt-2" id="add-exp-item-btn"><i
                                                     class="fa fa-plus"></i> Add Expense Item</button>
                                         </div>
-                                        {{-- <div class="form-group">
-                                            <label for="description">Description</label>
-                                            <textarea class="form-control" id="description" name="description" rows="3"></textarea>
-                                        </div>
-                                        <div class="form-group">
-                                            <label for="docs">Invoice Files</label>
-                                            <input type="file" class="form-control" id="docs" name="docs[]" multiple>
-                                        </div> --}}
-                                        <button type="submit" class="btn btn-primary">Save Expense</button>
+                                        <button type="submit" class="btn btn-primary">Save Income</button>
+
                                     </form>
+
+
+                                        
                                 </div>
                             </div>
                         </div>
@@ -512,37 +504,37 @@
                     <tr>
                         <td></td>
                         <td>
-                            <select class="form-select category_id" name="category_ids[]">
+                            <select class="form-select category_id" name="exp_category_ids[]">
                                 <option value="">Select Category</option>
                                 `+jcates+`
                             </select>
                         </td>
                         <td class="fixed-column">
-                            <select class="form-select js-example-basic-single item_id" name="items[]">
+                            <select class="form-select js-example-basic-single item_id" name="exp_items[]">
                                 <option value="">Select Item</option>
                             </select>
                         </td>
                         <td>
                             <div class="row" style="justify-content: center;">
                                 <div class="m-0 p-0 ps-2 pe-2 col-sm-12 col-md-12 col-lg-7">
-                                    <input type="number" class="form-control quantity" name="quantity[]" min="1" value="1">
+                                    <input type="number" class="form-control quantity" name="exp_quantity[]" min="1" value="1">
                                 </div>
                                 <div class="m-0 p-0 ps-2 pe-2 col-sm-12 col-md-12 col-lg-5">
-                                    <select class="form-select" name="unit_ids[]">
+                                    <select class="form-select" name="exp_unit_ids[]">
                                         `+junits+`
                                     </select>
                                 </div>
                             </div>
                         </td>
-                        <td><input type="number" class="form-control amount" name="amount[]" step="0.01" value="0"></td>
+                        <td><input type="number" class="form-control amount" name="exp_amount[]" step="0.01" value="0"></td>
                         <td>
-                            <select class="form-select" name="payment_type[]">
+                            <select class="form-select" name="exp_payment_type[]">
                                 <option value="cash">Cash</option>
                                 <option value="bank">Bank</option>
                             </select>
                         </td>
                         <td>
-                            <textarea class="form-control" id="itemDescription" name="idescription[]" rows="2"></textarea>
+                            <textarea class="form-control" id="itemDescription" name="exp_idescription[]" rows="2"></textarea>
                         </td>
                         <td><span class="exp_total">0.00 </span> <span class="currency_sign">`+ selectedCurrency +`</span></td>
                         <td class="action-buttons"><button type="button" class="btn btn-danger btn-sm action-btn remove-btn"><i class="fa fa-trash"></i></button></td>
@@ -695,4 +687,17 @@
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="{{ asset('assets/js/select2/select2.full.min.js') }}"></script>
     <script src="{{ asset('assets/js/select2/select2-custom.js') }}"></script>
+
+
 @endpush
+
+@section('customJs')
+    <script type="text/javascript">
+
+        @if ($message = Session::get('error'))
+            notifyToUser('Income Invoice Error',
+                'Error! {{ $message }}',
+                'danger');
+        @endif
+    </script>
+@endsection

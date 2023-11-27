@@ -95,6 +95,36 @@
                                                 </select>
                                             </div>
                                             @endif
+
+                                            <div class="mb-3 col-sm-4">
+                                                <label for="currency">Currency</label>
+                                                <select class="form-control form-select" id="currency" name="currency" required>
+                                                    <option value="MMK" {{($invoice->currency == "MMK") ? 'selected' : ''}} >Myanmar Kyat (MMK)</option>
+                                                    <option value="USD" {{($invoice->currency == "USD") ? 'selected' : ''}}>US Dollar ($)</option>
+                                                    <option value="CNY" {{($invoice->currency == "CNY") ? 'selected' : ''}}>Chinese Yuan (¥)</option>
+                                                    <option value="THB" {{($invoice->currency == "THB") ? 'selected' : ''}}>Thai Baht (฿)</option>
+                                                </select>
+                                                @error('currency')
+                                                    <span class="text-danger">{{ $message }}</span>
+                                                @enderror
+                                            </div>
+
+                                            <div class="mb-3 col-sm-4" id="exchange_rate_group">
+                                                <label for="exchange_rate">Exchange Rate (MMK)</label>
+                                                <input id="exchange_rate" type="number" class="form-control" name="exchange_rate" value="{{$invoice->exchange_rate }}" placeholder="0"></td>
+                                                @error('exchange_rate')
+                                                    <span class="text-danger">{{ $message }}</span>
+                                                @enderror
+                                            </div>
+
+                                            <div class="mb-3 col-sm-4">
+                                                <label for="for_date">For Date</label>
+                                                <input type="date" class="form-control" id="for_date"
+                                                    name="for_date" value="{{$invoice->for_date }}">
+                                                @error('for_date')
+                                                    <span class="text-danger">{{ $message }}</span>
+                                                @enderror
+                                            </div>
                                         </div>
                                         <!-- Invoice Items -->
                                         <div class="form-group">
@@ -204,6 +234,109 @@
                                             <label for="docs">Invoice Files</label>
                                             <input type="file" class="form-control" id="docs" name="docs[]" multiple>
                                         </div>
+
+
+                                        <!-- Expense Items -->
+                                        <div class="form-group" id="income-expense-form">
+                                            <label for="expenseItems" class="expense-item-title mt-2">Expense Items</label>
+                                            <div class="table-container">
+                                                <table class="table table-bordered" id="expenseItems">
+                                                    <thead>
+                                                        <tr>
+                                                            <th>No.</th>
+                                                            <th>Category</th>
+                                                            <th>Item</th>
+                                                            <th>Quantity & Unit</th>
+                                                            <th>Unit Price (<span class="currency_sign">MMK</span>)</th>
+                                                            <th>Payment</th>
+                                                            <th>Description</th>
+                                                            <th>Total</th>
+                                                            <th></th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        @php
+                                                            $exp_item_no = 1;
+                                                        @endphp
+                                                        @if (count($exp_invoice_items) > 0)
+                                                            @foreach ($exp_invoice_items as $exp_invitem)
+                                                        <tr>
+                                                            <td>{{ $exp_item_no }}</td>
+                                                            <td>
+                                                                <input type="hidden" name="exp_invitem[]" value="{{$exp_invitem->id}}">
+                                                                {{$exp_invitem->category->name}}
+                                                            </td>
+                                                            <td>
+                                                                {{$exp_invitem->item->name}}
+                                                            </td>
+                                                            <td>
+                                                                <select class="form-select" name="exp_payment_type[]">
+                                                                    @if($exp_invitem->payment_type == "bank")
+                                                                        <option value="cash">Cash</option>
+                                                                        <option value="bank" selected>Bank</option>
+                                                                    @else
+                                                                        <option value="cash" selected>Cash</option>
+                                                                        <option value="bank">Bank</option>
+                                                                    @endif
+                                                                </select>
+                                                            </td>
+                                                            <td>
+                                                                <textarea class="form-control" id="itemDescription" name="exp_idescription[]" rows="2">{{$exp_invitem->item_description}}</textarea>
+                                                            </td>
+                                                            <td>
+                                                                <div class="row" style="justify-content: center;">
+                                                                    <div class="m-0 p-0 ps-2 pe-2 col-sm-12 col-md-12 col-lg-7">
+                                                                        <input type="number" class="form-control quantity"
+                                                                    name="exp_quantity[]" min="1" value="{{$exp_invitem->qty}}">
+                                                                    </div>
+                                                                    <div class="m-0 p-0 ps-2 pe-2 col-sm-12 col-md-12 col-lg-5">
+                                                                        <select class="form-select" name="exp_unit_ids[]">
+                                                                            @foreach($itemunits as $unit)
+                                                                                @if($exp_invitem->unit_id == $unit->id)
+                                                                                    <option value="{{ $unit->id }}" selected>{{ $unit->name }}</option>
+                                                                                @else
+                                                                                    <option value="{{ $unit->id }}">{{ $unit->name }}</option>
+                                                                                @endif
+                                                                            @endforeach
+                                                                        </select>
+                                                                    </div>
+                                                                </div>
+                                                            </td>
+                                                            <td><input type="number" class="form-control amount"
+                                                                    name="exp_amount[]" step="0.01" value="{{$exp_invitem->amount}}"></td>
+
+                                                            <td>{{ number_format($exp_invitem->qty * $exp_invitem->amount,2) }} {{$invoice->currency}}</td>
+                                                            <td class="action-buttons">
+                                                            </td>
+                                                        </tr>
+                                                            @php
+                                                                $exp_item_no++;
+                                                            @endphp
+                                                            @endforeach
+                                                        @endif
+                                                    </tbody>
+                                                    <tfoot>
+                                                        <tr>
+                                                            <td colspan="7" class="text-right" style="text-align: right;"><strong>Expense Total:</strong></td>
+                                                            <td colspan="2" ><span class="expTotalAmount">{{$invoice->expense_total}} </span> <span class="currency_sign">{{$invoice->currency}}</span></td>
+                                                            <input type="hidden" name="exp_total_amount" id="exp_total_amount" value="{{$invoice->expense_total}}">
+                                                            @error('total_amount')
+                                                                <span class="text-danger">{{ $message }}</span>
+                                                            @enderror
+                                                        </tr>
+                                                        <tr>
+                                                            <td colspan="7" class="text-right" style="text-align: right;"><strong>Total (Income - Expense):</strong></td>
+                                                            <td colspan="2" ><span class="netTotalAmount">{{$invoice->net_total}} </span> <span class="currency_sign">{{$invoice->currency}}</span></td>
+                                                            <input type="hidden" name="net_total_amount" id="net_total_amount" value="{{$invoice->net_total}}">
+                                                            @error('total_amount')
+                                                                <span class="text-danger">{{ $message }}</span>
+                                                            @enderror
+                                                        </tr>
+                                                    </tfoot>
+                                                </table>
+                                            </div>
+                                        </div>
+
                                         @if($data['submit_btn_control'] == true)
                                         <button type="submit" class="btn btn-primary">Update</button>
                                         @endif

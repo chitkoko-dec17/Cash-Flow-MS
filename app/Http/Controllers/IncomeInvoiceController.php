@@ -15,6 +15,7 @@ use App\Models\BranchUser;
 use App\Models\ProjectUser;
 use App\Models\BusinessUnit;
 use App\Models\ItemUnit;
+use App\Models\ExpenseInvoiceItem;
 use Auth;
 use DB;
 
@@ -166,6 +167,11 @@ class IncomeInvoiceController extends Controller
             'total_amount'  =>  'required'
         ]);
 
+        $net_amt = $request->total_amount - $request->exp_total_amount;
+        if($net_amt < 0){
+            return back()->with("error", "Expense total should be valid!");
+        }
+
         $this->cuser_business_unit_id = Auth::user()->user_business_unit;
 
         //creating invoice no
@@ -185,10 +191,15 @@ class IncomeInvoiceController extends Controller
         $inc_invoice= IncomeInvoice::create([
                 'business_unit_id' => isset($this->cuser_business_unit_id) ? $this->cuser_business_unit_id : 0,
                 'branch_id' => $request->branch_id,
-                'project_id' => ($request->branch_id) ? $request->branch_id : 0,
+                'project_id' => isset($request->project_id) ? $request->project_id : 0,
                 'invoice_no' => $invoice_no,
                 'invoice_date' => $request->invoice_date,
                 'total_amount' => $request->total_amount,
+                'currency' => $request->currency,
+                'exchange_rate' => $request->exchange_rate,
+                'for_date' => $request->for_date,
+                'expense_total' => $request->exp_total_amount,
+                'net_total' => $request->net_total_amount,
                 'description' => $request->description,
                 'upload_user_id' => Auth::id(),
                 'appoved_manager_id' => 0,
@@ -212,6 +223,30 @@ class IncomeInvoiceController extends Controller
                 'payment_type' => $item_payment_type[$itind],
             ]);
         }
+
+        //add income expense item
+        $exp_item_quantity = $request->exp_quantity;
+        $exp_item_amount = $request->exp_amount;
+        $exp_item_unit_ids = $request->exp_unit_ids;
+        $exp_item_description = $request->exp_idescription;
+        $exp_item_payment_type = $request->exp_payment_type;
+
+        foreach($request->exp_items as $eitind => $exp_item){
+            $item_cate = Item::where('id',$exp_item)->first();
+
+            ExpenseInvoiceItem::create([
+                'category_id' => $item_cate->category_id,
+                'invoice_id' => $inc_invoice->id,
+                'invoice_type' => 'income',
+                'item_id' => $exp_item,
+                'qty' => $exp_item_quantity[$eitind],
+                'amount' => $exp_item_amount[$eitind],
+                'unit_id' => $exp_item_unit_ids[$eitind],
+                'item_description' => $exp_item_description[$eitind],
+                'payment_type' => $exp_item_payment_type[$eitind],
+            ]);
+        }
+
 
         if($request->hasfile('docs')) {
 
@@ -254,9 +289,11 @@ class IncomeInvoiceController extends Controller
         $invoice_docs = InvoiceDocument::where('invoice_no', $invoice_no)->get();
         $invoice_notes = InvoiceNote::where('invoice_no', $invoice_no)->get();
 
+        $exp_invoice_items = ExpenseInvoiceItem::where('invoice_id', $id)->where('invoice_type', 'income')->get();
+
         $data['user_role'] = Auth::user()->user_role;
 
-        return view('cfms.income-invoice.view', compact('invoice', 'invoice_items','invoice_docs','invoice_no', 'invoice_notes', 'data'));
+        return view('cfms.income-invoice.view', compact('invoice', 'invoice_items','invoice_docs','invoice_no', 'invoice_notes', 'data','exp_invoice_items'));
     }
 
     /**
@@ -287,6 +324,7 @@ class IncomeInvoiceController extends Controller
         $invoice_items = IncomeInvoiceItem::where('invoice_id', $id)->get();
         $invoice_docs = InvoiceDocument::where('invoice_no', $invoice_no)->get();
         $invoice_notes = InvoiceNote::where('invoice_no', $invoice_no)->get();
+        $exp_invoice_items = ExpenseInvoiceItem::where('invoice_id', $id)->where('invoice_type', 'income')->get();
         $itemunits = ItemUnit::get();
 
         //for submit btn control
@@ -296,7 +334,7 @@ class IncomeInvoiceController extends Controller
         $data['submit_btn_control'] = $submit_btn_control;
         $data['user_role'] = Auth::user()->user_role;
 
-        return view('cfms.income-invoice.edit', compact('invoice', 'invoice_items','invoice_docs','invoice_no','itemcategories','branches', 'statuses', 'invoice_notes', 'data', 'itemunits'));
+        return view('cfms.income-invoice.edit', compact('invoice', 'invoice_items','invoice_docs','invoice_no','itemcategories','branches', 'statuses', 'invoice_notes', 'data', 'itemunits','exp_invoice_items'));
     }
 
     /**
@@ -325,6 +363,7 @@ class IncomeInvoiceController extends Controller
         $exp_invoice->invoice_date = $request->invoice_date;
         $exp_invoice->total_amount = $request->total_amount;
         $exp_invoice->description = $request->description;
+        $exp_invoice->for_date = $request->for_date;
         if(Auth::user()->role->name != "Staff"){
             $exp_invoice->manager_status = $request->status;
             $exp_invoice->admin_status = $request->status;

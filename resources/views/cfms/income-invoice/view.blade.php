@@ -64,7 +64,7 @@
                                     @endif
                                 </div>
                                 <div class="col-xl-8">
-                                    <div class="text-xl-end" id="project">
+                                    <div class="text-xl-end">
                                         <h6>Description</h6>
                                         <p>
                                             {{ $invoice->description }}
@@ -87,7 +87,7 @@
                                     @endif
                                 </div>
                                 <div class="col-xl-8">
-                                    <div class="text-xl-end" id="project">
+                                    <div class="text-xl-end">
                                         <h6>Status</h6>
                                         <p>
                                             {{ $invoice->admin_status }}
@@ -95,6 +95,43 @@
                                     </div>
                                 </div>
                             </div>
+
+
+                            <div class="row invo-profile">
+                                <div class="col-xl-4"></div>
+                                <div class="col-xl-8">
+                                    <div class="text-xl-end">
+                                        <h6>Currency</h6>
+                                        <p>
+                                            {{ $invoice->currency }}
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row invo-profile">
+                                <div class="col-xl-4"></div>
+                                <div class="col-xl-8">
+                                    <div class="text-xl-end">
+                                        <h6>Exchange Rate</h6>
+                                        <p>
+                                            {{ $invoice->exchange_rate }}
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row invo-profile">
+                                <div class="col-xl-4"></div>
+                                <div class="col-xl-8">
+                                    <div class="text-xl-end">
+                                        <h6>For Date</h6>
+                                        <p>
+                                            {{ $invoice->for_date }}
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+
+
                             <!-- End Invoice Mid-->
                             <div>
                                 <div class="table-container invoice-table" id="table">
@@ -178,12 +215,7 @@
                                             @endif
 
                                             <tr>
-                                                <td></td>
-                                                <td></td>
-                                                <td></td>
-                                                <td></td>
-                                                <td></td>
-                                                <td></td>
+                                                <td colspan="6"></td>
                                                 <td class="Rate">
                                                     <h6 class="mb-0 p-2">Total</h6>
                                                 </td>
@@ -198,6 +230,100 @@
 
                             </div>
                             <!-- End InvoiceBot-->
+
+                            @if (count($exp_invoice_items) > 0)
+                            <div>
+                                <br>
+                                <!-- Expense Item for Income Invoice -->
+                                <label for="expenseItems" class="expense-item-title mt-2">Expense Items</label>
+                                <div class="table-container invoice-table" id="table">
+                                    <table class="table table-bordered table-striped">
+                                        <tbody>
+                                            <tr>
+                                                <td>No.</td>
+                                                <td class="item">
+                                                    <h6 class="p-2 mb-0">Category</h6>
+                                                </td>
+                                                <td class="Hours fixed-column">
+                                                    <h6 class="p-2 mb-0">Item</h6>
+                                                </td>
+                                                <td>
+                                                    <h6 class="p-2 mb-0">Payment</h6>
+                                                </td>
+                                                <td>
+                                                    <h6 class="p-2 mb-0">Description</h6>
+                                                </td>
+                                                <td class="Hours">
+                                                    <h6 class="p-2 mb-0">Quantity</h6>
+                                                </td>
+                                                <td class="Rate">
+                                                    <h6 class="p-2 mb-0">Unit Price (MMK)</h6>
+                                                </td>
+                                                <td class="subtotal">
+                                                    <h6 class="p-2 mb-0">Total</h6>
+                                                </td>
+                                            </tr>
+                                            @php
+                                                $exp_item_no = 1;
+                                            @endphp
+                                            
+                                                @foreach ($exp_invoice_items as $exp_invitem)
+                                                    <tr>
+                                                        <td>{{ $exp_item_no }}</td>
+                                                        <td>
+                                                            <label>{{ $exp_invitem->category->name }}</label>
+                                                        </td>
+                                                        <td>
+                                                            {{ $exp_invitem->item->name }}
+                                                        </td>
+                                                        <td>
+                                                            <p class="itemtext">{{ ($exp_invitem->payment_type == "bank") ? 'Bank' : 'Cash'  }}</p>
+                                                        </td>
+                                                        <td>
+                                                            <p class="itemtext">{{ $exp_invitem->item_description }}</p>
+                                                        </td>
+                                                        <td>
+                                                            <p class="itemtext digits">{{ $exp_invitem->qty }} {{ ($exp_invitem->unit_id) ? $exp_invitem->unit->name : ''; }}</p>
+                                                        </td>
+                                                        <td>
+                                                            <p class="itemtext digits">{{ number_format($exp_invitem->amount,2) }}</p>
+                                                        </td>
+                                                        <td>
+                                                            <p class="itemtext digits">
+                                                                {{ number_format($exp_invitem->qty * $exp_invitem->amount,2) }}</p>
+                                                        </td>
+                                                    </tr>
+                                                    @php
+                                                        $exp_item_no++;
+                                                    @endphp
+                                                @endforeach
+
+                                            <tr>
+                                                <td colspan="6"></td>
+                                                <td class="Rate">
+                                                    <h6 class="mb-0 p-2">Expense Total</h6>
+                                                </td>
+                                                <td class="payment digits">
+                                                    <h6 class="mb-0 p-2">{{ number_format($invoice->expense_total,2) }}</h6>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td colspan="6"></td>
+                                                <td class="Rate">
+                                                    <h6 class="mb-0 p-2">Total (Income - Expense)</h6>
+                                                </td>
+                                                <td class="payment digits">
+                                                    <h6 class="mb-0 p-2">{{ number_format($invoice->net_total,2) }}</h6>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <!-- End Table-->
+                            </div>
+                            @endif
+
+
                         </div>
                         <!-- End Invoice-->
                         <!-- End Invoice Holder-->

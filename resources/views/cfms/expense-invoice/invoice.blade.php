@@ -117,6 +117,9 @@
                 <div class="box-text">
                     <p>Invoice No. : #{{ $invoice_no }}</p>
                     <p>Invoice Date : {{ $invoice->invoice_date }}</p>
+                    <p>Currency : {{ $invoice->currency }}</p>
+                    <p>Exchange Rate : {{ $invoice->exchange_rate }}</p>
+                    <p>For Date : {{ $invoice->for_date }}</p>
                     <p>Status : {{ $invoice->admin_status }}</p>
                     <p>Description </p>
                     <p>{{ $invoice->description }}</p>
