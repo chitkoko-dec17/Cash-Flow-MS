@@ -13,7 +13,8 @@
 
 	                <div class="text-center profile-details">
 	                    <a href="#"><h4>{{ isset($detailBusinessUnit) ? $detailBusinessUnit['name'] : '' }}</h4></a>
-	                    <h6>{{ isset($detailBusinessUnit) ? $detailBusinessUnit['manager']['name'] : '' }}</h6>
+                        <h6 class="m-0">Short Code: {{ isset($detailBusinessUnit) ? $detailBusinessUnit['shorten_code'] : '' }}</h6>
+	                    <h6>{{ isset($detailBusinessUnit) ? (isset($detailBusinessUnit['manager']['name']) ? $detailBusinessUnit['manager']['name']: 'No manager assgined yet!') : '' }}</h6>
 	                </div>
 	                <div class="card-footer row">
 	                    <div class="col-6 col-sm-6">

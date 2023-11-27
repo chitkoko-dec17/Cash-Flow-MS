@@ -19,6 +19,14 @@
                         @enderror
                     </div>
                     <div class="form-group">
+                        <label for="shorten_code">Shorten Code</label>
+                        <input wire:model="shorten_code" type="text" class="form-control" id="shorten_code"
+                            placeholder="eg: BWHC (without space)">
+                        @error('shorten_code')
+                            <span class="text-danger">{{ $message }}</span>
+                        @enderror
+                    </div>
+                    <div class="form-group">
                         <label for="bu_image">Business Unit Image</label>
                         <input wire:model="bu_image" type="file" class="form-control" id="bu_image{{ $iteration }}">
                         @error('bu_image')
