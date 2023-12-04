@@ -27,6 +27,27 @@ class CommonController extends Controller
     }
   }
 
+  public function get_itemById(Request $request){
+    if($request->ajax()){
+        $states = DB::table('items')->where('id',$request->id)->get();
+        return response()->json(['array_data'=>$states]);
+      }
+  }
+
+  public function get_itemCategoryById(Request $request){
+    if($request->ajax()){
+        $states = DB::table('item_categories')->where('id',$request->id)->get();
+        return response()->json(['array_data'=>$states]);
+      }
+  }
+
+  public function get_itemUnitById(Request $request){
+    if($request->ajax()){
+        $states = DB::table('item_units')->where('id',$request->id)->get();
+        return response()->json(['array_data'=>$states]);
+      }
+  }
+
   public function get_branches(Request $request)
   {
     if($request->ajax()){
@@ -64,6 +85,20 @@ class CommonController extends Controller
         })->get();
 
         return response()->json(['budget_data' => $budgetData]);
+    }
+  }
+
+  public function get_expenseInvoiceById(Request $request){
+    if($request->ajax()){
+        $expenseInvoice = DB::table('expense_invoices')->where('id',$request->id)->get();
+        return response()->json(['array_data'=>$expenseInvoice]);
+      }
+  }
+
+  public function get_expenseInvoiceItems(Request $request){
+    if($request->ajax()){
+        $expenseInvoiceItems = DB::table('expense_invoice_items')->where('invoice_id',$request->id)->where('invoice_type','expense')->get();
+        return response()->json(['array_data'=>$expenseInvoiceItems]);
     }
   }
 
