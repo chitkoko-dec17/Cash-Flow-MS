@@ -136,7 +136,7 @@ Route::group(['middleware' => ['auth']], function() {
     Route::post('business-unit/get_branches', [CommonController::class, 'get_branches'])->name('get.branches');
     Route::post('budget/get_budgets', [CommonController::class, 'get_budgets'])->name('get.budgets');
     Route::post('invoice/get_expenseInvoices', [CommonController::class, 'get_expenseInvoices'])->name('get.expenseInvoices');
-    Route::post('invoice/get_expenseInvoiceById',[CommonController::class, 'get_expenseInvoiceById'])->name('get.expenseInvoiceById');
+    // Route::post('invoice/get_expenseInvoiceById',[CommonController::class, 'get_expenseInvoiceById'])->name('get.expenseInvoiceById');
     Route::post('invoice/get_expenseInvoiceItems',[CommonController::class, 'get_expenseInvoiceItems'])->name('get.expenseInvoiceItems');
     Route::post('invoice/get_incomeInvoices', [CommonController::class, 'get_incomeInvoices'])->name('get.incomeInvoices');
 

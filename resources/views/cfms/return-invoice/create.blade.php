@@ -13,6 +13,9 @@
         <li class="breadcrumb-item"><a href="{{ route('return-invoice.index') }}">Return List</a></li>
         <li class="breadcrumb-item active">Create</li>
     @endcomponent
+    @php
+        $currency = $data['invoice']->currency;
+    @endphp
     <div class="container-fluid list-products">
         <div class="row">
             <div class="card">
@@ -59,43 +62,49 @@
                                                             <th>Payment</th>
                                                             <th>Description</th>
                                                             <th>Quantity & Unit</th>
-                                                            <th>Unit Price (MMK)</th>
+                                                            <th>Unit Price ({{$currency}})</th>
                                                             <th>Total</th>
                                                         </tr>
                                                     </thead>
                                                     <tbody>
+                                                        @php
+                                                            $item_no = 1;
+                                                        @endphp
+                                                        @if (count($data['invoice_items']) > 0)
+                                                            @foreach ($data['invoice_items'] as $invitem)
                                                         <tr>
-                                                            <td class="item_no"></td>
-                                                            <td class="category_name">
-                                                            </td>
-                                                            <td class="fixed-column item_name">
-                                                            </td>
+                                                            <td class="item_no">{{ $item_no }}</td>
+                                                            <td class="category_name">{{$invitem->category->name}}</td>
+                                                            <td class="fixed-column item_name">{{$invitem->item->name}}</td>
                                                             <td class="payment">
-
+                                                                {{ ($invitem->payment_type == "bank") ? "Bank" : "Cash"; }}
                                                             </td>
-                                                            <td class="description">
-
-                                                            </td>
+                                                            <td class="description">{{$invitem->item_description}}</td>
                                                             <td>
                                                                 <div class="row" style="justify-content: center;">
                                                                     <div
                                                                         class="m-0 p-0 ps-2 pe-2 col-sm-12 col-md-12 col-lg-7">
-                                                                        <span class="quantity"></span>
+                                                                        <span class="quantity">{{$invitem->qty}}</span>
                                                                     </div>
                                                                     <div
                                                                         class="m-0 p-0 ps-2 pe-2 col-sm-12 col-md-12 col-lg-5">
-                                                                        <span class="unit"></span>
+                                                                        <span class="unit">{{$invitem->unit->name}}</span>
                                                                     </div>
                                                                 </div>
                                                             </td>
-                                                            <td class="unit_price"></td>
-                                                            <td class="total"> MMK</td>
+                                                            <td class="unit_price">{{$invitem->amount .' '.$currency}}</td>
+                                                            <td class="total">{{ number_format($invitem->qty * $invitem->amount,2) .' '.$currency}} </td>
                                                         </tr>
+                                                        @php
+                                                            $item_no++;
+                                                        @endphp
+                                                            @endforeach
+                                                        @endif
                                                     </tbody>
                                                     <tfoot>
                                                         <tr>
                                                             <td colspan="8" class="text-right"><strong><b
-                                                                        class="exp_total"></b> </strong>
+                                                                        class="exp_total">{{ number_format($data['invoice']->total_amount,2) .' '.$currency}}</b> </strong>
                                                             </td>
                                                         </tr>
                                                     </tfoot>
@@ -114,7 +123,7 @@
                                             </div>
 
                                             <div class="mb-3 col-sm-4">
-                                                <label for="total_amount">Total Amount <code class="max_total">(max: 0 MMK)</code></label>
+                                                <label for="total_amount">Total Amount <code class="max_total">(max: 0 {{$currency}})</code></label>
                                                 <input type="number" class="form-control" id="total_amount"
                                                     name="total_amount">
                                                 @error('total_amount')
@@ -170,119 +179,49 @@
             exp_total = 0;
 
             var exp_inv_id = id.val();
-            console.log("Changed invoice id " + exp_inv_id);
             var token = $("input[name='_token']").val();
+            let item_row = '';
 
             if (exp_inv_id) {
                 $.ajax({
-                    url: "<?php echo route('get.expenseInvoiceById'); ?>",
+                    url: "<?php echo route('get.expenseInvoiceItems'); ?>",
                     method: 'POST',
                     data: {
                         id: exp_inv_id,
                         _token: token
                     },
                     success: function(expenseInvoiceByIdData) {
-                        $.each(expenseInvoiceByIdData.array_data, function(value, text) {
-                            $.ajax({
-                                url: "<?php echo route('get.expenseInvoiceItems'); ?>",
-                                method: 'POST',
-                                data: {
-                                    id: text.id,
-                                    _token: token
-                                },
-                                success: function(itemData) {
-                                    $.each(itemData.array_data, function(value, text) {
-                                        $.ajax({
-                                            url: "<?php echo route('get.itemCategoryById'); ?>",
-                                            method: 'POST',
-                                            data: {
-                                                id: text.category_id,
-                                                _token: token
-                                            },
-                                            success: function(catData) {
-                                                var cat_name =
-                                                    "Unknown Category";
-                                                if (catData.array_data && catData.array_data.length > 0) {
-                                                    cat_name = catData.array_data[0].name;
-                                                }
+                        exp_total = expenseInvoiceByIdData.array_data.invoice.total_amount;
+                        currency = (expenseInvoiceByIdData.array_data.invoice.currency) ? expenseInvoiceByIdData.array_data.invoice.currency : 'MMK';
 
-                                                $.ajax({
-                                                    url: "<?php echo route('get.itemById'); ?>",
-                                                    method: 'POST',
-                                                    data: {
-                                                        id: text.item_id,
-                                                        _token: token
-                                                    },
-                                                    success: function(itemData) {
-                                                        var item_name = "";
-                                                        if (itemData.array_data && itemData.array_data.length >0
-                                                        ) {
-                                                            item_name=itemData.array_data[0].name;
-                                                        }
-
-                                                        getItemUnitNameAndAppendRow(text,cat_name,item_name,token);
-                                                    }
-                                                });
-                                            }
-                                        });
-                                    });
-                                }
-                            });
+                        $.each(expenseInvoiceByIdData.array_data.expItems, function(value, text) {
+                            item_row += `
+                            <tr>
+                                <td class="item_no">${text.item_no}</td>
+                                <td class="category_name">${text.category || ''}</td>
+                                <td class="fixed-column item_name">${text.item || ''}</td>
+                                <td class="payment">${text.payment_type || ''}</td>
+                                <td class="description">${text.item_description || ''}</td>
+                                <td>
+                                    <div class="row" style="justify-content: center;">
+                                        <div style="text-align: center;">
+                                            <span class="quantity">${text.qty || ''}</span> <span class="unit">${text.unit || ''}</span>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="unit_price">${text.amount}</td>
+                                <td class="total">${text.total_amt} ${currency}</td>
+                            </tr>
+                        `;
                         });
+
+                        $("#invoiceItems tbody").append(item_row);
+                        $(".exp_total").text("Total: " + exp_total + " "+currency);
+                        $(".max_total").text("max: " +exp_total + " "+currency);
+                        $("#total_amount").prop("max", exp_total);
                     }
                 });
             }
-        }
-        // Function to append row with retrieved data
-        function getItemUnitNameAndAppendRow(text, cat_name, item_name, token) {
-            getItemUnitName(text.unit_id, token, function(unitName) {
-                const new_row = `
-                    <tr>
-                        <td class="item_no">${item_no}</td>
-                        <td class="category_name">${cat_name || ''}</td>
-                        <td class="fixed-column item_name">${item_name || ''}</td>
-                        <td class="payment">${text.payment_type || ''}</td>
-                        <td class="description">${text.item_description || ''}</td>
-                        <td>
-                            <div class="row" style="justify-content: center;">
-                                <div style="text-align: center;">
-                                    <span class="quantity">${text.qty || ''}</span> <span class="unit">${unitName || ''}</span>
-                                </div>
-                            </div>
-                        </td>
-                        <td class="unit_price">${text.amount}</td>
-                        <td class="total">${text.qty * text.amount} MMK</td>
-                    </tr>
-                `;
-
-                exp_total += text.qty * text.amount;
-                $("#invoiceItems tbody").append(new_row);
-                item_no++;
-
-                $(".exp_total").text("Total: " + exp_total + " MMK");
-                $(".max_total").text("max: " +exp_total + " MMK");
-                $("#total_amount").prop("max", exp_total);
-            });
-
-        }
-
-        // Function to get item unit name
-        function getItemUnitName(unit_id, token, callback) {
-            $.ajax({
-                url: "<?php echo route('get.itemUnitById'); ?>",
-                method: 'POST',
-                data: {
-                    id: unit_id,
-                    _token: token
-                },
-                success: function(unitData) {
-                    var unit_name = "Unknown Unit";
-                    if (unitData.array_data && unitData.array_data.length > 0) {
-                        unit_name = unitData.array_data[0].name;
-                    }
-                    callback(unit_name);
-                }
-            });
         }
 
     </script>

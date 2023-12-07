@@ -6,6 +6,8 @@ use App\Http\Controllers\Controller;
 use App\Models\EstimateBudget;
 use Illuminate\Http\Request;
 use App\Models\User;
+use App\Models\ExpenseInvoice;
+use App\Models\ExpenseInvoiceItem;
 use DB;
 
 class CommonController extends Controller
@@ -97,8 +99,25 @@ class CommonController extends Controller
 
   public function get_expenseInvoiceItems(Request $request){
     if($request->ajax()){
-        $expenseInvoiceItems = DB::table('expense_invoice_items')->where('invoice_id',$request->id)->where('invoice_type','expense')->get();
-        return response()->json(['array_data'=>$expenseInvoiceItems]);
+        $expenseInvoiceItems = ExpenseInvoiceItem::where('invoice_id',$request->id)->where('invoice_type','expense')->get();
+
+        $expItems = array();
+        $item_no = 1;
+        foreach($expenseInvoiceItems as $ikey => $invitem){
+          $expItems[$ikey]['item_no'] = $item_no;
+          $expItems[$ikey]['category'] = $invitem->category->name;
+          $expItems[$ikey]['item'] = $invitem->item->name;
+          $expItems[$ikey]['payment_type'] = ($invitem->payment_type == "bank") ? "Bank" : "Cash";
+          $expItems[$ikey]['item_description'] = $invitem->item_description;
+          $expItems[$ikey]['qty'] = $invitem->qty;
+          $expItems[$ikey]['unit'] = $invitem->unit->name;
+          $expItems[$ikey]['amount'] = $invitem->amount;
+          $expItems[$ikey]['total_amt'] = number_format($invitem->qty * $invitem->amount,2);
+          $item_no++;
+        }
+        $data['expItems'] = $expItems;
+        $data['invoice'] = ExpenseInvoice::where('id', $request->id)->first();
+        return response()->json(['array_data'=>$data]);
     }
   }
 

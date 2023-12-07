@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\File;
 use App\Models\ReturnInvoice;
 use App\Models\ExpenseInvoice;
+use App\Models\ExpenseInvoiceItem;
 use Auth;
 use DB;
 
@@ -118,6 +119,12 @@ class ReturnInvoiceController extends Controller
         }
 
         $data['expense_inv_id'] = ($request->expense_inv) ? $request->expense_inv : "";
+        $data['invoice_items'] = array();
+        $data['invoice'] = array();
+        if($request->expense_inv){
+            $data['invoice'] = ExpenseInvoice::where('id', $request->expense_inv)->first();
+            $data['invoice_items'] = ExpenseInvoiceItem::where('invoice_id', $request->expense_inv)->where('invoice_type','expense')->get();
+        }
 
         return view('cfms.return-invoice.create', compact('expense_invoices','data'));
     }
