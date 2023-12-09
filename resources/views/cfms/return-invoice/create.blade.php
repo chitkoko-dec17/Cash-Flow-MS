@@ -15,6 +15,7 @@
     @endcomponent
     @php
         $currency = isset($data['invoice']->currency) ? $data['invoice']->currency : 'MMK';
+        $total_amt = isset($data['invoice']->total_amount) ? number_format($data['invoice']->total_amount,2) : 0;
     @endphp
     <div class="container-fluid list-products">
         <div class="row">
@@ -104,7 +105,7 @@
                                                     <tfoot>
                                                         <tr>
                                                             <td colspan="8" class="text-right"><strong><b
-                                                                        class="exp_total">{{ number_format($data['invoice']->total_amount,2) .' '.$currency}}</b> </strong>
+                                                                        class="exp_total">{{ $total_amt .' '.$currency}}</b> </strong>
                                                             </td>
                                                         </tr>
                                                     </tfoot>
