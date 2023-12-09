@@ -14,7 +14,7 @@
         <li class="breadcrumb-item active">Create</li>
     @endcomponent
     @php
-        $currency = $data['invoice']->currency;
+        $currency = isset($data['invoice']->currency) ? $data['invoice']->currency : 'MMK';
     @endphp
     <div class="container-fluid list-products">
         <div class="row">
