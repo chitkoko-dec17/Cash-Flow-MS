@@ -267,7 +267,7 @@ class ExpenseInvoiceController extends Controller
     {
         $invoice = ExpenseInvoice::find($id);
         $invoice_no = 'EXINV-'.$invoice->invoice_no;
-        $invoice_items = ExpenseInvoiceItem::where('invoice_id', $id)->get();
+        $invoice_items = ExpenseInvoiceItem::where('invoice_id', $id)->where('invoice_type','expense')->get();
         $invoice_docs = InvoiceDocument::where('invoice_no', $invoice_no)->get();
         $invoice_notes = InvoiceNote::where('invoice_no', $invoice_no)->get();
 
@@ -301,7 +301,7 @@ class ExpenseInvoiceController extends Controller
         }
 
         $invoice_no = 'EXINV-'.$invoice->invoice_no;
-        $invoice_items = ExpenseInvoiceItem::where('invoice_id', $id)->get();
+        $invoice_items = ExpenseInvoiceItem::where('invoice_id', $id)->where('invoice_type','expense')->get();
         $invoice_docs = InvoiceDocument::where('invoice_no', $invoice_no)->get();
         $invoice_notes = InvoiceNote::where('invoice_no', $invoice_no)->get();
         $itemunits = ItemUnit::get();
@@ -381,6 +381,7 @@ class ExpenseInvoiceController extends Controller
                 ExpenseInvoiceItem::create([
                     'category_id' => $category_id,
                     'invoice_id' => $id,
+                    'invoice_type' => 'expense',
                     'item_id' => $items[$itind],
                     'qty' => $item_quantity_up[$itind],
                     'amount' => $item_amount_up[$itind],
@@ -457,7 +458,7 @@ class ExpenseInvoiceController extends Controller
 
     public function get_item_history(Request $request){
         $item_id = $request->item_id;
-        $items = ExpenseInvoiceItem::with('invoice','item')->where('item_id', $item_id)->orderBy('id', 'desc')->take(10)->get()->toArray();
+        $items = ExpenseInvoiceItem::with('invoice','item')->where('item_id', $item_id)->where('invoice_type','expense')->orderBy('id', 'desc')->take(10)->get()->toArray();
 
         return response()->json([
             'success' => true,
@@ -468,7 +469,7 @@ class ExpenseInvoiceController extends Controller
     public function get_expense_invoice($id){
         $invoice = ExpenseInvoice::find($id);
         $invoice_no = 'EXINV-'.$invoice->invoice_no;
-        $invoice_items = ExpenseInvoiceItem::where('invoice_id', $id)->get();
+        $invoice_items = ExpenseInvoiceItem::where('invoice_id', $id)->where('invoice_type','expense')->get();
 
         return view('cfms.expense-invoice.invoice', compact('invoice', 'invoice_items','invoice_no'));
     }

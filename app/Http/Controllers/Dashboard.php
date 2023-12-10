@@ -30,7 +30,7 @@ class Dashboard extends Controller
     $this->cuser_role = Auth::user()->user_role;
     $this->cuser_business_unit_id = Auth::user()->user_business_unit;
 
-    if($this->cuser_role == "Admin"){
+    if($this->cuser_role == "Admin" || $this->cuser_role == "Account" || $this->cuser_role == "HR"){
         $businessUnits = BusinessUnit::all();
     } elseif ($this->cuser_role == "Manager"){
         $bu = BusinessUnit::find($this->cuser_business_unit_id);
@@ -41,7 +41,9 @@ class Dashboard extends Controller
         } else {
             $businessUnits = []; // No BusinessUnit found
         }
-    } else {
+    }elseif ($this->cuser_role == "Report"){
+        return redirect('/report/expense');
+    }else{
         return redirect('/expense-invoice');
     }
 

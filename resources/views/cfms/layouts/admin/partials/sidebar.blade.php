@@ -31,7 +31,7 @@
                             <h6>Settings</h6>
                         </div>
                     </li>
-                    @if(Auth::user()->user_role == "Admin")
+                    @if(Auth::user()->user_role == "Admin") //|| Auth::user()->user_role == "Account" || Auth::user()->user_role == "HR"
                     <li>
                         <a class="nav-link menu-title link-nav" href="{{ route('dashboard') }}"><i data-feather="home"></i><span>Dashboard</span></a>
                     </li>
@@ -60,6 +60,7 @@
                         </ul>
                     </li>
                     @endif
+                    @if(Auth::user()->user_role != "Report")
                     <li class="dropdown">
                         <a class="nav-link menu-title {{ prefixActive('/invoice') }}" href="javascript:void(0)"><i data-feather="file"></i><span>Invoices</span></a>
                         <ul class="nav-submenu menu-content" style="display: {{ prefixBlock('/invoice') }};">
@@ -71,7 +72,8 @@
                             @endif
                         </ul>
                     </li>
-                    @if(Auth::user()->user_role == "Admin")
+                    @endif
+                    @if(Auth::user()->user_role == "Admin" || Auth::user()->user_role == "Manager"  || Auth::user()->user_role == "Account" || Auth::user()->user_role == "HR" || Auth::user()->user_role == "Report")
                     <li class="dropdown">
                         <a class="nav-link menu-title {{ prefixActive('/report') }}" href="javascript:void(0)"><i data-feather="pie-chart"></i><span>Report</span></a>
                         <ul class="nav-submenu menu-content" style="display: {{ prefixBlock('/report') }};">
@@ -80,28 +82,12 @@
                             <li><a href="{{ route('report.budget') }}" class="{{routeActive('report.budget')}}">Budget Report</a></li>
                         </ul>
                     </li>
-                    {{-- <li>
-                        <a class="nav-link menu-title link-nav " href="{{ url('reports') }}"><i data-feather="pie-chart"></i><span>Report</span></a>
-                    </li> --}}
-
+                    @endif
+                    @if(Auth::user()->user_role == "Admin" || Auth::user()->user_role == "Account" || Auth::user()->user_role == "HR")
                     <li>
                         <a class="nav-link menu-title link-nav " href="{{ url('budget') }}"><i data-feather="dollar-sign"></i><span>Budget</span></a>
                     </li>
                     @endif
-                    {{-- <li class="sidebar-main-title">
-                        <div>
-                            <h6>Quick Action</h6>
-                        </div>
-                    </li>
-                    <li>
-                        <a class="nav-link menu-title link-nav" href="{{ route('landing-page') }}" class="{{routeActive('landing-page')}}"><i data-feather="navigation-2"></i><span>Landing page</span></a>
-                    </li>
-                    <li>
-                        <a class="nav-link menu-title link-nav {{routeActive('create-user')}}" href="{{ route('create-user') }}"><i data-feather="user-plus"></i><span>Create user</span></a>
-                    </li>
-                    <li class="dropdown">
-                        <a class="nav-link menu-title link-nav {{routeActive('internationalization')}}" href="{{ route('internationalization') }}"><i data-feather="file-plus"></i><span>Create invoice</span></a>
-                    </li> --}}
                 </ul>
             </div>
             <div class="right-arrow" id="right-arrow"><i data-feather="arrow-right"></i></div>

@@ -33,6 +33,7 @@
                     <div class="collapse show" id="collapseicon" aria-labelledby="collapseicon" data-parent="#accordion">
                         <div class="card-body filter-cards-view animate-chk pt-0">
                             <form class="row g-3" >
+                                @if(Auth::user()->user_role != "Manager")
                                 <div class="col-md-3 col-sm-12">
                                     <div class="form-group">
                                         <label for="business_unit_id" style="font-size:1.4rex;">Business Unit</label>
@@ -45,6 +46,7 @@
                                         </select>
                                     </div>
                                 </div>
+                                @endif
                                 <div class="col-md-3 col-sm-12">
                                     <div class="form-group">
                                         <label for="branch_id" style="font-size:1.4rex;">Branch</label>

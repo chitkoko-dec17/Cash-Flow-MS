@@ -36,6 +36,11 @@ class IncomeInvoice extends Model
         'edit_by',
     ];
 
+    public function businessUnit()
+    {
+        return $this->belongsTo(BusinessUnit::class, 'business_unit_id');
+    }
+
     public function branch()
     {
         return $this->belongsTo(Branch::class, 'branch_id');

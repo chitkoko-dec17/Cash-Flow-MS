@@ -38,9 +38,9 @@
                                                 @foreach ($expense_invoices as $optgroupLabel => $exp_inv)
                                                     @if ($data['expense_inv_id'] == $exp_inv->id)
                                                         <option value="{{ $exp_inv->id }}" selected>
-                                                            {{ $exp_inv->invoice_no }}</option>
+                                                            {{ $exp_inv->invoice_no ." (".$exp_inv->businessUnit->shorten_code.")" }}</option>
                                                     @else
-                                                        <option value="{{ $exp_inv->id }}">{{ $exp_inv->invoice_no }}
+                                                        <option value="{{ $exp_inv->id }}">{{ $exp_inv->invoice_no." (".$exp_inv->businessUnit->shorten_code.")" }}
                                                         </option>
                                                     @endif
                                                 @endforeach

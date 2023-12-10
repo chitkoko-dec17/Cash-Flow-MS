@@ -19,8 +19,11 @@
                         <h5 class="mb-2">Expense Invoice list</h5>
                         <span>Configuration</span>
                     </span>
+
+                    @if(Auth::user()->user_role == "Admin" || Auth::user()->user_role == "Manager" || Auth::user()->user_role == "Staff")
                     <a href="{{ route('expense-invoice.create') }}" class="btn btn-primary float-end" type="button"><i
                             class="fa fa-edit"></i> Create New Expense Invoice</a>
+                    @endif
                 </div>
                 <div class="card-body pt-0">
                     <div class="row">
@@ -103,7 +106,7 @@
                                     @if (count($expense_invoices) > 0)
                                         @foreach ($expense_invoices as $inv)
                                             <tr>
-                                                <td class="fixed-column">{{ $inv->invoice_no }}</td>
+                                                <td class="fixed-column">{{ $inv->invoice_no ." (".$inv->businessUnit->shorten_code.")" }}</td>
                                                 <td>{{ $inv->invoice_date }}</td>
                                                 <td>{{ $inv->staff->name }}</td>
                                                 <td>{{ number_format($inv->total_amount, 2); }}</td>
