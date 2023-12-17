@@ -131,7 +131,7 @@ class ExpenseInvoiceController extends Controller
 
         if($this->cuser_role == "Manager" && !$this->cuser_business_unit_id){
             return redirect('/expense-invoice')->with('error', "Manager should has business unit!");
-        } 
+        }
 
         $itemcategories = ItemCategory::where('business_unit_id', $this->cuser_business_unit_id)->get();
         $itemunits = ItemUnit::get();
@@ -144,9 +144,9 @@ class ExpenseInvoiceController extends Controller
         if($this->cuser_role != "Staff"){
             foreach ($businessUnits as $businessUnit) {
                 $optgroupLabel = $businessUnit->name;
-                
+
                 $branchOptions = Branch::where('business_unit_id', $businessUnit->id)->pluck('name', 'id')->toArray();
-                
+
                 $branches[$optgroupLabel] = $branchOptions;
             }
         }
@@ -199,6 +199,9 @@ class ExpenseInvoiceController extends Controller
                 'invoice_no' => $invoice_no,
                 'invoice_date' => $request->invoice_date,
                 'total_amount' => $request->total_amount,
+                'currency' => $request->currency,
+                'exchange_rate' => $request->exchange_rate,
+                'for_date' => $request->for_date,
                 'return_total_amount' => 0,
                 'description' => $request->description,
                 'upload_user_id' => Auth::id(),
@@ -215,6 +218,7 @@ class ExpenseInvoiceController extends Controller
             ExpenseInvoiceItem::create([
                 'category_id' => $item_cate->category_id,
                 'invoice_id' => $exp_invoice->id,
+                'invoice_type' => 'expense',
                 'item_id' => $item,
                 'qty' => $item_quantity[$itind],
                 'amount' => $item_amount[$itind],
@@ -263,7 +267,7 @@ class ExpenseInvoiceController extends Controller
     {
         $invoice = ExpenseInvoice::find($id);
         $invoice_no = 'EXINV-'.$invoice->invoice_no;
-        $invoice_items = ExpenseInvoiceItem::where('invoice_id', $id)->get();
+        $invoice_items = ExpenseInvoiceItem::where('invoice_id', $id)->where('invoice_type','expense')->get();
         $invoice_docs = InvoiceDocument::where('invoice_no', $invoice_no)->get();
         $invoice_notes = InvoiceNote::where('invoice_no', $invoice_no)->get();
 
@@ -295,9 +299,9 @@ class ExpenseInvoiceController extends Controller
             $branchOptions = Branch::where('business_unit_id', $invoice->business_unit_id)->pluck('name', 'id')->toArray();
             $branches[$optgroupLabel] = $branchOptions;
         }
-        
+
         $invoice_no = 'EXINV-'.$invoice->invoice_no;
-        $invoice_items = ExpenseInvoiceItem::where('invoice_id', $id)->get();
+        $invoice_items = ExpenseInvoiceItem::where('invoice_id', $id)->where('invoice_type','expense')->get();
         $invoice_docs = InvoiceDocument::where('invoice_no', $invoice_no)->get();
         $invoice_notes = InvoiceNote::where('invoice_no', $invoice_no)->get();
         $itemunits = ItemUnit::get();
@@ -338,6 +342,7 @@ class ExpenseInvoiceController extends Controller
         $exp_invoice->invoice_date = $request->invoice_date;
         $exp_invoice->total_amount = $request->total_amount;
         $exp_invoice->description = $request->description;
+        $exp_invoice->for_date = $request->for_date;
         if(Auth::user()->role->name != "Staff"){
             $exp_invoice->manager_status = $request->status;
             $exp_invoice->admin_status = $request->status;
@@ -361,7 +366,7 @@ class ExpenseInvoiceController extends Controller
                 $exp_invoice_item->payment_type = $item_payment_type[$itind];
                 $exp_invoice_item->save();
             }
-        }        
+        }
 
         $items = $request->items_up;
         $item_amount_up = $request->amount_up;
@@ -376,6 +381,7 @@ class ExpenseInvoiceController extends Controller
                 ExpenseInvoiceItem::create([
                     'category_id' => $category_id,
                     'invoice_id' => $id,
+                    'invoice_type' => 'expense',
                     'item_id' => $items[$itind],
                     'qty' => $item_quantity_up[$itind],
                     'amount' => $item_amount_up[$itind],
@@ -385,7 +391,7 @@ class ExpenseInvoiceController extends Controller
                 ]);
             }
         }
-        
+
 
         if($request->hasfile('docs')) {
 
@@ -452,7 +458,7 @@ class ExpenseInvoiceController extends Controller
 
     public function get_item_history(Request $request){
         $item_id = $request->item_id;
-        $items = ExpenseInvoiceItem::with('invoice','item')->where('item_id', $item_id)->orderBy('id', 'desc')->take(10)->get()->toArray();
+        $items = ExpenseInvoiceItem::with('invoice','item')->where('item_id', $item_id)->where('invoice_type','expense')->orderBy('id', 'desc')->take(10)->get()->toArray();
 
         return response()->json([
             'success' => true,
@@ -463,13 +469,25 @@ class ExpenseInvoiceController extends Controller
     public function get_expense_invoice($id){
         $invoice = ExpenseInvoice::find($id);
         $invoice_no = 'EXINV-'.$invoice->invoice_no;
-        $invoice_items = ExpenseInvoiceItem::where('invoice_id', $id)->get();
+        $invoice_items = ExpenseInvoiceItem::where('invoice_id', $id)->where('invoice_type','expense')->get();
 
         return view('cfms.expense-invoice.invoice', compact('invoice', 'invoice_items','invoice_no'));
     }
 
     public function delete_edit_item($id){
         $exp_invoice_item = ExpenseInvoiceItem::find($id);
+
+        $expense_invoice = $exp_invoice_item->invoice;
+
+        // Calculate the amount to subtract based on quantity and unit price
+        $amount_to_subtract = $exp_invoice_item->qty * $exp_invoice_item->amount;
+
+        // Subtract the calculated amount from the total amount
+        $expense_invoice->total_amount -= $amount_to_subtract;
+
+        // Save the updated total amount
+        $expense_invoice->save();
+
         $exp_invoice_item->delete();
         return back()->with("success", "Successfully delete the invoice item.");
     }

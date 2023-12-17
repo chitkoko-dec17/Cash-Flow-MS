@@ -29,6 +29,7 @@
                             <form class="row g-3">
                                 @csrf
                                     <div class="row">
+                                        @if(Auth::user()->user_role != "Manager")
                                         <div class="col-md-4 col-sm-12">
                                             <div class="form-group">
                                                 <label for="business_unit_id" style="font-size:1.4rex;">Business Unit</label>
@@ -44,6 +45,7 @@
                                                 </select>
                                             </div>
                                         </div>
+                                        @endif
                                         <div class="col-md-4 col-sm-12">
                                             <div class="form-group">
                                                 <label for="branch_id" style="font-size:1.4rex;">Branch</label>

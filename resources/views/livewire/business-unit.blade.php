@@ -62,7 +62,7 @@
                                                 No Image
                                             @endif
                                         </td>
-                                        <td class="fixed-column">{{ $businessUnit->name }}</td>
+                                        <td class="fixed-column">{{ $businessUnit->name }} <b>({{$businessUnit->shorten_code }})</b></td>
                                         <td>{{ $businessUnit->phone }}</td>
                                         <td>{{ $businessUnit->address }}</td>
                                         <td><span class="badge badge-primary">{{ isset( $businessUnit->manager->name) ? $businessUnit->manager->name : '' }}</span></td>

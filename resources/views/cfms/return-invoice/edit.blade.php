@@ -34,9 +34,9 @@
                                                     @foreach($expense_invoices as $exp_inv)
 
                                                     	@if($invoice->invoice_id == $exp_inv->id)
-                                                    		<option value="{{ $exp_inv->id }}" selected>{{ $exp_inv->invoice_no }}</option>
+                                                    		<option value="{{ $exp_inv->id }}" selected>{{ $exp_inv->invoice_no." (".$exp_inv->businessUnit->shorten_code.")" }}</option>
                                                     	@else
-                                                        <option value="{{ $exp_inv->id }}">{{ $exp_inv->invoice_no }}</option>
+                                                        <option value="{{ $exp_inv->id }}">{{ $exp_inv->invoice_no." (".$exp_inv->businessUnit->shorten_code.")" }}</option>
                                                       @endif
                                                     @endforeach
                                                 </select>

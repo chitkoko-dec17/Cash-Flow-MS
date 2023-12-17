@@ -26,6 +26,11 @@ class ReturnInvoice extends Model
         'edit_by',
     ];
 
+    public function businessUnit()
+    {
+        return $this->belongsTo(BusinessUnit::class, 'business_unit_id');
+    }
+
     public function expense_inv()
     {
         return $this->belongsTo(ExpenseInvoice::class, 'invoice_id');

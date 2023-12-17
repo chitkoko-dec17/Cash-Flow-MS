@@ -34,7 +34,12 @@ class ReportController extends Controller
     {
         $businessUnits = BusinessUnit::all();
 
-        $selected_business_unit_id = ($request->business_unit_id) ? $request->business_unit_id : "";
+        if(Auth::user()->user_role == "Manager"){
+            $selected_business_unit_id = Auth::user()->user_business_unit;
+        }else{
+            $selected_business_unit_id = ($request->business_unit_id) ? $request->business_unit_id : "";
+        }
+        
         $selected_branch_id = ($request->branch_id) ? $request->branch_id : "";
         $selected_project_id = ($request->project_id) ? $request->project_id : "";
         $selected_from_date = ($request->selected_from_date) ? $request->selected_from_date : "";
@@ -104,7 +109,12 @@ class ReportController extends Controller
     {
         $businessUnits = BusinessUnit::all();
 
-        $selected_business_unit_id = ($request->business_unit_id) ? $request->business_unit_id : "";
+        if(Auth::user()->user_role == "Manager"){
+            $selected_business_unit_id = Auth::user()->user_business_unit;
+        }else{
+            $selected_business_unit_id = ($request->business_unit_id) ? $request->business_unit_id : "";
+        }
+
         $selected_branch_id = ($request->branch_id) ? $request->branch_id : "";
         $selected_project_id = ($request->project_id) ? $request->project_id : "";
         $selected_from_date = ($request->selected_from_date) ? $request->selected_from_date : "";
@@ -224,7 +234,13 @@ class ReportController extends Controller
     }
 
     public function get_top_expense_items($filter){
-        $selected_business_unit_id = ($filter->business_unit_id) ? $filter->business_unit_id : "";
+
+        if(Auth::user()->user_role == "Manager"){
+            $selected_business_unit_id = Auth::user()->user_business_unit;
+        }else{
+            $selected_business_unit_id = ($filter->business_unit_id) ? $filter->business_unit_id : "";
+        }
+        
         $selected_branch_id = ($filter->branch_id) ? $filter->branch_id : "";
         $selected_project_id = ($filter->project_id) ? $filter->project_id : "";
         $selected_from_date = ($filter->selected_from_date) ? $filter->selected_from_date : "";
@@ -291,7 +307,13 @@ class ReportController extends Controller
     }
 
     public function get_top_expense_items_cate($filter){
-        $selected_business_unit_id = ($filter->business_unit_id) ? $filter->business_unit_id : "";
+
+        if(Auth::user()->user_role == "Manager"){
+            $selected_business_unit_id = Auth::user()->user_business_unit;
+        }else{
+            $selected_business_unit_id = ($filter->business_unit_id) ? $filter->business_unit_id : "";
+        }
+
         $selected_branch_id = ($filter->branch_id) ? $filter->branch_id : "";
         $selected_project_id = ($filter->project_id) ? $filter->project_id : "";
         $selected_from_date = ($filter->selected_from_date) ? $filter->selected_from_date : "";
@@ -355,7 +377,13 @@ class ReportController extends Controller
     }
 
     public function get_top_income_items($filter){
-        $selected_business_unit_id = ($filter->business_unit_id) ? $filter->business_unit_id : "";
+
+        if(Auth::user()->user_role == "Manager"){
+            $selected_business_unit_id = Auth::user()->user_business_unit;
+        }else{
+            $selected_business_unit_id = ($filter->business_unit_id) ? $filter->business_unit_id : "";
+        }
+
         $selected_branch_id = ($filter->branch_id) ? $filter->branch_id : "";
         $selected_project_id = ($filter->project_id) ? $filter->project_id : "";
         $selected_from_date = ($filter->selected_from_date) ? $filter->selected_from_date : "";
@@ -422,7 +450,13 @@ class ReportController extends Controller
     }
 
     public function get_top_income_items_cate($filter){
-        $selected_business_unit_id = ($filter->business_unit_id) ? $filter->business_unit_id : "";
+
+        if(Auth::user()->user_role == "Manager"){
+            $selected_business_unit_id = Auth::user()->user_business_unit;
+        }else{
+            $selected_business_unit_id = ($filter->business_unit_id) ? $filter->business_unit_id : "";
+        }
+
         $selected_branch_id = ($filter->branch_id) ? $filter->branch_id : "";
         $selected_project_id = ($filter->project_id) ? $filter->project_id : "";
         $selected_from_date = ($filter->selected_from_date) ? $filter->selected_from_date : "";
@@ -489,7 +523,12 @@ class ReportController extends Controller
         $businessUnits = BusinessUnit::all();
         $data = array();
 
-        $selected_business_unit_id = ($request->business_unit_id) ? $request->business_unit_id : "";
+        if(Auth::user()->user_role == "Manager"){
+            $selected_business_unit_id = Auth::user()->user_business_unit;
+        }else{
+            $selected_business_unit_id = ($request->business_unit_id) ? $request->business_unit_id : "";
+        }
+        
         $selected_branch_id = ($request->branch_id) ? $request->branch_id : "";
         $selected_project_id = ($request->project_id) ? $request->project_id : "";
         $selected_budget_id = ($request->budget_id) ? $request->budget_id : "";

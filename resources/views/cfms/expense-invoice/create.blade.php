@@ -67,6 +67,38 @@
                                                     <span class="text-danger">{{ $message }}</span>
                                                 @enderror
                                             </div>
+
+
+                                            <div class="mb-3 col-sm-4">
+                                                <label for="currency">Currency</label>
+                                                <select class="form-control form-select" id="currency" name="currency" required>
+                                                    <option value="MMK" selected>Myanmar Kyat (MMK)</option>
+                                                    <option value="USD">US Dollar ($)</option>
+                                                    <option value="CNY">Chinese Yuan (¥)</option>
+                                                    <option value="THB">Thai Baht (฿)</option>
+                                                </select>
+                                                @error('currency')
+                                                    <span class="text-danger">{{ $message }}</span>
+                                                @enderror
+                                            </div>
+
+                                            <div class="mb-3 col-sm-4" id="exchange_rate_group">
+                                                <label for="exchange_rate">Exchange Rate (MMK)</label>
+                                                <input id="exchange_rate" type="number" class="form-control" name="exchange_rate" value="1" placeholder="0" required></td>
+                                                @error('exchange_rate')
+                                                    <span class="text-danger">{{ $message }}</span>
+                                                @enderror
+                                            </div>
+
+                                            <div class="mb-3 col-sm-4">
+                                                <label for="for_date">For Date</label>
+                                                <input type="date" class="form-control" id="for_date"
+                                                    name="for_date" value="{{ date('Y-m-d') }}" required>
+                                                @error('for_date')
+                                                    <span class="text-danger">{{ $message }}</span>
+                                                @enderror
+                                            </div>
+                                            
                                         </div>
                                         <!-- Invoice Items -->
                                         <div class="form-group">

@@ -12,6 +12,7 @@ class BusinessUnit extends Model
     protected $fillable = [
         'manager_id',
         'name',
+        'shorten_code',
         'bu_image',
         'bu_letter_image',
         'phone',

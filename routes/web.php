@@ -126,11 +126,18 @@ Route::group(['middleware' => ['auth']], function() {
 
     Route::resource('return-invoice', ReturnInvoiceController::class);
     Route::post('invoice/get_items', [CommonController::class, 'get_items'])->name('get.items');
+    Route::post('invoice/get_itemById', [CommonController::class, 'get_itemById'])->name('get.itemById');
+
+    Route::post('invoice/get_itemCategoryById', [CommonController::class, 'get_itemCategoryById'])->name('get.itemCategoryById');
+
+    Route::post('invoice/get_itemUnitById', [CommonController::class, 'get_itemUnitById'])->name('get.itemUnitById');
 
     Route::post('branch/get_projects', [CommonController::class, 'get_projects'])->name('get.projects');
     Route::post('business-unit/get_branches', [CommonController::class, 'get_branches'])->name('get.branches');
     Route::post('budget/get_budgets', [CommonController::class, 'get_budgets'])->name('get.budgets');
     Route::post('invoice/get_expenseInvoices', [CommonController::class, 'get_expenseInvoices'])->name('get.expenseInvoices');
+    // Route::post('invoice/get_expenseInvoiceById',[CommonController::class, 'get_expenseInvoiceById'])->name('get.expenseInvoiceById');
+    Route::post('invoice/get_expenseInvoiceItems',[CommonController::class, 'get_expenseInvoiceItems'])->name('get.expenseInvoiceItems');
     Route::post('invoice/get_incomeInvoices', [CommonController::class, 'get_incomeInvoices'])->name('get.incomeInvoices');
 
     //Temp fix route for user

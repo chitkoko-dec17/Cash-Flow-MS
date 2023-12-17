@@ -18,6 +18,7 @@ class BusinessUnitComponent extends Component
     //public $businessUnits;
     public $manager_id;
     public $name;
+    public $shorten_code;
     public $bu_image;
     public $bu_letter_image;
     public $phone;
@@ -98,6 +99,7 @@ class BusinessUnitComponent extends Component
         $this->reset([
             'manager_id',
             'name',
+            'shorten_code',
             'bu_image',
             'bu_letter_image',
             'phone',
@@ -113,6 +115,7 @@ class BusinessUnitComponent extends Component
         $this->validate([
             'manager_id' => 'required',
             'name' => 'required',
+            'shorten_code' => 'required',
             'bu_image' => 'nullable|image|mimes:jpg,png,jpeg|max:3072', // Assuming bu_image is an uploaded image field
             'bu_letter_image' => 'nullable|image|mimes:jpg,png,jpeg|max:3072',
             'phone' => 'required',
@@ -125,6 +128,7 @@ class BusinessUnitComponent extends Component
         BusinessUnit::create([
             'manager_id' => $this->manager_id,
             'name' => $this->name,
+            'shorten_code' => $this->shorten_code,
             'bu_image' => $businessUnitImage,
             'bu_letter_image' => $letterheadImage,
             'phone' => $this->phone,
@@ -145,6 +149,7 @@ class BusinessUnitComponent extends Component
         $this->validate([
             'manager_id' => 'required',
             'name' => 'required',
+            'shorten_code' => 'required',
             'bu_image' => 'nullable|image|mimes:jpg,png,jpeg|max:3072', // Assuming bu_image is an uploaded image field
             'bu_letter_image' => 'nullable|image|mimes:jpg,png,jpeg|max:3072',
             'phone' => 'required',
@@ -155,6 +160,7 @@ class BusinessUnitComponent extends Component
         $bu->update([
             'manager_id' => $this->manager_id,
             'name' => $this->name,
+            'shorten_code' => $this->shorten_code,
             'phone' => $this->phone,
             'address' => $this->address,
         ]);
@@ -184,9 +190,10 @@ class BusinessUnitComponent extends Component
     {
         $businessUnit = BusinessUnit::findOrFail($id);
         $this->businessUnitId = $id;
-        $this->editManager = $businessUnit->manager->name;
-        $this->manager_id = $businessUnit->manager_id;
+        $this->editManager = isset($businessUnit->manager->name) ? $businessUnit->manager->name : '';
+        $this->manager_id = isset($businessUnit->manager_id) ? $businessUnit->manager_id : '';
         $this->name = $businessUnit->name;
+        $this->shorten_code = $businessUnit->shorten_code;
         $this->phone = $businessUnit->phone;
         $this->address = $businessUnit->address;
 

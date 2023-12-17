@@ -22,6 +22,11 @@ class IncomeInvoice extends Model
         'invoice_no',
         'invoice_date',
         'total_amount',
+        'currency',
+        'exchange_rate',
+        'for_date',
+        'expense_total',
+        'net_total',
         'description',
         'upload_user_id',
         'appoved_manager_id',
@@ -30,6 +35,11 @@ class IncomeInvoice extends Model
         'admin_status',
         'edit_by',
     ];
+
+    public function businessUnit()
+    {
+        return $this->belongsTo(BusinessUnit::class, 'business_unit_id');
+    }
 
     public function branch()
     {

@@ -95,6 +95,37 @@
                                                 </select>
                                             </div>
                                             @endif
+
+                                            <div class="mb-3 col-sm-4">
+                                                <label for="currency">Currency</label>
+                                                <select class="form-control form-select" id="currency" name="currency" required>
+                                                    <option value="MMK" {{($invoice->currency == "MMK") ? 'selected' : ''}} >Myanmar Kyat (MMK)</option>
+                                                    <option value="USD" {{($invoice->currency == "USD") ? 'selected' : ''}}>US Dollar ($)</option>
+                                                    <option value="CNY" {{($invoice->currency == "CNY") ? 'selected' : ''}}>Chinese Yuan (¥)</option>
+                                                    <option value="THB" {{($invoice->currency == "THB") ? 'selected' : ''}}>Thai Baht (฿)</option>
+                                                </select>
+                                                @error('currency')
+                                                    <span class="text-danger">{{ $message }}</span>
+                                                @enderror
+                                            </div>
+
+                                            <div class="mb-3 col-sm-4" id="exchange_rate_group">
+                                                <label for="exchange_rate">Exchange Rate (MMK)</label>
+                                                <input id="exchange_rate" type="number" class="form-control" name="exchange_rate" value="{{$invoice->exchange_rate }}" placeholder="0"></td>
+                                                @error('exchange_rate')
+                                                    <span class="text-danger">{{ $message }}</span>
+                                                @enderror
+                                            </div>
+
+                                            <div class="mb-3 col-sm-4">
+                                                <label for="for_date">For Date</label>
+                                                <input type="date" class="form-control" id="for_date"
+                                                    name="for_date" value="{{$invoice->for_date }}">
+                                                @error('for_date')
+                                                    <span class="text-danger">{{ $message }}</span>
+                                                @enderror
+                                            </div>
+
                                         </div>
                                         <!-- Invoice Items -->
                                         <div class="form-group">
@@ -377,6 +408,7 @@
         let jcates = '';
         let junits = '';
         let project_id = '{{ $invoice->project_id }}';
+        let currency = '{{ $invoice->currency }}';
         @foreach($itemcategories as $cate)
             jcates += '<option value="{{ $cate->id }}">{{ $cate->name }}</option>';
         @endforeach
@@ -423,7 +455,7 @@
                             </div>
                         </td>
                         <td><input type="text" class="form-control amount" name="amount_up[]" step="0.01" value="0"></td>
-                        <td class="total">0.00 MMK</td>
+                        <td class="total">0.00 `+currency+`</td>
                         <td class="action-buttons"><button type="button" class="btn btn-danger btn-sm action-btn remove-btn"><i class="fa fa-trash"></i></button></td>
                     </tr>
                 `;
@@ -445,17 +477,17 @@
                 const quantity = $(this).closest("tr").find(".quantity").val();
                 const amount = $(this).closest("tr").find(".amount").val();
                 const total = parseFloat(quantity) * parseFloat(amount);
-                $(this).closest("tr").find(".total").text(total.toFixed(2) + "MMK");
+                $(this).closest("tr").find(".total").text(total.toFixed(2) + " "+currency);
                 calculateTotal();
             });
 
             function calculateTotal() {
                 let totalAmount = 0;
                 $("#invoiceItems tbody tr").each(function() {
-                    const total = parseFloat($(this).find(".total").text().replace("MMK", ""));
+                    const total = parseFloat($(this).find(".total").text().replace(currency, "").replace(/,/g, ""));
                     totalAmount += isNaN(total) ? 0 : total;
                 });
-                $(".totalAmount").text(totalAmount.toFixed(2) + "MMK");
+                $(".totalAmount").text(totalAmount.toFixed(2) + " "+currency);
                 $("#total_amount").val(totalAmount.toFixed(0));
             }
         });

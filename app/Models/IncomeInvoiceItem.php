@@ -37,9 +37,9 @@ class IncomeInvoiceItem extends Model
 
     public function invoice()
     {
-        return $this->belongsTo(ExpenseInvoice::class, 'invoice_id');
+        return $this->belongsTo(IncomeInvoice::class, 'invoice_id');
     }
-    
+
     public function unit()
     {
         return $this->belongsTo(ItemUnit::class, 'unit_id');
