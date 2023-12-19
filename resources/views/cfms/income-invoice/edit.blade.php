@@ -213,7 +213,7 @@
                                                         <tr>
                                                             <td colspan="7" class="text-right"><strong>Total:</strong></td>
                                                             <td colspan="2" class="totalAmount">{{ number_format($invoice->total_amount,2) }} {{$invoice->currency}}</td>
-                                                            <input type="hidden" name="total_amount" id="total_amount" value="{{ number_format($invoice->total_amount,2) }}">
+                                                            <input type="hidden" name="total_amount" id="total_amount" value="{{ $invoice->total_amount }}">
                                                             @error('total_amount')
                                                                 <span class="text-danger">{{ $message }}</span>
                                                             @enderror
