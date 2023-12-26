@@ -8,6 +8,7 @@ use Livewire\Component;
 use App\Models\Item;
 use App\Models\ItemCategory;
 use Livewire\WithPagination;
+use Auth;
 
 class ItemComponent extends Component
 {
@@ -28,6 +29,10 @@ class ItemComponent extends Component
      */
     public function render()
     {
+        if(Auth::user()->user_role != "Admin"){
+            abort(403);
+        }
+        
         $items = Item::search(trim($this->search))
         ->orderBy($this->sortColumnName,$this->sortDirectionBy)
         ->paginate($this->perPage);

@@ -9,6 +9,7 @@ use App\Models\OrgStructure;
 use App\Models\Project;
 use Livewire\Component;
 use Livewire\WithPagination;
+use Auth;
 
 class EstimateBudgetComponent extends Component
 {
@@ -26,6 +27,10 @@ class EstimateBudgetComponent extends Component
 
     public function render()
     {
+        if(Auth::user()->user_role != "Admin"){
+            abort(403);
+        }
+        
         $budgets = EstimateBudget::search(trim($this->search))
         ->orderBy($this->sortColumnName,$this->sortDirectionBy)
         ->paginate($this->perPage);

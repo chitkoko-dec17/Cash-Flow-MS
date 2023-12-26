@@ -5,6 +5,7 @@ namespace App\Http\Livewire;
 use App\Models\ItemUnit;
 use Livewire\Component;
 use Livewire\WithPagination;
+use Auth;
 
 class ItemUnitComponent extends Component
 {
@@ -18,6 +19,10 @@ class ItemUnitComponent extends Component
 
     public function render()
     {
+        if(Auth::user()->user_role != "Admin"){
+            abort(403);
+        }
+
         $itemUnits = ItemUnit::search(trim($this->search))
         ->orderBy($this->sortColumnName,$this->sortDirectionBy)
         ->paginate($this->perPage);

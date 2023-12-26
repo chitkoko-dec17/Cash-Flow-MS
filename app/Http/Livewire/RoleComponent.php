@@ -5,6 +5,7 @@ namespace App\Http\Livewire;
 use Livewire\Component;
 use App\Models\Role;
 use Livewire\WithPagination;
+use Auth;
 
 class RoleComponent extends Component
 {
@@ -22,6 +23,10 @@ class RoleComponent extends Component
      */
     public function render()
     {
+        if(Auth::user()->user_role != "Admin"){
+            abort(403);
+        }
+
         $roles = Role::search(trim($this->search))
         ->orderBy($this->sortColumnName,$this->sortDirectionBy)
         ->paginate($this->perPage);

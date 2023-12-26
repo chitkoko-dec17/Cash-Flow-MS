@@ -6,6 +6,7 @@ use App\Models\Branch;
 use App\Models\BusinessUnit;
 use Livewire\Component;
 use Livewire\WithPagination;
+use Auth;
 
 class BranchComponent extends Component
 {
@@ -20,6 +21,10 @@ class BranchComponent extends Component
 
     public function render()
     {
+        if(Auth::user()->user_role != "Admin"){
+            abort(403);
+        }
+        
         $branches = Branch::with('businessUnit')
         ->search(trim($this->search))
         ->orderBy($this->sortColumnName,$this->sortDirectionBy)
