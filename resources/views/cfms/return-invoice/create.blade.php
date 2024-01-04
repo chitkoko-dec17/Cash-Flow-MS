@@ -15,7 +15,10 @@
     @endcomponent
     @php
         $currency = isset($data['invoice']->currency) ? $data['invoice']->currency : 'MMK';
-        $total_amt = isset($data['invoice']->total_amount) ? number_format($data['invoice']->total_amount,2) : 0;
+        $exp_total = isset($data['invoice']->total_amount) ? $data['invoice']->total_amount : 0;
+        $exp_f_claimed_total = isset($data['invoice']->f_claimed_total) ? $data['invoice']->f_claimed_total : 0;
+        $total_amt = $exp_total - $exp_f_claimed_total; 
+        $total_amt = number_format($total_amt,2);
     @endphp
     <div class="container-fluid list-products">
         <div class="row">
@@ -105,7 +108,7 @@
                                                     <tfoot>
                                                         <tr>
                                                             <td colspan="8" class="text-right"><strong><b
-                                                                        class="exp_total">{{ $total_amt .' '.$currency}}</b> </strong>
+                                                                        class="exp_total">{{ $exp_f_claimed_total .' '.$currency}}</b> </strong>
                                                             </td>
                                                         </tr>
                                                     </tfoot>
@@ -126,7 +129,7 @@
                                             <div class="mb-3 col-sm-4">
                                                 <label for="total_amount">Total Amount <code class="max_total">(max: 0 {{$currency}})</code></label>
                                                 <input type="number" class="form-control" id="total_amount"
-                                                    name="total_amount">
+                                                    name="total_amount" value="{{$total_amt}}" readonly>
                                                 @error('total_amount')
                                                     <span class="text-danger">{{ $message }}</span>
                                                 @enderror
@@ -177,6 +180,7 @@
             // Reset data.
             $("#invoiceItems tbody tr").remove();
             item_no = 1;
+            let f_claimed_total = 0;
             exp_total = 0;
 
             var exp_inv_id = id.val();
@@ -192,7 +196,8 @@
                         _token: token
                     },
                     success: function(expenseInvoiceByIdData) {
-                        exp_total = expenseInvoiceByIdData.array_data.invoice.total_amount;
+                        f_claimed_total = expenseInvoiceByIdData.array_data.invoice.f_claimed_total || 0;
+                        exp_total = expenseInvoiceByIdData.array_data.invoice.total_amount - f_claimed_total;
                         currency = (expenseInvoiceByIdData.array_data.invoice.currency) ? expenseInvoiceByIdData.array_data.invoice.currency : 'MMK';
 
                         $.each(expenseInvoiceByIdData.array_data.expItems, function(value, text) {
@@ -219,7 +224,7 @@
                         $("#invoiceItems tbody").append(item_row);
                         $(".exp_total").text("Total: " + exp_total + " "+currency);
                         $(".max_total").text("max: " +exp_total + " "+currency);
-                        $("#total_amount").prop("max", exp_total);
+                        $("#total_amount").val(exp_total);
                     }
                 });
             }

@@ -9,6 +9,13 @@
         <li class="breadcrumb-item"><a href="{{ route('return-invoice.index') }}">Return List</a></li>
         <li class="breadcrumb-item active">Detail</li>
     @endcomponent
+    @php
+        $currency = isset($data['invoice']->currency) ? $data['invoice']->currency : 'MMK';
+        $exp_total = isset($data['invoice']->total_amount) ? $data['invoice']->total_amount : 0;
+        $exp_f_claimed_total = isset($data['invoice']->f_claimed_total) ? $data['invoice']->f_claimed_total : 0;
+        $total_amt = $exp_total - $exp_f_claimed_total; 
+        $total_amt = number_format($total_amt,2);
+    @endphp
     <div class="container-fluid list-products">
         <div class="row">
             <div class="card">
@@ -19,12 +26,76 @@
                             <div class="row">
                                 <div class="col-xl-12 col-sm-12">
                                     
-                                        <div class="row">
-                                            <div class="mb-3 col-sm-4">
-                                                <label for="invoice_id">Expense Invoice No.</label>
-                                                <input type="date" class="form-control" id="invoice_date" name="invoice_date" value="{{$invoice->invoice_date }}">
-                                            </div>
+                                        
+                                        <div class="mb-3 col-sm-4">
+                                            <label for="invoice_id">Expense Invoice No.</label>
+                                            <input type="date" class="form-control" id="invoice_date" name="invoice_date" value="{{$invoice->invoice_date }}">
+                                        </div>
 
+                                        <!-- Invoice Items -->
+                                        <div class="form-group">
+                                            <label for="invoiceItems">Invoice Items</label>
+                                            <div class="table-container">
+                                                <table class="table table-bordered" id="invoiceItems">
+                                                    <thead>
+                                                        <tr>
+                                                            <th>No.</th>
+                                                            <th>Category</th>
+                                                            <th class="fixed-column">Item</th>
+                                                            <th>Payment</th>
+                                                            <th>Description</th>
+                                                            <th>Quantity & Unit</th>
+                                                            <th>Unit Price ({{$currency}})</th>
+                                                            <th>Total</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        @php
+                                                            $item_no = 1;
+                                                        @endphp
+                                                        @if (count($data['invoice_items']) > 0)
+                                                            @foreach ($data['invoice_items'] as $invitem)
+                                                        <tr>
+                                                            <td class="item_no">{{ $item_no }}</td>
+                                                            <td class="category_name">{{$invitem->category->name}}</td>
+                                                            <td class="fixed-column item_name">{{$invitem->item->name}}</td>
+                                                            <td class="payment">
+                                                                {{ ($invitem->payment_type == "bank") ? "Bank" : "Cash"; }}
+                                                            </td>
+                                                            <td class="description">{{$invitem->item_description}}</td>
+                                                            <td>
+                                                                <div class="row" style="justify-content: center;">
+                                                                    <div
+                                                                        class="m-0 p-0 ps-2 pe-2 col-sm-12 col-md-12 col-lg-7">
+                                                                        <span class="quantity">{{$invitem->qty}}</span>
+                                                                    </div>
+                                                                    <div
+                                                                        class="m-0 p-0 ps-2 pe-2 col-sm-12 col-md-12 col-lg-5">
+                                                                        <span class="unit">{{$invitem->unit->name}}</span>
+                                                                    </div>
+                                                                </div>
+                                                            </td>
+                                                            <td class="unit_price">{{$invitem->amount .' '.$currency}}</td>
+                                                            <td class="total">{{ number_format($invitem->qty * $invitem->amount,2) .' '.$currency}} </td>
+                                                        </tr>
+                                                        @php
+                                                            $item_no++;
+                                                        @endphp
+                                                            @endforeach
+                                                        @endif
+                                                    </tbody>
+                                                    <tfoot>
+                                                        <tr>
+                                                            <td colspan="8" class="text-right"><strong><b
+                                                                        class="exp_total">{{ $exp_f_claimed_total .' '.$currency}}</b> </strong>
+                                                            </td>
+                                                        </tr>
+                                                    </tfoot>
+                                                </table>
+                                            </div>
+                                        </div>
+
+                                        <div class="row">
                                             <div class="mb-3 col-sm-4">
                                                 <label for="invoice_date">Invoice Date</label>
                                                 <input type="date" class="form-control" id="invoice_date" name="invoice_date" value="{{$invoice->invoice_date }}">
