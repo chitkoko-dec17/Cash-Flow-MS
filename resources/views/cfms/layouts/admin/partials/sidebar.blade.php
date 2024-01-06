@@ -31,7 +31,8 @@
                             <h6>Settings</h6>
                         </div>
                     </li>
-                    @if(Auth::user()->user_role == "Admin") //|| Auth::user()->user_role == "Account" || Auth::user()->user_role == "HR"
+                    @if(Auth::user()->user_role == "Admin") 
+                    <!-- //|| Auth::user()->user_role == "Account" || Auth::user()->user_role == "HR" -->
                     <li>
                         <a class="nav-link menu-title link-nav" href="{{ route('dashboard') }}"><i data-feather="home"></i><span>Dashboard</span></a>
                     </li>

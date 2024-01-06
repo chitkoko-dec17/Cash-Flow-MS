@@ -340,7 +340,14 @@ class ExpenseInvoiceController extends Controller
         // $exp_invoice->branch_id = $request->branch_id;
         // $exp_invoice->project_id = ($request->project_id) ? $request->project_id : 0;
         $exp_invoice->invoice_date = $request->invoice_date;
-        $exp_invoice->total_amount = $request->total_amount;
+        if($request->status == 'pending'){
+            $exp_invoice->total_amount = $request->total_amount;
+        }elseif($request->status == 'claimed'){
+            // not save
+        }else{
+            $exp_invoice->f_claimed_total = $request->total_amount;
+        }
+        
         $exp_invoice->description = $request->description;
         $exp_invoice->for_date = $request->for_date;
         if(Auth::user()->role->name != "Staff"){

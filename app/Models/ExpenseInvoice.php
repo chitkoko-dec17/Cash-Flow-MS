@@ -22,6 +22,7 @@ class ExpenseInvoice extends Model
         'invoice_no',
         'invoice_date',
         'total_amount',
+        'f_claimed_total',
         'currency',
         'exchange_rate',
         'for_date',

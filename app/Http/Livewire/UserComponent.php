@@ -12,6 +12,7 @@ use App\Models\User;
 use App\Models\Role;
 use Illuminate\Support\Facades\Hash;
 use Livewire\WithPagination;
+use Auth;
 
 class UserComponent extends Component
 {
@@ -35,6 +36,10 @@ class UserComponent extends Component
      */
     public function render()
     {
+        if(Auth::user()->user_role != "Admin"){
+            abort(403);
+        }
+
         $users = User::search(trim($this->search))
         ->orderBy($this->sortColumnName,$this->sortDirectionBy)
         ->paginate($this->perPage);

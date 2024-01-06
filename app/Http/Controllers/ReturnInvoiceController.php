@@ -190,8 +190,11 @@ class ReturnInvoiceController extends Controller
     {
         $invoice = ReturnInvoice::find($id);
         // $invoice_no = 'EXINV-'.$invoice->invoice_no;
+        //expense invoice data
+        $data['invoice'] = ExpenseInvoice::where('id', $invoice->invoice_id)->first();
+        $data['invoice_items'] = ExpenseInvoiceItem::where('invoice_id', $invoice->invoice_id)->where('invoice_type','expense')->get();
 
-        return view('cfms.return-invoice.view', compact('invoice'));
+        return view('cfms.return-invoice.view', compact('invoice', 'data'));
     }
 
     /**
@@ -206,6 +209,10 @@ class ReturnInvoiceController extends Controller
         $this->cuser_role = Auth::user()->user_role;
         $invoice = ReturnInvoice::find($id);
 
+        //expense invoice data
+        $data['invoice'] = ExpenseInvoice::where('id', $invoice->invoice_id)->first();
+        $data['invoice_items'] = ExpenseInvoiceItem::where('invoice_id', $invoice->invoice_id)->where('invoice_type','expense')->get();
+
         $expense_invoices = array();
         if($this->cuser_role == "Admin"){
             $expense_invoices = ExpenseInvoice::all(['id', 'invoice_no','business_unit_id']);
@@ -215,7 +222,7 @@ class ReturnInvoiceController extends Controller
             $expense_invoices = ExpenseInvoice::where('business_unit_id', $this->cuser_business_unit_id)->where('upload_user_id', Auth::id())->get(['id', 'invoice_no','business_unit_id']);
         }
 
-        return view('cfms.return-invoice.edit', compact('invoice','expense_invoices'));
+        return view('cfms.return-invoice.edit', compact('invoice','expense_invoices','data'));
     }
 
     /**
@@ -228,7 +235,6 @@ class ReturnInvoiceController extends Controller
     public function update(Request $request, $id)
     {
         $request->validate([
-            'invoice_id'  =>  'required',
             'invoice_date'  =>  'required',
             'total_amount'  =>  'required',
             'docs'   =>  'mimes:jpg,png,jpeg,pdf,xls|max:3072'
@@ -236,14 +242,14 @@ class ReturnInvoiceController extends Controller
 
         $upload_path = 'return_docs/';
 
-        $exp_invoice = ExpenseInvoice::find($request->invoice_id);
-        $exp_invoice->return_total_amount = $request->total_amount;
-        $exp_invoice->save();
+        // $exp_invoice = ExpenseInvoice::find($request->invoice_id);
+        // $exp_invoice->return_total_amount = $request->total_amount;
+        // $exp_invoice->save();
 
         $return_inv = ReturnInvoice::find($id);
-        $return_inv->invoice_id = $request->invoice_id;
+        // $return_inv->invoice_id = $request->invoice_id;
         $return_inv->invoice_date = $request->invoice_date;
-        $return_inv->total_amount = $request->total_amount;
+        // $return_inv->total_amount = $request->total_amount;
         $return_inv->description = $request->description;
         $return_inv->edit_by = Auth::id();
 

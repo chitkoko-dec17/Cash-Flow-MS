@@ -9,6 +9,7 @@ use Livewire\Component;
 use Livewire\WithFileUploads;
 use Livewire\WithPagination;
 use Psy\Readline\Hoa\Console;
+use Auth;
 
 class BusinessUnitComponent extends Component
 {
@@ -42,6 +43,10 @@ class BusinessUnitComponent extends Component
      */
     public function render()
     {
+        if(Auth::user()->user_role != "Admin"){
+            abort(403);
+        }
+        
         $businessUnits = BusinessUnit::when($this->byManager, function($query){
             $query->where('manager_id', $this->byManager);
         })

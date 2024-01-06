@@ -6,6 +6,7 @@ use App\Models\BusinessUnit;
 use Livewire\Component;
 use App\Models\ItemCategory;
 use Livewire\WithPagination;
+use Auth;
 
 class ItemCategoryComponent extends Component
 {
@@ -25,6 +26,10 @@ class ItemCategoryComponent extends Component
      */
     public function render()
     {
+        if(Auth::user()->user_role != "Admin"){
+            abort(403);
+        }
+        
         $itemcategories = ItemCategory::with('businessUnit')
         ->search(trim($this->search))
         ->orderBy($this->sortColumnName,$this->sortDirectionBy)

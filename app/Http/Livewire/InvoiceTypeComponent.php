@@ -6,6 +6,7 @@ use Livewire\Component;
 use App\Models\InvoiceType;
 use App\Models\ItemCategory;
 use Livewire\WithPagination;
+use Auth;
 
 class InvoiceTypeComponent extends Component
 {
@@ -23,6 +24,10 @@ class InvoiceTypeComponent extends Component
      */
     public function render()
     {
+        if(Auth::user()->user_role != "Admin"){
+            abort(403);
+        }
+        
         $invoicetypes = InvoiceType::search(trim($this->search))
         ->orderBy($this->sortColumnName,$this->sortDirectionBy)
         ->paginate($this->perPage);
