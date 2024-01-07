@@ -223,7 +223,10 @@
                                                     <h6 class="mb-0 p-2">Total</h6>
                                                 </td>
                                                 <td class="payment digits">
-                                                    <h6 class="mb-0 p-2">{{ number_format($invoice->total_amount,2) }}</h6>
+                                                    @php
+                                                        $total_amount = ($invoice->admin_status == "pending") ? $invoice->total_amount : $invoice->f_claimed_total;
+                                                    @endphp
+                                                    <h6 class="mb-0 p-2">{{ number_format($total_amount,2) }}</h6>
                                                 </td>
                                             </tr>
                                         </tbody>

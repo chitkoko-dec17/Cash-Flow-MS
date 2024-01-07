@@ -180,7 +180,10 @@
                             <p>Total Payable</p>
                         </div>
                         <div class="total-right w-15 float-left text-bold" align="right">
-                            <p>{{ number_format($invoice->total_amount,2) }}</p>
+                            @php
+                                $total_amount = ($invoice->admin_status == "pending") ? $invoice->total_amount : $invoice->f_claimed_total;
+                            @endphp
+                            <p>{{ number_format($total_amount,2) }}</p>
                         </div>
                         <div style="clear: both;"></div>
                     </div>
