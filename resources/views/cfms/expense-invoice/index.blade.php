@@ -106,13 +106,17 @@
                                     @if (count($expense_invoices) > 0)
                                         @foreach ($expense_invoices as $inv)
                                             @php
+                                                $exp_total = $inv->total_amount;
+                                                $claimed_total = ($inv->f_claimed_total) ? $inv->f_claimed_total : 0;
                                                 $total_amount = ($inv->admin_status == "pending") ? $inv->total_amount : $inv->f_claimed_total;
                                             @endphp
                                             <tr>
                                                 <td class="fixed-column">{{ $inv->invoice_no ." (".$inv->businessUnit->shorten_code.")" }}</td>
                                                 <td>{{ $inv->invoice_date }}</td>
                                                 <td>{{ $inv->staff->name }}</td>
-                                                <td>{{ number_format($total_amount, 2); }}</td>
+                                                <td>{{ number_format($total_amount, 2); }} <br/>
+                                                    {{ "(".$exp_total ." - ". $claimed_total .")" }}
+                                                </td>
                                                 <td><span class="badge badge-primary {{ $inv->admin_status }}">{{ $inv->admin_status }}</span></td>
                                                 <td class="action-buttons">
                                                     <a href="{{ route('expense-invoice.show', $inv->id) }}"
@@ -122,10 +126,13 @@
                                                         class="btn btn-outline-info btn-sm  action-btn" title="Edit"
                                                         data-toggle="tooltip"><i class="fa fa-pencil"></i></a>
                                                     @if(($data['user_role'] == "Staff" && $inv->return_total_amount == 0) || ($data['user_role'] != "Staff"))
-                                                    <a href="{{ route('return-invoice.create') }}/?expense_inv={{ $inv->id }}" data-toggle="modal"
+
+                                                        @if($inv->admin_status == 'complete' || $inv->admin_status == 'ready_to_claim')
+                                                            <a href="{{ route('return-invoice.create') }}/?expense_inv={{ $inv->id }}" 
                                                         class="btn btn-outline-warning btn-sm  action-btn"
                                                         title="Go Return Invoice" data-toggle="tooltip"><i
                                                             class="fa fa-file"></i></a>
+                                                        @endif
                                                     @endif
                                                     @if($data['user_role'] != "Staff" || ($data['user_role'] == "Staff" && $inv->admin_status == 'pending'))
                                                     <a href="javascript:void(0)" data-toggle="modal"

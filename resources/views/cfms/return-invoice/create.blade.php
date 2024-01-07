@@ -18,7 +18,7 @@
         $exp_total = isset($data['invoice']->total_amount) ? $data['invoice']->total_amount : 0;
         $exp_f_claimed_total = isset($data['invoice']->f_claimed_total) ? $data['invoice']->f_claimed_total : 0;
         $total_amt = $exp_total - $exp_f_claimed_total; 
-        $total_amt = number_format($total_amt,2);
+        //$total_amt = number_format($total_amt,2);
     @endphp
     <div class="container-fluid list-products">
         <div class="row">
