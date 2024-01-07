@@ -212,7 +212,7 @@
                                                     </tbody>
                                                     <tfoot>
                                                         @php
-                                                            $total_amount = ($inv->admin_status == "pending") ? $inv->total_amount : $inv->f_claimed_total;
+                                                            $total_amount = ($invoice->admin_status == "pending") ? $invoice->total_amount : $invoice->f_claimed_total;
                                                         @endphp
                                                         <tr>
                                                             <td colspan="7" class="text-right"><strong>Total:</strong></td>
