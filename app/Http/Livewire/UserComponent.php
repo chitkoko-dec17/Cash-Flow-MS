@@ -238,8 +238,14 @@ class UserComponent extends Component
     public function delete()
     {
         User::find($this->userIdToDelete)->delete();
-        BranchUser::find($this->userIdToDelete)->delete();
-        ProjectUser::find($this->userIdToDelete)->delete();
+        $branchuser = BranchUser::find($this->userIdToDelete);
+        if($branchuser){
+            $branchuser->delete();
+        }
+        $projectuser = ProjectUser::find($this->userIdToDelete);
+        if($projectuser){
+            $projectuser->delete();
+        }
         $this->emit('btnCreateOrUpdated','delete');
         $this->confirmingDelete = false;
         $this->userIdToDelete = null;
