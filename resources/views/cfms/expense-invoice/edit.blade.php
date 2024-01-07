@@ -235,7 +235,7 @@
                                             <label for="docs">Invoice Files</label>
                                             <input type="file" class="form-control" id="docs" name="docs[]" multiple>
                                         </div>
-                                        @if($data['submit_btn_control'] == true)
+                                        @if($data['submit_btn_control'] == true && $invoice->admin_status != "claimed")
                                         <button type="submit" class="btn btn-primary">Update</button>
                                         @endif
                                     </form>

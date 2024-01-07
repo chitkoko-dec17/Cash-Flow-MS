@@ -330,13 +330,19 @@ class ExpenseInvoiceController extends Controller
             'total_amount'  =>  'required'
         ]);
 
+        $exp_invoice = ExpenseInvoice::find($id);
+
+        if($exp_invoice->total_amount < $request->total_amount && $request->status != "pending"){
+            return redirect('/expense-invoice')->with('error', "Expected total amount should not greater than the final claimed total amount.");
+        }
+
         $item_amount = $request->amount;
         $item_quantity = $request->quantity;
         $item_unit_ids = $request->unit_ids;
         $item_description = $request->idescription;
         $item_payment_type = $request->payment_type;
 
-        $exp_invoice = ExpenseInvoice::find($id);
+        
         // $exp_invoice->branch_id = $request->branch_id;
         // $exp_invoice->project_id = ($request->project_id) ? $request->project_id : 0;
         $exp_invoice->invoice_date = $request->invoice_date;
