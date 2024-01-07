@@ -211,10 +211,13 @@
                                                         @endif
                                                     </tbody>
                                                     <tfoot>
+                                                        @php
+                                                            $total_amount = ($inv->admin_status == "pending") ? $inv->total_amount : $inv->f_claimed_total;
+                                                        @endphp
                                                         <tr>
                                                             <td colspan="7" class="text-right"><strong>Total:</strong></td>
-                                                            <td colspan="2" class="totalAmount">{{ number_format($invoice->total_amount,2) }} MMK</td>
-                                                            <input type="hidden" name="total_amount" id="total_amount" value="{{ $invoice->total_amount }}">
+                                                            <td colspan="2" class="totalAmount">{{ number_format($total_amount,2) }} MMK</td>
+                                                            <input type="hidden" name="total_amount" id="total_amount" value="{{ $total_amount }}">
                                                             @error('total_amount')
                                                                 <span class="text-danger">{{ $message }}</span>
                                                             @enderror
