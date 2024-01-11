@@ -244,7 +244,7 @@
                                                                     name="amount[]" step="0.01" value="{{$invitem->amount}}"></td>
                                                             <td class="total">{{ number_format($invitem->qty * $invitem->amount,2) }} {{$invoice->currency}}</td>
                                                             <td class="action-buttons">
-                                                                @if($data['submit_btn_control'] == true)
+                                                                @if($data['submit_btn_control'] == true && $invoice->admin_status != "claimed")
                                                                 <button type="button"
                                                                     class="btn btn-danger btn-sm action-btn remove-edit-btn" data-attr="{{ url('/income/item', $invitem->id) }}"><i
                                                                         class="fa fa-trash"></i></button>
@@ -269,7 +269,7 @@
                                                     </tfoot>
                                                 </table>
                                             </div>
-                                            @if($data['submit_btn_control'] == true)
+                                            @if($data['submit_btn_control'] == true && $invoice->admin_status != "claimed")
                                             <button type="button" class="btn btn-light mt-2" id="add-item-btn"><i
                                                     class="fa fa-plus"></i> Add Item</button>
                                             @endif
@@ -285,6 +285,7 @@
 
 
                                         <!-- Expense Items -->
+                                        @if (count($exp_invoice_items) > 0)
                                         <div class="form-group" id="income-expense-form">
                                             <label for="expenseItems" class="expense-item-title mt-2">Expense Items</label>
                                             <div class="table-container">
@@ -306,7 +307,7 @@
                                                         @php
                                                             $exp_item_no = 1;
                                                         @endphp
-                                                        @if (count($exp_invoice_items) > 0)
+                                                        
                                                             @foreach ($exp_invoice_items as $exp_invitem)
                                                         <tr>
                                                             <td>{{ $exp_item_no }}</td>
@@ -361,7 +362,7 @@
                                                                 $exp_item_no++;
                                                             @endphp
                                                             @endforeach
-                                                        @endif
+                                                        
                                                     </tbody>
                                                     <tfoot>
                                                         <tr>
@@ -386,8 +387,9 @@
                                             <button type="button" class="btn btn-light mt-2" id="add-exp-item-btn"><i
                                                     class="fa fa-plus"></i> Add Expense Item</button>
                                         </div>
+                                        @endif
 
-                                        @if($data['submit_btn_control'] == true)
+                                        @if($data['submit_btn_control'] == true && $invoice->admin_status != "claimed")
                                         <button type="submit" class="btn btn-primary">Update</button>
                                         @endif
                                     </form>
