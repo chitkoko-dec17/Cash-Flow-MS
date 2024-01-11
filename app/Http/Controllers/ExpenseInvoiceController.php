@@ -21,7 +21,7 @@ use DB;
 class ExpenseInvoiceController extends Controller
 {
     private $statuses = array("pending" => "Pending","checking" => "Checking","checkedup" => "Checked Up","reject" => "Reject","complete" => "Complete", "ready_to_claim" => "Ready To Claim","claimed" => "Claimed");
-    private $staff_hr_statuses = array("pending" => "Pending","checking" => "Checking","checkedup" => "Checked Up");
+    private $hr_statuses = array("pending" => "Pending","checking" => "Checking","checkedup" => "Checked Up");
     private $manager_statuses = array("pending" => "Pending","checking" => "Checking","checkedup" => "Checked Up","reject" => "Reject");
     private $account_statuses = array("ready_to_claim" => "Ready To Claim","claimed" => "Claimed");
     private $cuser_role = null;
@@ -316,7 +316,7 @@ class ExpenseInvoiceController extends Controller
         $data['submit_btn_control'] = $submit_btn_control;
         $data['user_role'] = Auth::user()->user_role;
 
-        $data['staff_hr_statuses'] = $this->staff_hr_statuses;
+        $data['hr_statuses'] = $this->hr_statuses;
         $data['manager_statuses'] = $this->manager_statuses;
         $data['account_statuses'] = $this->account_statuses;
 

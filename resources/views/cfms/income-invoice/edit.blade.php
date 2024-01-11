@@ -76,22 +76,70 @@
                                                 @enderror
                                             </div>
 
-                                            @if($data['user_role'] != "Staff")
+                                            <!-- admin -->
+                                            @if($data['user_role'] == "Admin")
                                             <div class="mb-3 col-sm-4">
                                                 <label for="status">Invoice Status</label>
                                                 <select class="form-control form-select" id="status" name="status">
-                                                	@foreach($statuses as $skey => $statuse)
-                                                    @if($invoice->admin_status == $skey)
-                                                    	<option value="{{ $skey }}" selected>{{ $statuse }}</option>
-                                                    @else
-                                                    	@if($data['user_role'] == "Manager" && $skey == "complete")
-
+                                                    @foreach($statuses as $skey => $statuse)
+                                                        @if($invoice->admin_status == $skey)
+                                                            <option value="{{ $skey }}" selected>{{ $statuse }}</option>
                                                         @else
                                                             <option value="{{ $skey }}">{{ $statuse }}</option>
                                                         @endif
-                                                    @endif
 
-                                                  @endforeach
+                                                    @endforeach
+                                                </select>
+                                            </div>
+                                            @endif
+
+                                            <!-- hr -->
+                                            @if($data['user_role'] == "HR" &&  ($invoice->admin_status == 'pending' || $invoice->admin_status == 'checking' || $invoice->admin_status == 'checkedup')) 
+                                            <div class="mb-3 col-sm-4">
+                                                <label for="status">Invoice Status</label>
+                                                <select class="form-control form-select" id="status" name="status">
+                                                    @foreach($data['hr_statuses'] as $skey => $statuse)
+                                                        @if($invoice->admin_status == $skey)
+                                                            <option value="{{ $skey }}" selected>{{ $statuse }}</option>
+                                                        @else
+                                                            <option value="{{ $skey }}">{{ $statuse }}</option>
+                                                        @endif
+
+                                                    @endforeach
+                                                </select>
+                                            </div>
+                                            @endif
+
+                                            <!-- manager -->
+                                            @if($data['user_role'] == "Manager"  &&  ($invoice->admin_status == 'pending' || $invoice->admin_status == 'checking' || $invoice->admin_status == 'checkedup' || $invoice->admin_status == 'reject' || $invoice->admin_status == 'complete')) 
+                                            <div class="mb-3 col-sm-4">
+                                                <label for="status">Invoice Status</label>
+                                                <select class="form-control form-select" id="status" name="status">
+                                                    @foreach($data['manager_statuses'] as $skey => $statuse)
+                                                        @if($invoice->admin_status == $skey)
+                                                            <option value="{{ $skey }}" selected>{{ $statuse }}</option>
+                                                        @else
+                                                            <option value="{{ $skey }}">{{ $statuse }}</option>
+                                                        @endif
+
+                                                    @endforeach
+                                                </select>
+                                            </div>
+                                            @endif
+
+                                            <!-- account -->
+                                            @if($data['user_role'] == "Account"  &&  ($invoice->admin_status == 'complete' || $invoice->admin_status == 'ready_to_claim' || $invoice->admin_status == 'claimed')) 
+                                            <div class="mb-3 col-sm-4">
+                                                <label for="status">Invoice Status</label>
+                                                <select class="form-control form-select" id="status" name="status">
+                                                    @foreach($data['account_statuses'] as $skey => $statuse)
+                                                        @if($invoice->admin_status == $skey)
+                                                            <option value="{{ $skey }}" selected>{{ $statuse }}</option>
+                                                        @else
+                                                            <option value="{{ $skey }}">{{ $statuse }}</option>
+                                                        @endif
+
+                                                    @endforeach
                                                 </select>
                                             </div>
                                             @endif

@@ -21,7 +21,10 @@ use DB;
 
 class IncomeInvoiceController extends Controller
 {
-    private $statuses = array("pending" => "Pending","checking" => "Checking","checkedup" => "Checked Up","reject" => "Reject","ready_to_claim" => "Ready To Claim","claimed" => "Claimed","complete" => "Complete");
+    private $statuses = array("pending" => "Pending","checking" => "Checking","checkedup" => "Checked Up","reject" => "Reject","complete" => "Complete", "ready_to_claim" => "Ready To Claim","claimed" => "Claimed");
+    private $hr_statuses = array("pending" => "Pending","checking" => "Checking","checkedup" => "Checked Up");
+    private $manager_statuses = array("pending" => "Pending","checking" => "Checking","checkedup" => "Checked Up","reject" => "Reject");
+    private $account_statuses = array("ready_to_claim" => "Ready To Claim","claimed" => "Claimed");
     private $cuser_role = null;
     private $cuser_business_unit_id = null;
 
@@ -231,20 +234,22 @@ class IncomeInvoiceController extends Controller
         $exp_item_description = $request->exp_idescription;
         $exp_item_payment_type = $request->exp_payment_type;
 
-        foreach($request->exp_items as $eitind => $exp_item){
-            $item_cate = Item::where('id',$exp_item)->first();
+        if(!empty($request->exp_items)){
+            foreach($request->exp_items as $eitind => $exp_item){
+                $item_cate = Item::where('id',$exp_item)->first();
 
-            ExpenseInvoiceItem::create([
-                'category_id' => $item_cate->category_id,
-                'invoice_id' => $inc_invoice->id,
-                'invoice_type' => 'income',
-                'item_id' => $exp_item,
-                'qty' => $exp_item_quantity[$eitind],
-                'amount' => $exp_item_amount[$eitind],
-                'unit_id' => $exp_item_unit_ids[$eitind],
-                'item_description' => $exp_item_description[$eitind],
-                'payment_type' => $exp_item_payment_type[$eitind],
-            ]);
+                ExpenseInvoiceItem::create([
+                    'category_id' => $item_cate->category_id,
+                    'invoice_id' => $inc_invoice->id,
+                    'invoice_type' => 'income',
+                    'item_id' => $exp_item,
+                    'qty' => $exp_item_quantity[$eitind],
+                    'amount' => $exp_item_amount[$eitind],
+                    'unit_id' => $exp_item_unit_ids[$eitind],
+                    'item_description' => $exp_item_description[$eitind],
+                    'payment_type' => $exp_item_payment_type[$eitind],
+                ]);
+            }
         }
 
 
@@ -333,6 +338,9 @@ class IncomeInvoiceController extends Controller
         }
         $data['submit_btn_control'] = $submit_btn_control;
         $data['user_role'] = Auth::user()->user_role;
+        $data['hr_statuses'] = $this->hr_statuses;
+        $data['manager_statuses'] = $this->manager_statuses;
+        $data['account_statuses'] = $this->account_statuses;
 
         return view('cfms.income-invoice.edit', compact('invoice', 'invoice_items','invoice_docs','invoice_no','itemcategories','branches', 'statuses', 'invoice_notes', 'data', 'itemunits','exp_invoice_items'));
     }

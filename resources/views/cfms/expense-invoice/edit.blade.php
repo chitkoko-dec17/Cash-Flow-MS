@@ -93,12 +93,12 @@
                                             </div>
                                             @endif
 
-                                            <!-- staff and hr -->
-                                            @if(($data['user_role'] == "Staff" || $data['user_role'] == "HR") &&  ($invoice->admin_status == 'pending' || $invoice->admin_status == 'checking' || $invoice->admin_status == 'checkedup')) 
+                                            <!-- hr -->
+                                            @if($data['user_role'] == "HR" &&  ($invoice->admin_status == 'pending' || $invoice->admin_status == 'checking' || $invoice->admin_status == 'checkedup')) 
                                             <div class="mb-3 col-sm-4">
                                                 <label for="status">Invoice Status</label>
                                                 <select class="form-control form-select" id="status" name="status">
-                                                    @foreach($data['staff_hr_statuses'] as $skey => $statuse)
+                                                    @foreach($data['hr_statuses'] as $skey => $statuse)
                                                         @if($invoice->admin_status == $skey)
                                                             <option value="{{ $skey }}" selected>{{ $statuse }}</option>
                                                         @else
