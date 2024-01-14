@@ -20,7 +20,7 @@
                         <span>Configuration</span>
                     </span>
 
-                    @if(Auth::user()->user_role == "Admin" || Auth::user()->user_role == "Manager" || Auth::user()->user_role == "Staff")
+                    @if(Auth::user()->user_role == "Manager" || Auth::user()->user_role == "Staff")
                     <a href="{{ route('expense-invoice.create') }}" class="btn btn-primary float-end" type="button"><i
                             class="fa fa-edit"></i> Create New Expense Invoice</a>
                     @endif

@@ -365,25 +365,7 @@ class IncomeInvoiceController extends Controller
         $item_description = $request->idescription;
         $item_payment_type = $request->payment_type;
 
-        $exp_invoice = IncomeInvoice::find($id);
-        // $exp_invoice->branch_id = $request->branch_id;
-        // $exp_invoice->project_id = ($request->project_id) ? $request->project_id : 0;
-        $exp_invoice->invoice_date = $request->invoice_date;
-        $exp_invoice->total_amount = $request->total_amount;
-        $exp_invoice->description = $request->description;
-        $exp_invoice->for_date = $request->for_date;
-        $exp_invoice->net_total = $request->net_total_amount;
-        if(Auth::user()->role->name != "Staff"){
-            $exp_invoice->manager_status = $request->status;
-            $exp_invoice->admin_status = $request->status;
-        }
-        if(Auth::user()->role->name == "Admin"){
-            $exp_invoice->appoved_admin_id = Auth::id();
-        }elseif(Auth::user()->role->name == "Manager") {
-            $exp_invoice->appoved_manager_id = Auth::id();
-        }
-        $exp_invoice->edit_by = Auth::id();
-        $exp_invoice->save();
+        $updated_total_amt = 0;
 
         if(!empty($request->invitem)){
             foreach($request->invitem as $itind => $item){
@@ -395,6 +377,8 @@ class IncomeInvoiceController extends Controller
                 $inc_invoice_item->item_description = $item_description[$itind];
                 $inc_invoice_item->payment_type = $item_payment_type[$itind];
                 $inc_invoice_item->save();
+
+                $updated_total_amt += $item_quantity[$itind] * $item_amount[$itind];
             }
         }
 
@@ -418,8 +402,31 @@ class IncomeInvoiceController extends Controller
                     'item_description' => $item_description_up[$itind],
                     'payment_type' => $item_payment_type_up[$itind],
                 ]);
+
+                $updated_total_amt += $item_quantity_up[$itind] * $item_amount_up[$itind];
             }
         }
+
+        //update the invoice data
+        $exp_invoice = IncomeInvoice::find($id);
+        // $exp_invoice->branch_id = $request->branch_id;
+        // $exp_invoice->project_id = ($request->project_id) ? $request->project_id : 0;
+        $exp_invoice->invoice_date = $request->invoice_date;
+        $exp_invoice->total_amount = $updated_total_amt; //$request->total_amount;
+        $exp_invoice->description = $request->description;
+        $exp_invoice->for_date = $request->for_date;
+        $exp_invoice->net_total = $request->net_total_amount;
+        if(Auth::user()->role->name != "Staff"){
+            $exp_invoice->manager_status = $request->status;
+            $exp_invoice->admin_status = $request->status;
+        }
+        if(Auth::user()->role->name == "Admin"){
+            $exp_invoice->appoved_admin_id = Auth::id();
+        }elseif(Auth::user()->role->name == "Manager") {
+            $exp_invoice->appoved_manager_id = Auth::id();
+        }
+        $exp_invoice->edit_by = Auth::id();
+        $exp_invoice->save();
 
 
         if($request->hasfile('docs')) {

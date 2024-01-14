@@ -270,8 +270,10 @@
                                                 </table>
                                             </div>
                                             @if($data['submit_btn_control'] == true && $invoice->admin_status != "claimed")
-                                            <button type="button" class="btn btn-light mt-2" id="add-item-btn"><i
+                                                @if(Auth::user()->user_role == "Manager" || Auth::user()->user_role == "Staff")
+                                                    <button type="button" class="btn btn-light mt-2" id="add-item-btn"><i
                                                     class="fa fa-plus"></i> Add Item</button>
+                                                @endif
                                             @endif
                                         </div>
                                         <div class="form-group">
@@ -384,8 +386,12 @@
                                                     </tfoot>
                                                 </table>
                                             </div>
-                                            <button type="button" class="btn btn-light mt-2" id="add-exp-item-btn"><i
+                                            @if($data['submit_btn_control'] == true && $invoice->admin_status != "claimed")
+                                                @if(Auth::user()->user_role == "Manager" || Auth::user()->user_role == "Staff")
+                                                    <button type="button" class="btn btn-light mt-2" id="add-exp-item-btn"><i
                                                     class="fa fa-plus"></i> Add Expense Item</button>
+                                                @endif
+                                            @endif
                                         </div>
                                         @endif
 
