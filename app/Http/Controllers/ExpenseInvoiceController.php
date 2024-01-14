@@ -502,19 +502,26 @@ class ExpenseInvoiceController extends Controller
 
     public function delete_edit_item($id){
         $exp_invoice_item = ExpenseInvoiceItem::find($id);
-
-        $expense_invoice = $exp_invoice_item->invoice;
-
+        $invoice_id = $exp_invoice_item->invoice_id;
         // Calculate the amount to subtract based on quantity and unit price
         $amount_to_subtract = $exp_invoice_item->qty * $exp_invoice_item->amount;
-
-        // Subtract the calculated amount from the total amount
-        $expense_invoice->total_amount -= $amount_to_subtract;
-
-        // Save the updated total amount
-        $expense_invoice->save();
-
         $exp_invoice_item->delete();
+
+        //need to update invoice data
+        $invoice = ExpenseInvoice::find($invoice_id);
+        $status = $invoice->admin_status;
+
+        if($status == 'pending'){
+            $invoice->total_amount -= $amount_to_subtract;
+        }elseif($status == 'claimed'){
+            // not save
+        }else{
+            $invoice->f_claimed_total -= $amount_to_subtract;
+        }
+        // Save the updated total amount
+        $invoice->save();
+
+
         return back()->with("success", "Successfully delete the invoice item.");
     }
 

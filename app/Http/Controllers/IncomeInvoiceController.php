@@ -510,19 +510,18 @@ class IncomeInvoiceController extends Controller
 
     public function delete_edit_item($id){
         $inc_invoice_item = IncomeInvoiceItem::find($id);
-
-        $income_invoice = $inc_invoice_item->invoice;
-
+        $invoice_id = $inc_invoice_item->invoice_id;
         // Calculate the amount to subtract based on quantity and unit price
         $amount_to_subtract = $inc_invoice_item->qty * $inc_invoice_item->amount;
-
-        // Subtract the calculated amount from the total amount
-        $income_invoice->total_amount -= $amount_to_subtract;
-
-        // Save the updated total amount
-        $income_invoice->save();
-
         $inc_invoice_item->delete();
+
+
+        //need to update invoice data
+        $invoice = IncomeInvoice::find($invoice_id);
+        $invoice->total_amount -= $amount_to_subtract;
+        // Save the updated total amount
+        $invoice->save();
+
         return back()->with("success", "Successfully delete the invoice item.");
     }
 
