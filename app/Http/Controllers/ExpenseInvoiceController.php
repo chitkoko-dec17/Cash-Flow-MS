@@ -21,7 +21,7 @@ use DB;
 class ExpenseInvoiceController extends Controller
 {
     private $statuses = array("pending" => "Pending","checking" => "Checking","checkedup" => "Checked Up","reject" => "Reject","complete" => "Complete", "ready_to_claim" => "Ready To Claim","claimed" => "Claimed");
-    private $staff_hr_statuses = array("pending" => "Pending","checking" => "Checking","checkedup" => "Checked Up");
+    private $hr_statuses = array("pending" => "Pending","checking" => "Checking","checkedup" => "Checked Up");
     private $manager_statuses = array("pending" => "Pending","checking" => "Checking","checkedup" => "Checked Up","reject" => "Reject");
     private $account_statuses = array("ready_to_claim" => "Ready To Claim","claimed" => "Claimed");
     private $cuser_role = null;
@@ -316,7 +316,7 @@ class ExpenseInvoiceController extends Controller
         $data['submit_btn_control'] = $submit_btn_control;
         $data['user_role'] = Auth::user()->user_role;
 
-        $data['staff_hr_statuses'] = $this->staff_hr_statuses;
+        $data['hr_statuses'] = $this->hr_statuses;
         $data['manager_statuses'] = $this->manager_statuses;
         $data['account_statuses'] = $this->account_statuses;
 
@@ -349,31 +349,7 @@ class ExpenseInvoiceController extends Controller
         $item_description = $request->idescription;
         $item_payment_type = $request->payment_type;
 
-        
-        // $exp_invoice->branch_id = $request->branch_id;
-        // $exp_invoice->project_id = ($request->project_id) ? $request->project_id : 0;
-        $exp_invoice->invoice_date = $request->invoice_date;
-        if($request->status == 'pending'){
-            $exp_invoice->total_amount = $request->total_amount;
-        }elseif($request->status == 'claimed'){
-            // not save
-        }else{
-            $exp_invoice->f_claimed_total = $request->total_amount;
-        }
-        
-        $exp_invoice->description = $request->description;
-        $exp_invoice->for_date = $request->for_date;
-        if(Auth::user()->role->name != "Staff"){
-            $exp_invoice->manager_status = $request->status;
-            $exp_invoice->admin_status = $request->status;
-        }
-        if(Auth::user()->role->name == "Admin"){
-            $exp_invoice->appoved_admin_id = Auth::id();
-        }elseif(Auth::user()->role->name == "Manager") {
-            $exp_invoice->appoved_manager_id = Auth::id();
-        }
-        $exp_invoice->edit_by = Auth::id();
-        $exp_invoice->save();
+        $updated_total_amt = 0;
 
         if(!empty($request->invitem)){
             foreach($request->invitem as $itind => $item){
@@ -385,6 +361,8 @@ class ExpenseInvoiceController extends Controller
                 $exp_invoice_item->item_description = $item_description[$itind];
                 $exp_invoice_item->payment_type = $item_payment_type[$itind];
                 $exp_invoice_item->save();
+
+                $updated_total_amt += $item_quantity[$itind] * $item_amount[$itind];
             }
         }
 
@@ -409,8 +387,36 @@ class ExpenseInvoiceController extends Controller
                     'item_description' => $item_description_up[$itind],
                     'payment_type' => $item_payment_type_up[$itind],
                 ]);
+
+                $updated_total_amt += $item_quantity_up[$itind] * $item_amount_up[$itind];
             }
         }
+
+        //update the invoice data
+        // $exp_invoice->branch_id = $request->branch_id;
+        // $exp_invoice->project_id = ($request->project_id) ? $request->project_id : 0;
+        $exp_invoice->invoice_date = $request->invoice_date;
+        if($request->status == 'pending'){
+            $exp_invoice->total_amount = $updated_total_amt;
+        }elseif($request->status == 'claimed'){
+            // not save
+        }else{
+            $exp_invoice->f_claimed_total = $updated_total_amt;
+        }
+        
+        $exp_invoice->description = $request->description;
+        $exp_invoice->for_date = $request->for_date;
+        if(Auth::user()->role->name != "Staff"){
+            $exp_invoice->manager_status = $request->status;
+            $exp_invoice->admin_status = $request->status;
+        }
+        if(Auth::user()->role->name == "Admin"){
+            $exp_invoice->appoved_admin_id = Auth::id();
+        }elseif(Auth::user()->role->name == "Manager") {
+            $exp_invoice->appoved_manager_id = Auth::id();
+        }
+        $exp_invoice->edit_by = Auth::id();
+        $exp_invoice->save();
 
 
         if($request->hasfile('docs')) {
@@ -496,19 +502,26 @@ class ExpenseInvoiceController extends Controller
 
     public function delete_edit_item($id){
         $exp_invoice_item = ExpenseInvoiceItem::find($id);
-
-        $expense_invoice = $exp_invoice_item->invoice;
-
+        $invoice_id = $exp_invoice_item->invoice_id;
         // Calculate the amount to subtract based on quantity and unit price
         $amount_to_subtract = $exp_invoice_item->qty * $exp_invoice_item->amount;
-
-        // Subtract the calculated amount from the total amount
-        $expense_invoice->total_amount -= $amount_to_subtract;
-
-        // Save the updated total amount
-        $expense_invoice->save();
-
         $exp_invoice_item->delete();
+
+        //need to update invoice data
+        $invoice = ExpenseInvoice::find($invoice_id);
+        $status = $invoice->admin_status;
+
+        if($status == 'pending'){
+            $invoice->total_amount -= $amount_to_subtract;
+        }elseif($status == 'claimed'){
+            // not save
+        }else{
+            $invoice->f_claimed_total -= $amount_to_subtract;
+        }
+        // Save the updated total amount
+        $invoice->save();
+
+
         return back()->with("success", "Successfully delete the invoice item.");
     }
 

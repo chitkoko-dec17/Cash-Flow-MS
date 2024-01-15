@@ -76,22 +76,70 @@
                                                 @enderror
                                             </div>
 
-                                            @if($data['user_role'] != "Staff")
+                                            <!-- admin -->
+                                            @if($data['user_role'] == "Admin")
                                             <div class="mb-3 col-sm-4">
                                                 <label for="status">Invoice Status</label>
                                                 <select class="form-control form-select" id="status" name="status">
-                                                	@foreach($statuses as $skey => $statuse)
-                                                    @if($invoice->admin_status == $skey)
-                                                    	<option value="{{ $skey }}" selected>{{ $statuse }}</option>
-                                                    @else
-                                                    	@if($data['user_role'] == "Manager" && $skey == "complete")
-
+                                                    @foreach($statuses as $skey => $statuse)
+                                                        @if($invoice->admin_status == $skey)
+                                                            <option value="{{ $skey }}" selected>{{ $statuse }}</option>
                                                         @else
                                                             <option value="{{ $skey }}">{{ $statuse }}</option>
                                                         @endif
-                                                    @endif
 
-                                                  @endforeach
+                                                    @endforeach
+                                                </select>
+                                            </div>
+                                            @endif
+
+                                            <!-- hr -->
+                                            @if($data['user_role'] == "HR" &&  ($invoice->admin_status == 'pending' || $invoice->admin_status == 'checking' || $invoice->admin_status == 'checkedup')) 
+                                            <div class="mb-3 col-sm-4">
+                                                <label for="status">Invoice Status</label>
+                                                <select class="form-control form-select" id="status" name="status">
+                                                    @foreach($data['hr_statuses'] as $skey => $statuse)
+                                                        @if($invoice->admin_status == $skey)
+                                                            <option value="{{ $skey }}" selected>{{ $statuse }}</option>
+                                                        @else
+                                                            <option value="{{ $skey }}">{{ $statuse }}</option>
+                                                        @endif
+
+                                                    @endforeach
+                                                </select>
+                                            </div>
+                                            @endif
+
+                                            <!-- manager -->
+                                            @if($data['user_role'] == "Manager"  &&  ($invoice->admin_status == 'pending' || $invoice->admin_status == 'checking' || $invoice->admin_status == 'checkedup' || $invoice->admin_status == 'reject' || $invoice->admin_status == 'complete')) 
+                                            <div class="mb-3 col-sm-4">
+                                                <label for="status">Invoice Status</label>
+                                                <select class="form-control form-select" id="status" name="status">
+                                                    @foreach($data['manager_statuses'] as $skey => $statuse)
+                                                        @if($invoice->admin_status == $skey)
+                                                            <option value="{{ $skey }}" selected>{{ $statuse }}</option>
+                                                        @else
+                                                            <option value="{{ $skey }}">{{ $statuse }}</option>
+                                                        @endif
+
+                                                    @endforeach
+                                                </select>
+                                            </div>
+                                            @endif
+
+                                            <!-- account -->
+                                            @if($data['user_role'] == "Account"  &&  ($invoice->admin_status == 'complete' || $invoice->admin_status == 'ready_to_claim' || $invoice->admin_status == 'claimed')) 
+                                            <div class="mb-3 col-sm-4">
+                                                <label for="status">Invoice Status</label>
+                                                <select class="form-control form-select" id="status" name="status">
+                                                    @foreach($data['account_statuses'] as $skey => $statuse)
+                                                        @if($invoice->admin_status == $skey)
+                                                            <option value="{{ $skey }}" selected>{{ $statuse }}</option>
+                                                        @else
+                                                            <option value="{{ $skey }}">{{ $statuse }}</option>
+                                                        @endif
+
+                                                    @endforeach
                                                 </select>
                                             </div>
                                             @endif
@@ -196,7 +244,7 @@
                                                                     name="amount[]" step="0.01" value="{{$invitem->amount}}"></td>
                                                             <td class="total">{{ number_format($invitem->qty * $invitem->amount,2) }} {{$invoice->currency}}</td>
                                                             <td class="action-buttons">
-                                                                @if($data['submit_btn_control'] == true)
+                                                                @if($data['submit_btn_control'] == true && $invoice->admin_status != "claimed")
                                                                 <button type="button"
                                                                     class="btn btn-danger btn-sm action-btn remove-edit-btn" data-attr="{{ url('/income/item', $invitem->id) }}"><i
                                                                         class="fa fa-trash"></i></button>
@@ -221,9 +269,11 @@
                                                     </tfoot>
                                                 </table>
                                             </div>
-                                            @if($data['submit_btn_control'] == true)
-                                            <button type="button" class="btn btn-light mt-2" id="add-item-btn"><i
+                                            @if($data['submit_btn_control'] == true && $invoice->admin_status != "claimed")
+                                                @if(Auth::user()->user_role == "Manager" || Auth::user()->user_role == "Staff")
+                                                    <button type="button" class="btn btn-light mt-2" id="add-item-btn"><i
                                                     class="fa fa-plus"></i> Add Item</button>
+                                                @endif
                                             @endif
                                         </div>
                                         <div class="form-group">
@@ -237,6 +287,7 @@
 
 
                                         <!-- Expense Items -->
+                                        @if (count($exp_invoice_items) > 0)
                                         <div class="form-group" id="income-expense-form">
                                             <label for="expenseItems" class="expense-item-title mt-2">Expense Items</label>
                                             <div class="table-container">
@@ -258,7 +309,7 @@
                                                         @php
                                                             $exp_item_no = 1;
                                                         @endphp
-                                                        @if (count($exp_invoice_items) > 0)
+                                                        
                                                             @foreach ($exp_invoice_items as $exp_invitem)
                                                         <tr>
                                                             <td>{{ $exp_item_no }}</td>
@@ -313,7 +364,7 @@
                                                                 $exp_item_no++;
                                                             @endphp
                                                             @endforeach
-                                                        @endif
+                                                        
                                                     </tbody>
                                                     <tfoot>
                                                         <tr>
@@ -335,11 +386,16 @@
                                                     </tfoot>
                                                 </table>
                                             </div>
-                                            <button type="button" class="btn btn-light mt-2" id="add-exp-item-btn"><i
+                                            @if($data['submit_btn_control'] == true && $invoice->admin_status != "claimed")
+                                                @if(Auth::user()->user_role == "Manager" || Auth::user()->user_role == "Staff")
+                                                    <button type="button" class="btn btn-light mt-2" id="add-exp-item-btn"><i
                                                     class="fa fa-plus"></i> Add Expense Item</button>
+                                                @endif
+                                            @endif
                                         </div>
+                                        @endif
 
-                                        @if($data['submit_btn_control'] == true)
+                                        @if($data['submit_btn_control'] == true && $invoice->admin_status != "claimed")
                                         <button type="submit" class="btn btn-primary">Update</button>
                                         @endif
                                     </form>

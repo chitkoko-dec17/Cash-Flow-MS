@@ -19,7 +19,7 @@
                         <h5 class="mb-2">Income Invoice list</h5>
                         <span>Configuration</span>
                     </span>
-                    @if(Auth::user()->user_role == "Admin" || Auth::user()->user_role == "Manager" || Auth::user()->user_role == "Staff")
+                    @if(Auth::user()->user_role == "Manager" || Auth::user()->user_role == "Staff")
                     <a href="{{ route('income-invoice.create') }}" class="btn btn-primary float-end" type="button"><i
                             class="fa fa-edit"></i> Create New Income Invoice</a>
                     @endif

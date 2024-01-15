@@ -93,12 +93,12 @@
                                             </div>
                                             @endif
 
-                                            <!-- staff and hr -->
-                                            @if(($data['user_role'] == "Staff" || $data['user_role'] == "HR") &&  ($invoice->admin_status == 'pending' || $invoice->admin_status == 'checking' || $invoice->admin_status == 'checkedup')) 
+                                            <!-- hr -->
+                                            @if($data['user_role'] == "HR" &&  ($invoice->admin_status == 'pending' || $invoice->admin_status == 'checking' || $invoice->admin_status == 'checkedup')) 
                                             <div class="mb-3 col-sm-4">
                                                 <label for="status">Invoice Status</label>
                                                 <select class="form-control form-select" id="status" name="status">
-                                                    @foreach($data['staff_hr_statuses'] as $skey => $statuse)
+                                                    @foreach($data['hr_statuses'] as $skey => $statuse)
                                                         @if($invoice->admin_status == $skey)
                                                             <option value="{{ $skey }}" selected>{{ $statuse }}</option>
                                                         @else
@@ -274,8 +274,10 @@
                                                 </table>
                                             </div>
                                             @if($data['submit_btn_control'] == true && $invoice->admin_status != "claimed")
-                                            <button type="button" class="btn btn-light mt-2" id="add-item-btn"><i
+                                                @if(Auth::user()->user_role == "Manager" || Auth::user()->user_role == "Staff")
+                                                    <button type="button" class="btn btn-light mt-2" id="add-item-btn"><i
                                                     class="fa fa-plus"></i> Add Item</button>
+                                                @endif
                                             @endif
                                         </div>
                                         <div class="form-group">

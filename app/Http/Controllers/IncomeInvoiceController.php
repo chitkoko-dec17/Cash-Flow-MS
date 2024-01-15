@@ -21,7 +21,10 @@ use DB;
 
 class IncomeInvoiceController extends Controller
 {
-    private $statuses = array("pending" => "Pending","checking" => "Checking","checkedup" => "Checked Up","reject" => "Reject","ready_to_claim" => "Ready To Claim","claimed" => "Claimed","complete" => "Complete");
+    private $statuses = array("pending" => "Pending","checking" => "Checking","checkedup" => "Checked Up","reject" => "Reject","complete" => "Complete", "ready_to_claim" => "Ready To Claim","claimed" => "Claimed");
+    private $hr_statuses = array("pending" => "Pending","checking" => "Checking","checkedup" => "Checked Up");
+    private $manager_statuses = array("pending" => "Pending","checking" => "Checking","checkedup" => "Checked Up","reject" => "Reject");
+    private $account_statuses = array("ready_to_claim" => "Ready To Claim","claimed" => "Claimed");
     private $cuser_role = null;
     private $cuser_business_unit_id = null;
 
@@ -231,20 +234,22 @@ class IncomeInvoiceController extends Controller
         $exp_item_description = $request->exp_idescription;
         $exp_item_payment_type = $request->exp_payment_type;
 
-        foreach($request->exp_items as $eitind => $exp_item){
-            $item_cate = Item::where('id',$exp_item)->first();
+        if(!empty($request->exp_items)){
+            foreach($request->exp_items as $eitind => $exp_item){
+                $item_cate = Item::where('id',$exp_item)->first();
 
-            ExpenseInvoiceItem::create([
-                'category_id' => $item_cate->category_id,
-                'invoice_id' => $inc_invoice->id,
-                'invoice_type' => 'income',
-                'item_id' => $exp_item,
-                'qty' => $exp_item_quantity[$eitind],
-                'amount' => $exp_item_amount[$eitind],
-                'unit_id' => $exp_item_unit_ids[$eitind],
-                'item_description' => $exp_item_description[$eitind],
-                'payment_type' => $exp_item_payment_type[$eitind],
-            ]);
+                ExpenseInvoiceItem::create([
+                    'category_id' => $item_cate->category_id,
+                    'invoice_id' => $inc_invoice->id,
+                    'invoice_type' => 'income',
+                    'item_id' => $exp_item,
+                    'qty' => $exp_item_quantity[$eitind],
+                    'amount' => $exp_item_amount[$eitind],
+                    'unit_id' => $exp_item_unit_ids[$eitind],
+                    'item_description' => $exp_item_description[$eitind],
+                    'payment_type' => $exp_item_payment_type[$eitind],
+                ]);
+            }
         }
 
 
@@ -333,6 +338,9 @@ class IncomeInvoiceController extends Controller
         }
         $data['submit_btn_control'] = $submit_btn_control;
         $data['user_role'] = Auth::user()->user_role;
+        $data['hr_statuses'] = $this->hr_statuses;
+        $data['manager_statuses'] = $this->manager_statuses;
+        $data['account_statuses'] = $this->account_statuses;
 
         return view('cfms.income-invoice.edit', compact('invoice', 'invoice_items','invoice_docs','invoice_no','itemcategories','branches', 'statuses', 'invoice_notes', 'data', 'itemunits','exp_invoice_items'));
     }
@@ -357,25 +365,7 @@ class IncomeInvoiceController extends Controller
         $item_description = $request->idescription;
         $item_payment_type = $request->payment_type;
 
-        $exp_invoice = IncomeInvoice::find($id);
-        // $exp_invoice->branch_id = $request->branch_id;
-        // $exp_invoice->project_id = ($request->project_id) ? $request->project_id : 0;
-        $exp_invoice->invoice_date = $request->invoice_date;
-        $exp_invoice->total_amount = $request->total_amount;
-        $exp_invoice->description = $request->description;
-        $exp_invoice->for_date = $request->for_date;
-        $exp_invoice->net_total = $request->net_total_amount;
-        if(Auth::user()->role->name != "Staff"){
-            $exp_invoice->manager_status = $request->status;
-            $exp_invoice->admin_status = $request->status;
-        }
-        if(Auth::user()->role->name == "Admin"){
-            $exp_invoice->appoved_admin_id = Auth::id();
-        }elseif(Auth::user()->role->name == "Manager") {
-            $exp_invoice->appoved_manager_id = Auth::id();
-        }
-        $exp_invoice->edit_by = Auth::id();
-        $exp_invoice->save();
+        $updated_total_amt = 0;
 
         if(!empty($request->invitem)){
             foreach($request->invitem as $itind => $item){
@@ -387,6 +377,8 @@ class IncomeInvoiceController extends Controller
                 $inc_invoice_item->item_description = $item_description[$itind];
                 $inc_invoice_item->payment_type = $item_payment_type[$itind];
                 $inc_invoice_item->save();
+
+                $updated_total_amt += $item_quantity[$itind] * $item_amount[$itind];
             }
         }
 
@@ -410,8 +402,31 @@ class IncomeInvoiceController extends Controller
                     'item_description' => $item_description_up[$itind],
                     'payment_type' => $item_payment_type_up[$itind],
                 ]);
+
+                $updated_total_amt += $item_quantity_up[$itind] * $item_amount_up[$itind];
             }
         }
+
+        //update the invoice data
+        $exp_invoice = IncomeInvoice::find($id);
+        // $exp_invoice->branch_id = $request->branch_id;
+        // $exp_invoice->project_id = ($request->project_id) ? $request->project_id : 0;
+        $exp_invoice->invoice_date = $request->invoice_date;
+        $exp_invoice->total_amount = $updated_total_amt; //$request->total_amount;
+        $exp_invoice->description = $request->description;
+        $exp_invoice->for_date = $request->for_date;
+        $exp_invoice->net_total = $request->net_total_amount;
+        if(Auth::user()->role->name != "Staff"){
+            $exp_invoice->manager_status = $request->status;
+            $exp_invoice->admin_status = $request->status;
+        }
+        if(Auth::user()->role->name == "Admin"){
+            $exp_invoice->appoved_admin_id = Auth::id();
+        }elseif(Auth::user()->role->name == "Manager") {
+            $exp_invoice->appoved_manager_id = Auth::id();
+        }
+        $exp_invoice->edit_by = Auth::id();
+        $exp_invoice->save();
 
 
         if($request->hasfile('docs')) {
@@ -495,19 +510,18 @@ class IncomeInvoiceController extends Controller
 
     public function delete_edit_item($id){
         $inc_invoice_item = IncomeInvoiceItem::find($id);
-
-        $income_invoice = $inc_invoice_item->invoice;
-
+        $invoice_id = $inc_invoice_item->invoice_id;
         // Calculate the amount to subtract based on quantity and unit price
         $amount_to_subtract = $inc_invoice_item->qty * $inc_invoice_item->amount;
-
-        // Subtract the calculated amount from the total amount
-        $income_invoice->total_amount -= $amount_to_subtract;
-
-        // Save the updated total amount
-        $income_invoice->save();
-
         $inc_invoice_item->delete();
+
+
+        //need to update invoice data
+        $invoice = IncomeInvoice::find($invoice_id);
+        $invoice->total_amount -= $amount_to_subtract;
+        // Save the updated total amount
+        $invoice->save();
+
         return back()->with("success", "Successfully delete the invoice item.");
     }
 

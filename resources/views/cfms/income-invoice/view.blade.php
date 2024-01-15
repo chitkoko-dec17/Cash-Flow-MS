@@ -155,7 +155,7 @@
                                                     <h6 class="p-2 mb-0">Quantity</h6>
                                                 </td>
                                                 <td class="Rate">
-                                                    <h6 class="p-2 mb-0">Unit Price (MMK)</h6>
+                                                    <h6 class="p-2 mb-0">Unit Price ({{ $invoice->currency }})</h6>
                                                 </td>
                                                 <td class="subtotal">
                                                     <h6 class="p-2 mb-0">Total</h6>
@@ -257,7 +257,7 @@
                                                     <h6 class="p-2 mb-0">Quantity</h6>
                                                 </td>
                                                 <td class="Rate">
-                                                    <h6 class="p-2 mb-0">Unit Price (MMK)</h6>
+                                                    <h6 class="p-2 mb-0">Unit Price ({{ $invoice->currency }})</h6>
                                                 </td>
                                                 <td class="subtotal">
                                                     <h6 class="p-2 mb-0">Total</h6>
