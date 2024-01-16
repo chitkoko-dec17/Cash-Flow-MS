@@ -234,7 +234,7 @@ class IncomeInvoiceController extends Controller
         $exp_item_description = $request->exp_idescription;
         $exp_item_payment_type = $request->exp_payment_type;
 
-        if(!empty($request->exp_items)){
+        if(isset($request->exp_items) && isset($request->exp_items[0])){
             foreach($request->exp_items as $eitind => $exp_item){
                 $item_cate = Item::where('id',$exp_item)->first();
 

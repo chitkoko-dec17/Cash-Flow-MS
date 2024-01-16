@@ -94,7 +94,7 @@
                                             @endif
 
                                             <!-- hr -->
-                                            @if($data['user_role'] == "HR" &&  ($invoice->admin_status == 'pending' || $invoice->admin_status == 'checking' || $invoice->admin_status == 'checkedup')) 
+                                            @if($data['user_role'] == "HR" &&  ($invoice->admin_status == 'pending' || $invoice->admin_status == 'checking' || $invoice->admin_status == 'checkedup'))
                                             <div class="mb-3 col-sm-4">
                                                 <label for="status">Invoice Status</label>
                                                 <select class="form-control form-select" id="status" name="status">
@@ -111,7 +111,7 @@
                                             @endif
 
                                             <!-- manager -->
-                                            @if($data['user_role'] == "Manager"  &&  ($invoice->admin_status == 'pending' || $invoice->admin_status == 'checking' || $invoice->admin_status == 'checkedup' || $invoice->admin_status == 'reject' || $invoice->admin_status == 'complete')) 
+                                            @if($data['user_role'] == "Manager"  &&  ($invoice->admin_status == 'pending' || $invoice->admin_status == 'checking' || $invoice->admin_status == 'checkedup' || $invoice->admin_status == 'reject' || $invoice->admin_status == 'complete'))
                                             <div class="mb-3 col-sm-4">
                                                 <label for="status">Invoice Status</label>
                                                 <select class="form-control form-select" id="status" name="status">
@@ -128,7 +128,7 @@
                                             @endif
 
                                             <!-- account -->
-                                            @if($data['user_role'] == "Account"  &&  ($invoice->admin_status == 'complete' || $invoice->admin_status == 'ready_to_claim' || $invoice->admin_status == 'claimed')) 
+                                            @if($data['user_role'] == "Account"  &&  ($invoice->admin_status == 'complete' || $invoice->admin_status == 'ready_to_claim' || $invoice->admin_status == 'claimed'))
                                             <div class="mb-3 col-sm-4">
                                                 <label for="status">Invoice Status</label>
                                                 <select class="form-control form-select" id="status" name="status">
@@ -142,6 +142,11 @@
                                                     @endforeach
                                                 </select>
                                             </div>
+                                            @endif
+
+                                            <!-- account -->
+                                            @if ($data['user_role'] == "Staff")
+                                                <input type="hidden" name="status" value="{{ $invoice->admin_status}}" />
                                             @endif
 
                                             <div class="mb-3 col-sm-4">
@@ -188,7 +193,7 @@
                                                             <th>Payment</th>
                                                             <th>Description</th>
                                                             <th>Quantity & Unit</th>
-                                                            <th>Unit Price (MMK)</th>
+                                                            <th>Unit Price (<span class="currency_sign">MMK</span>)</th>
                                                             <th>Total</th>
                                                             <th></th>
                                                         </tr>
@@ -243,7 +248,7 @@
                                                             </td>
                                                             <td><input type="number" class="form-control amount"
                                                                     name="amount[]" step="0.01" value="{{$invitem->amount}}"></td>
-                                                            <td class="total">{{ number_format($invitem->qty * $invitem->amount,2) }} MMK</td>
+                                                            <td class="total">{{ number_format($invitem->qty * $invitem->amount,2) }} {{$invoice->currency}}</td>
                                                             <td class="action-buttons">
                                                                 @if($data['submit_btn_control'] == true && $invoice->admin_status != "claimed")
                                                                 <button type="button"
@@ -264,7 +269,7 @@
                                                         @endphp
                                                         <tr>
                                                             <td colspan="7" class="text-right"><strong>Total:</strong></td>
-                                                            <td colspan="2" class="totalAmount">{{ number_format($total_amount,2) }} MMK</td>
+                                                            <td colspan="2" class="totalAmount">{{ number_format($total_amount,2) }} {{$invoice->currency}}</td>
                                                             <input type="hidden" name="total_amount" id="total_amount" value="{{ $total_amount }}">
                                                             @error('total_amount')
                                                                 <span class="text-danger">{{ $message }}</span>
@@ -469,7 +474,22 @@
             junits += '<option value="{{ $unit->id }}">{{ $unit->name }}</option>';
         @endforeach
         $(document).ready(function() {
-        		$('#branch_id').trigger('change');
+            $('#branch_id').trigger('change');
+
+            let selectedCurrency = $("#currency").val(); // initialize current currency value;
+            // Initially hide the "exchange_rate" input
+            console.log(selectedCurrency);
+            if (selectedCurrency === "MMK") {
+                $("#exchange_rate_group").hide();
+            } else {
+                $("#exchange_rate_group").show();
+            }
+
+            // Force not to update Currency
+            $("#currency").prop("disabled", true);
+            // Set Currency sign to table datas
+            $(".currency_sign").text(selectedCurrency);
+
             // Add new invoice item row
             $("#add-item-btn").click(function() {
                 const newRow = `
