@@ -24,6 +24,7 @@ class ExpenseInvoiceController extends Controller
     private $hr_statuses = array("pending" => "Pending","checking" => "Checking","checkedup" => "Checked Up");
     private $manager_statuses = array("pending" => "Pending","checking" => "Checking","checkedup" => "Checked Up","reject" => "Reject");
     private $account_statuses = array("ready_to_claim" => "Ready To Claim","claimed" => "Claimed");
+    private $staff_statuses = array("pending" => "Pending");
     private $cuser_role = null;
     private $cuser_business_unit_id = null;
     /**
@@ -319,6 +320,7 @@ class ExpenseInvoiceController extends Controller
         $data['hr_statuses'] = $this->hr_statuses;
         $data['manager_statuses'] = $this->manager_statuses;
         $data['account_statuses'] = $this->account_statuses;
+        $data['staff_statuses'] = $this->staff_statuses;
 
         return view('cfms.expense-invoice.edit', compact('invoice', 'invoice_items','invoice_docs','invoice_no','itemcategories','branches', 'statuses', 'invoice_notes', 'data', 'itemunits'));
     }
@@ -398,12 +400,13 @@ class ExpenseInvoiceController extends Controller
         $exp_invoice->invoice_date = $request->invoice_date;
         if($request->status == 'pending'){
             $exp_invoice->total_amount = $updated_total_amt;
+            $exp_invoice->f_claimed_total = 0;
         }elseif($request->status == 'claimed'){
             // not save
         }else{
             $exp_invoice->f_claimed_total = $updated_total_amt;
         }
-        
+
         $exp_invoice->description = $request->description;
         $exp_invoice->for_date = $request->for_date;
         if(Auth::user()->role->name != "Staff"){

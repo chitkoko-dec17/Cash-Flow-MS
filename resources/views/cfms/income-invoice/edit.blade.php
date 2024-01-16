@@ -94,7 +94,7 @@
                                             @endif
 
                                             <!-- hr -->
-                                            @if($data['user_role'] == "HR" &&  ($invoice->admin_status == 'pending' || $invoice->admin_status == 'checking' || $invoice->admin_status == 'checkedup')) 
+                                            @if($data['user_role'] == "HR" &&  ($invoice->admin_status == 'pending' || $invoice->admin_status == 'checking' || $invoice->admin_status == 'checkedup'))
                                             <div class="mb-3 col-sm-4">
                                                 <label for="status">Invoice Status</label>
                                                 <select class="form-control form-select" id="status" name="status">
@@ -111,7 +111,7 @@
                                             @endif
 
                                             <!-- manager -->
-                                            @if($data['user_role'] == "Manager"  &&  ($invoice->admin_status == 'pending' || $invoice->admin_status == 'checking' || $invoice->admin_status == 'checkedup' || $invoice->admin_status == 'reject' || $invoice->admin_status == 'complete')) 
+                                            @if($data['user_role'] == "Manager"  &&  ($invoice->admin_status == 'pending' || $invoice->admin_status == 'checking' || $invoice->admin_status == 'checkedup' || $invoice->admin_status == 'reject' || $invoice->admin_status == 'complete'))
                                             <div class="mb-3 col-sm-4">
                                                 <label for="status">Invoice Status</label>
                                                 <select class="form-control form-select" id="status" name="status">
@@ -128,7 +128,7 @@
                                             @endif
 
                                             <!-- account -->
-                                            @if($data['user_role'] == "Account"  &&  ($invoice->admin_status == 'complete' || $invoice->admin_status == 'ready_to_claim' || $invoice->admin_status == 'claimed')) 
+                                            @if($data['user_role'] == "Account"  &&  ($invoice->admin_status == 'complete' || $invoice->admin_status == 'ready_to_claim' || $invoice->admin_status == 'claimed'))
                                             <div class="mb-3 col-sm-4">
                                                 <label for="status">Invoice Status</label>
                                                 <select class="form-control form-select" id="status" name="status">
@@ -309,7 +309,7 @@
                                                         @php
                                                             $exp_item_no = 1;
                                                         @endphp
-                                                        
+
                                                             @foreach ($exp_invoice_items as $exp_invitem)
                                                         <tr>
                                                             <td>{{ $exp_item_no }}</td>
@@ -364,7 +364,7 @@
                                                                 $exp_item_no++;
                                                             @endphp
                                                             @endforeach
-                                                        
+
                                                     </tbody>
                                                     <tfoot>
                                                         <tr>
@@ -679,7 +679,7 @@
                         <td>
                             <textarea class="form-control" id="itemDescription" name="exp_idescription[]" rows="2"></textarea>
                         </td>
-                        <td><span class="exp_total">0.00 </span> <span class="currency_sign">`+ selectedCurrency +`</span></td>
+                        <td><span class="exp_total">0.00 </span> <span class="currency_sign">`+currency +`</span></td>
                         <td class="action-buttons"><button type="button" class="btn btn-danger btn-sm action-btn remove-btn"><i class="fa fa-trash"></i></button></td>
                     </tr>
                 `;

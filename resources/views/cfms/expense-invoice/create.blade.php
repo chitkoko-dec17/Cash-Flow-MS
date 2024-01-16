@@ -98,7 +98,7 @@
                                                     <span class="text-danger">{{ $message }}</span>
                                                 @enderror
                                             </div>
-                                            
+
                                         </div>
                                         <!-- Invoice Items -->
                                         <div class="form-group">
@@ -111,7 +111,7 @@
                                                             <th>Category</th>
                                                             <th>Item</th>
                                                             <th>Quantity & Unit</th>
-                                                            <th>Unit Price (MMK)</th>
+                                                            <th>Unit Price (<span class="currency_sign">MMK</span>)</th>
                                                             <th>Payment</th>
                                                             <th>Description</th>
                                                             <th>Total</th>
@@ -161,7 +161,7 @@
                                                             <td>
                                                                 <textarea class="form-control" id="itemDescription" name="idescription[]" rows="2"></textarea>
                                                             </td>
-                                                            <td class="total">0.00 MMK</td>
+                                                            <td><span class="total">0.00 </span> <span class="currency_sign">MMK</span></td>
                                                             <td class="action-buttons">
                                                                 <button type="button"
                                                                     class="btn btn-danger btn-sm action-btn remove-btn"><i
@@ -172,7 +172,7 @@
                                                     <tfoot>
                                                         <tr>
                                                             <td colspan="7" class="text-right" style="text-align: right;"><strong>Total:</strong></td>
-                                                            <td colspan="2" class="totalAmount">0.00 MMK</td>
+                                                            <td colspan="2" ><span class="totalAmount">0.00 </span> <span class="currency_sign">MMK</span></td>
                                                             <input type="hidden" name="total_amount" id="total_amount" value="">
                                                             @error('total_amount')
                                                                 <span class="text-danger">{{ $message }}</span>
@@ -218,6 +218,26 @@
             junits += '<option value="{{ $unit->id }}">{{ $unit->name }}</option>';
         @endforeach
         $(document).ready(function() {
+
+            let selectedCurrency = $("#currency").val(); // initialize current currency value;
+            // Initially hide the "exchange_rate" input (MMK is Default)
+            $("#exchange_rate_group").hide();
+
+            $("#currency").change(function () {
+                // Show or hide the "To Currency" dropdown based on the selected "From Currency"
+                if ($("#currency").val() === 'MMK') {
+                    $("#exchange_rate_group").hide();
+                } else {
+                    $("#exchange_rate_group").show();
+                }
+                updateCurrencySign(); // update currency sign
+            });
+
+            function updateCurrencySign() {
+                selectedCurrency = $("#currency").val();
+                $(".currency_sign").text(selectedCurrency);
+            }
+
             @if($data['user_role'] == "Staff")
             $('#branch_id').trigger('change');
             @endif
@@ -260,7 +280,7 @@
                         <td>
                             <textarea class="form-control" id="itemDescription" name="idescription[]" rows="2"></textarea>
                         </td>
-                        <td class="total">0.00 MMK</td>
+                        <td><span class="total">0.00 </span> <span class="currency_sign">`+ selectedCurrency +`</span></td>
                         <td class="action-buttons"><button type="button" class="btn btn-danger btn-sm action-btn remove-btn"><i class="fa fa-trash"></i></button></td>
                     </tr>
                 `;
@@ -282,17 +302,18 @@
                 const quantity = $(this).closest("tr").find(".quantity").val();
                 const amount = $(this).closest("tr").find(".amount").val();
                 const total = parseFloat(quantity) * parseFloat(amount);
-                $(this).closest("tr").find(".total").text(total.toFixed(2) + "MMK");
+                // $(this).closest("tr").find(".total").text(total.toFixed(2) + "MMK");
+                $(this).closest("tr").find(".total").text(total.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2}));
                 calculateTotal();
             });
 
             function calculateTotal() {
                 let totalAmount = 0;
                 $("#invoiceItems tbody tr").each(function() {
-                    const total = parseFloat($(this).find(".total").text().replace("MMK", ""));
+                    const total = parseFloat($(this).find(".total").text().replace(/,/g, ''));
                     totalAmount += isNaN(total) ? 0 : total;
                 });
-                $(".totalAmount").text(totalAmount.toFixed(2) + "MMK");
+                $(".totalAmount").text(totalAmount.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }));
                 $("#total_amount").val(totalAmount.toFixed(0));
             }
         });
