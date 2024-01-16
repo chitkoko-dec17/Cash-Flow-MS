@@ -398,6 +398,7 @@ class ExpenseInvoiceController extends Controller
         $exp_invoice->invoice_date = $request->invoice_date;
         if($request->status == 'pending'){
             $exp_invoice->total_amount = $updated_total_amt;
+            $exp_invoice->f_claimed_total = 0;
         }elseif($request->status == 'claimed'){
             // not save
         }else{
