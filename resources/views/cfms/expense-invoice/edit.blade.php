@@ -144,6 +144,11 @@
                                             </div>
                                             @endif
 
+                                            <!-- account -->
+                                            @if ($data['user_role'] == "Staff")
+                                                <input type="hidden" name="status" value="{{ $invoice->admin_status}}" />
+                                            @endif
+
                                             <div class="mb-3 col-sm-4">
                                                 <label for="currency">Currency</label>
                                                 <select class="form-control form-select" id="currency" name="currency" required>
