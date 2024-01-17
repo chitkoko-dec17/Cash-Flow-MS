@@ -653,31 +653,31 @@
                             </select>
                         </td>
                         <td class="fixed-column">
-                            <select class="form-select js-example-basic-single item_id" name="exp_items[]">
+                            <select class="form-select js-example-basic-single item_id" name="exp_items_up[]">
                                 <option value="">Select Item</option>
                             </select>
                         </td>
                         <td>
                             <div class="row" style="justify-content: center;">
                                 <div class="m-0 p-0 ps-2 pe-2 col-sm-12 col-md-12 col-lg-7">
-                                    <input type="number" class="form-control quantity" name="exp_quantity[]" min="1" value="1">
+                                    <input type="number" class="form-control quantity" name="exp_quantity_up[]" min="1" value="1">
                                 </div>
                                 <div class="m-0 p-0 ps-2 pe-2 col-sm-12 col-md-12 col-lg-5">
-                                    <select class="form-select" name="exp_unit_ids[]">
+                                    <select class="form-select" name="exp_unit_ids_up[]">
                                         `+junits+`
                                     </select>
                                 </div>
                             </div>
                         </td>
-                        <td><input type="number" class="form-control amount" name="exp_amount[]" step="0.01" value="0"></td>
+                        <td><input type="number" class="form-control amount" name="exp_amount_up[]" step="0.01" value="0"></td>
                         <td>
-                            <select class="form-select" name="exp_payment_type[]">
+                            <select class="form-select" name="exp_payment_type_up[]">
                                 <option value="cash">Cash</option>
                                 <option value="bank">Bank</option>
                             </select>
                         </td>
                         <td>
-                            <textarea class="form-control" id="itemDescription" name="exp_idescription[]" rows="2"></textarea>
+                            <textarea class="form-control" id="itemDescription" name="exp_idescription_up[]" rows="2"></textarea>
                         </td>
                         <td><span class="exp_total">0.00 </span> <span class="currency_sign">`+currency +`</span></td>
                         <td class="action-buttons"><button type="button" class="btn btn-danger btn-sm action-btn remove-btn"><i class="fa fa-trash"></i></button></td>

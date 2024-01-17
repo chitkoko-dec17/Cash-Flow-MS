@@ -415,6 +415,7 @@ class IncomeInvoiceController extends Controller
         $exp_invoice->total_amount = $updated_total_amt; //$request->total_amount;
         $exp_invoice->description = $request->description;
         $exp_invoice->for_date = $request->for_date;
+        $exp_invoice->expense_total = $request->exp_total_amount;
         $exp_invoice->net_total = $request->net_total_amount;
         if(Auth::user()->role->name != "Staff"){
             $exp_invoice->manager_status = $request->status;
@@ -427,6 +428,51 @@ class IncomeInvoiceController extends Controller
         }
         $exp_invoice->edit_by = Auth::id();
         $exp_invoice->save();
+
+
+        //add income expense item
+        $exp_item_quantity = $request->exp_quantity;
+        $exp_item_amount = $request->exp_amount;
+        $exp_item_unit_ids = $request->exp_unit_ids;
+        $exp_item_description = $request->exp_idescription;
+        $exp_item_payment_type = $request->exp_payment_type;
+
+        if(isset($request->exp_invitem) && isset($request->exp_invitem[0])){
+            foreach($request->exp_invitem as $exitind => $exp_item){
+                $incexp_invoice_item = ExpenseInvoiceItem::find($exp_item);
+                $incexp_invoice_item->qty = $exp_item_quantity[$exitind];
+                $incexp_invoice_item->amount = $exp_item_amount[$exitind];
+                $incexp_invoice_item->unit_id = $exp_item_unit_ids[$exitind];
+                $incexp_invoice_item->item_description = $exp_item_description[$exitind];
+                $incexp_invoice_item->payment_type = $exp_item_payment_type[$exitind];
+                $incexp_invoice_item->save();
+            }
+        }
+
+        $items = $request->exp_items_up;
+        $exp_amount_up = $request->exp_amount_up;
+        $exp_quantity_up = $request->exp_quantity_up;
+        $exp_unit_ids_up = $request->exp_unit_ids_up;
+        $exp_idescription_up = $request->exp_idescription_up;
+        $exp_payment_type_up = $request->exp_payment_type_up;
+
+        if(!empty($request->exp_items_up)){
+            foreach($request->exp_items_up as $eitind => $exp_item){
+                $item_cate = Item::where('id',$exp_item)->first();
+
+                ExpenseInvoiceItem::create([
+                    'category_id' => $item_cate->category_id,
+                    'invoice_id' => $id,
+                    'invoice_type' => 'income',
+                    'item_id' => $exp_item,
+                    'qty' => $exp_quantity_up[$eitind],
+                    'amount' => $exp_amount_up[$eitind],
+                    'unit_id' => $exp_unit_ids_up[$eitind],
+                    'item_description' => $exp_idescription_up[$eitind],
+                    'payment_type' => $exp_payment_type_up[$eitind],
+                ]);
+            }
+        }
 
 
         if($request->hasfile('docs')) {

@@ -508,11 +508,19 @@ class ExpenseInvoiceController extends Controller
         $invoice_id = $exp_invoice_item->invoice_id;
         // Calculate the amount to subtract based on quantity and unit price
         $amount_to_subtract = $exp_invoice_item->qty * $exp_invoice_item->amount;
-        $exp_invoice_item->delete();
 
         //need to update invoice data
         $invoice = ExpenseInvoice::find($invoice_id);
         $status = $invoice->admin_status;
+        if(Auth::user()->role->name == "Staff"){
+            if($status == 'pending'){
+                $exp_invoice_item->delete();
+            }else{
+                return back()->with("error", "Can't delete the invoice item.");
+            }
+        }else{
+            $exp_invoice_item->delete();
+        }
 
         if($status == 'pending'){
             $invoice->total_amount -= $amount_to_subtract;

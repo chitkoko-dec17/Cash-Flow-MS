@@ -91,10 +91,8 @@
                                                     @endforeach
                                                 </select>
                                             </div>
-                                            @endif
-
                                             <!-- hr -->
-                                            @if($data['user_role'] == "HR" &&  ($invoice->admin_status == 'pending' || $invoice->admin_status == 'checking' || $invoice->admin_status == 'checkedup'))
+                                            @elseif($data['user_role'] == "HR" &&  ($invoice->admin_status == 'pending' || $invoice->admin_status == 'checking' || $invoice->admin_status == 'checkedup'))
                                             <div class="mb-3 col-sm-4">
                                                 <label for="status">Invoice Status</label>
                                                 <select class="form-control form-select" id="status" name="status">
@@ -108,10 +106,8 @@
                                                     @endforeach
                                                 </select>
                                             </div>
-                                            @endif
-
                                             <!-- manager -->
-                                            @if($data['user_role'] == "Manager"  &&  ($invoice->admin_status == 'pending' || $invoice->admin_status == 'checking' || $invoice->admin_status == 'checkedup' || $invoice->admin_status == 'reject' || $invoice->admin_status == 'complete'))
+                                            @elseif($data['user_role'] == "Manager"  &&  ($invoice->admin_status == 'pending' || $invoice->admin_status == 'checking' || $invoice->admin_status == 'checkedup' || $invoice->admin_status == 'reject' || $invoice->admin_status == 'complete'))
                                             <div class="mb-3 col-sm-4">
                                                 <label for="status">Invoice Status</label>
                                                 <select class="form-control form-select" id="status" name="status">
@@ -125,10 +121,8 @@
                                                     @endforeach
                                                 </select>
                                             </div>
-                                            @endif
-
                                             <!-- account -->
-                                            @if($data['user_role'] == "Account"  &&  ($invoice->admin_status == 'complete' || $invoice->admin_status == 'ready_to_claim' || $invoice->admin_status == 'claimed'))
+                                            @elseif($data['user_role'] == "Account"  &&  ($invoice->admin_status == 'complete' || $invoice->admin_status == 'ready_to_claim' || $invoice->admin_status == 'claimed'))
                                             <div class="mb-3 col-sm-4">
                                                 <label for="status">Invoice Status</label>
                                                 <select class="form-control form-select" id="status" name="status">
@@ -142,10 +136,7 @@
                                                     @endforeach
                                                 </select>
                                             </div>
-                                            @endif
-
-                                            <!-- account -->
-                                            @if ($data['user_role'] == "Staff")
+                                            @else
                                                 <input type="hidden" name="status" value="{{ $invoice->admin_status}}" />
                                             @endif
 
