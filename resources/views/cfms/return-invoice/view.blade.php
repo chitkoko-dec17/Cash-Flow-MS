@@ -29,7 +29,7 @@
                                         
                                         <div class="mb-3 col-sm-4">
                                             <label for="invoice_id">Expense Invoice No.</label>
-                                            <input type="date" class="form-control" id="invoice_date" name="invoice_date" value="{{$invoice->invoice_date }}">
+                                            <input type="text" class="form-control" id="invoice_date" name="invoice_date" value="{{ $data['invoice']->invoice_no .' ('.$data['invoice']->businessUnit->shorten_code.')' }}">
                                         </div>
 
                                         <!-- Invoice Items -->
