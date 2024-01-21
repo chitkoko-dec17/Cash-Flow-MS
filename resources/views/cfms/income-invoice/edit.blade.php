@@ -598,13 +598,13 @@
                     <tr>
                         <td></td>
                         <td>
-                            <select class="form-select category_id" name="category_ids_up[]">
+                            <select class="form-select category_id" name="category_ids_up[]" required>
                                 <option value="">Select Category</option>
                                 `+jcates+`
                             </select>
                         </td>
                         <td class="fixed-column">
-                            <select class="form-select js-example-basic-single item_id" name="items_up[]">
+                            <select class="form-select js-example-basic-single item_id" name="items_up[]" required>
                                 <option value="">Select Item</option>
                             </select>
                         </td>
@@ -647,13 +647,13 @@
                     <tr>
                         <td></td>
                         <td>
-                            <select class="form-select exp_category_id" name="exp_category_ids[]">
+                            <select class="form-select exp_category_id" name="exp_category_ids[]" required>
                                 <option value="">Select Category</option>
                                 `+jcates+`
                             </select>
                         </td>
                         <td class="fixed-column">
-                            <select class="form-select js-example-basic-single item_id" name="exp_items_up[]">
+                            <select class="form-select js-example-basic-single item_id" name="exp_items_up[]" required>
                                 <option value="">Select Item</option>
                             </select>
                         </td>
