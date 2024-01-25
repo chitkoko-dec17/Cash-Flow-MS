@@ -219,17 +219,22 @@ class ExpenseInvoiceController extends Controller
         foreach($request->items as $itind => $item){
             $item_cate = Item::where('id',$item)->first();
 
-            ExpenseInvoiceItem::create([
-                'category_id' => $item_cate->category_id,
-                'invoice_id' => $exp_invoice->id,
-                'invoice_type' => 'expense',
-                'item_id' => $item,
-                'qty' => $item_quantity[$itind],
-                'amount' => $item_amount[$itind],
-                'unit_id' => $item_unit_ids[$itind],
-                'item_description' => $item_description[$itind],
-                'payment_type' => $item_payment_type[$itind],
-            ]);
+            if ($item_cate && is_object($item_cate)) {
+                ExpenseInvoiceItem::create([
+                    'category_id' => $item_cate->category_id,
+                    'invoice_id' => $exp_invoice->id,
+                    'invoice_type' => 'expense',
+                    'item_id' => $item,
+                    'qty' => $item_quantity[$itind],
+                    'amount' => $item_amount[$itind],
+                    'unit_id' => $item_unit_ids[$itind],
+                    'item_description' => $item_description[$itind],
+                    'payment_type' => $item_payment_type[$itind],
+                ]);
+            } else {
+
+            }
+
         }
 
         if($request->hasfile('docs')) {

@@ -155,7 +155,7 @@
 
                                             <div class="mb-3 col-sm-4" id="exchange_rate_group">
                                                 <label for="exchange_rate">Exchange Rate (MMK)</label>
-                                                <input id="exchange_rate" type="number" class="form-control" name="exchange_rate" value="{{$invoice->exchange_rate }}" placeholder="0"></td>
+                                                <input id="exchange_rate" type="number" class="form-control" name="exchange_rate" value="{{$invoice->exchange_rate }}" step="0.01" placeholder="0"></td>
                                                 @error('exchange_rate')
                                                     <span class="text-danger">{{ $message }}</span>
                                                 @enderror
@@ -177,15 +177,15 @@
                                             <div class="table-container">
                                                 <table class="table table-bordered" id="invoiceItems">
                                                     <thead>
-                                                        <tr>
+                                                        <tr style="background:aliceblue;">
                                                             <th>No.</th>
-                                                            <th>Category</th>
-                                                            <th class="fixed-column">Item</th>
-                                                            <th>Payment</th>
-                                                            <th>Description</th>
-                                                            <th>Quantity & Unit</th>
-                                                            <th>Unit Price (<span class="currency_sign">MMK</span>)</th>
-                                                            <th>Total</th>
+                                                            <th style="min-width: 200px;">Category</th>
+                                                            <th style="min-width: 200px;">Item</th>
+                                                            <th style="min-width: 130px;">Payment</th>
+                                                            <th style="min-width: 200px;">Description</th>
+                                                            <th style="min-width: 130px;">Quantity & Unit</th>
+                                                            <th style="min-width: 130px;">Unit Price (<span class="currency_sign">MMK</span>)</th>
+                                                            <th style="min-width: 130px;">Total</th>
                                                             <th></th>
                                                         </tr>
                                                     </thead>
@@ -201,7 +201,7 @@
                                                                 <input type="hidden" name="invitem[]" value="{{$invitem->id}}">
                                                                 {{$invitem->category->name}}
                                                             </td>
-                                                            <td class="fixed-column">
+                                                            <td>
                                                                 {{$invitem->item->name}}
                                                             </td>
                                                             <td>
@@ -220,11 +220,11 @@
                                                             </td>
                                                             <td>
                                                                 <div class="row" style="justify-content: center;">
-                                                                    <div class="m-0 p-0 ps-2 pe-2 col-sm-12 col-md-12 col-lg-7">
+                                                                    <div class="m-1 p-0 ps-2 pe-2 col-sm-12 col-md-12 col-lg-12">
                                                                         <input type="number" class="form-control quantity"
                                                                     name="quantity[]" min="1" value="{{$invitem->qty}}">
                                                                     </div>
-                                                                    <div class="m-0 p-0 ps-2 pe-2 col-sm-12 col-md-12 col-lg-5">
+                                                                    <div class="m-1 p-0 ps-2 pe-2 col-sm-12 col-md-12 col-lg-12">
                                                                         <select class="form-select" name="unit_ids[]">
                                                                             @foreach($itemunits as $unit)
                                                                                 @if($invitem->unit_id == $unit->id)
@@ -454,6 +454,7 @@
     <script src="{{ asset('assets/js/select2/select2.full.min.js') }}"></script>
     <script src="{{ asset('assets/js/select2/select2-custom.js') }}"></script>
     <script>
+        let table_number = 1;
         let jcates = '';
         let junits = '';
         let project_id = '{{ $invoice->project_id }}';
@@ -483,16 +484,18 @@
 
             // Add new invoice item row
             $("#add-item-btn").click(function() {
+                let no = table_number += 1;
+
                 const newRow = `
                     <tr>
-                        <td></td>
+                        <td>${no}</td>
                         <td>
                             <select class="form-select category_id" name="category_ids_up[]" required>
                                 <option value="">Select Category</option>
                                 `+jcates+`
                             </select>
                         </td>
-                        <td class="fixed-column">
+                        <td>
                             <select class="form-select js-example-basic-single item_id" name="items_up[]" required>
                                 <option value="">Select Item</option>
                             </select>
@@ -508,10 +511,10 @@
                         </td>
                         <td>
                             <div class="row" style="justify-content: center;">
-                                <div class="m-0 p-0 ps-2 pe-2 col-sm-12 col-md-12 col-lg-7">
+                                <div class="m-1 p-0 ps-2 pe-2 col-sm-12 col-md-12 col-lg-12">
                                     <input type="number" class="form-control quantity" name="quantity_up[]" min="1" value="1">
                                 </div>
-                                <div class="m-0 p-0 ps-2 pe-2 col-sm-12 col-md-12 col-lg-5">
+                                <div class="m-1 p-0 ps-2 pe-2 col-sm-12 col-md-12 col-lg-12">
                                     <select class="form-select" name="unit_ids_up[]">
                                         `+junits+`
                                     </select>
@@ -528,13 +531,27 @@
                 setTimeout(function(){
                     $('.js-example-basic-single').select2();
                 }, 100);
+
+                // Update the row numbers after adding a new row
+                updateRowNumbers();
             });
 
             // Remove invoice item row
             $("#invoiceItems").on("click", ".remove-btn", function() {
                 $(this).closest("tr").remove();
                 calculateTotal();
+                updateRowNumbers();
             });
+
+            // Function to update "No." column for remaining rows
+            function updateRowNumbers() {
+                // Find all rows in the table body
+                $("#invoiceItems tbody tr").each(function(index) {
+                    // Update the text content of the first <td> in each row (the "No." column)
+                        table_number = index + 1;
+                    $(this).find("td:first").text(index + 1);
+                });
+            }
 
             // Calculate total amount dynamically
             $("#invoiceItems").on("input", "input.quantity, input.amount", function() {
@@ -574,7 +591,7 @@
                         main.closest('tr').find('select.item_id option').remove();
                         var selectbox = main.closest('tr').find('select.item_id');
 
-                        selectbox.append('<option selected="selected">Select Item</option>');
+                        // selectbox.append('<option selected="selected">Select Item</option>');
                         $.each(data.array_data, function(value, text){
                             // console.log(text);
                           selectbox.append('<option value="' + text.id + '">' + text.name + '</option>');
