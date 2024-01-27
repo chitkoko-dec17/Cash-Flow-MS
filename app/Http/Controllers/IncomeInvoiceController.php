@@ -270,7 +270,7 @@ class IncomeInvoiceController extends Controller
                 InvoiceDocument::create([
                     'invoice_no' => 'INCINV-'.$inc_invoice->invoice_no,
                     'title' => $org_file_name,
-                    'inv_file' => $upload_path.'/'.$file_name
+                    'inv_file' => 'public/'.$upload_path.'/'.$file_name
                 ]);
 
                 $i++;
@@ -492,7 +492,7 @@ class IncomeInvoiceController extends Controller
                 InvoiceDocument::create([
                     'invoice_no' => 'INCINV-'.$exp_invoice->invoice_no,
                     'title' => $org_file_name,
-                    'inv_file' => $upload_path.'/'.$file_name
+                    'inv_file' => 'public/'.$upload_path.'/'.$file_name
                 ]);
 
                 $i++;

@@ -249,7 +249,7 @@ class ExpenseInvoiceController extends Controller
                 InvoiceDocument::create([
                     'invoice_no' => 'EXINV-'.$exp_invoice->invoice_no,
                     'title' => $org_file_name,
-                    'inv_file' => $upload_path.'/'.$file_name
+                    'inv_file' => 'public/'.$upload_path.'/'.$file_name
                 ]);
 
                 $i++;
@@ -439,7 +439,7 @@ class ExpenseInvoiceController extends Controller
                 InvoiceDocument::create([
                     'invoice_no' => 'EXINV-'.$exp_invoice->invoice_no,
                     'title' => $org_file_name,
-                    'inv_file' => $upload_path.'/'.$file_name
+                    'inv_file' => 'public/'.$upload_path.'/'.$file_name
                 ]);
 
                 $i++;
