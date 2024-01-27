@@ -414,6 +414,12 @@ class IncomeInvoiceController extends Controller
         $exp_invoice = IncomeInvoice::find($id);
         // $exp_invoice->branch_id = $request->branch_id;
         // $exp_invoice->project_id = ($request->project_id) ? $request->project_id : 0;
+
+        // WPA edited to update exchange rate
+        if(isset($request->exchange_rate)){
+            $exp_invoice->exchange_rate = $request->exchange_rate;
+        } 
+        
         $exp_invoice->invoice_date = $request->invoice_date;
         $exp_invoice->total_amount = $updated_total_amt; //$request->total_amount;
         $exp_invoice->description = $request->description;
