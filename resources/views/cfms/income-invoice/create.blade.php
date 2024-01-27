@@ -307,7 +307,7 @@
                                                         <tr>
                                                             <td><span class="td_number_exp"></span></td>
                                                             <td>
-                                                                <select class="form-select exp_category_id" name="exp_category_ids[]" id="exp_category_id" required>
+                                                                <select class="form-select exp_category_id" name="exp_category_ids[]" id="exp_category_id">
                                                                     <option value="">Select Category</option>
                                                                     @foreach($itemcategories as $cate)
                                                                         <option value="{{ $cate->id }}">{{ $cate->name }}</option>
@@ -315,7 +315,7 @@
                                                                 </select>
                                                             </td>
                                                             <td>
-                                                                <select class="form-select js-example-basic-single item_id" name="exp_items[]" required>
+                                                                <select id="qty_expense_category_item" class="form-select js-example-basic-single item_id" name="exp_items[]">
                                                                     <option value="">Select Item</option>
                                                                 </select>
                                                             </td>
@@ -419,10 +419,19 @@
                 if ($(this).prop("checked")) {
                     // Show the table
                     $("#income-expense-form").show();
+
+                    //WPA added required field only when income expense invoice
+                    $('#exp_category_id').prop('required', true);
+                    $('qty_expense_category_item').prop('required', true);
                 } else {
                     // Hide the table and remove all items
                     $("#income-expense-form").hide();
                     $("#expenseItems tbody tr").remove();
+
+                    //WPA added required field only when income expense invoice
+                    $('#exp_category_id').prop('required', false);
+                    $('qty_expense_category_item').prop('required', false);
+                    
                     calculateExpenseTotal(); // reset expense total
                 }
             });
