@@ -102,13 +102,20 @@
                                     </tr>
                                 </thead>
                                 <tbody>
+                                    @php 
+                                    $all_total_amount = 0;
+                                    @endphp 
                                     @if (count($income_invoices) > 0)
                                         @foreach ($income_invoices as $inv)
                                             <tr>
                                                 <td class="fixed-column">{{ $inv->invoice_no." (".$inv->businessUnit->shorten_code.")" }}</td>
                                                 <td>{{ $inv->invoice_date }}</td>
                                                 <td>{{ $inv->staff->name }}</td>
-                                                <td>{{ number_format($inv->total_amount,2) }}</td>
+                                                <td style="text-align: right">{{ number_format($inv->total_amount,2) }}</td>
+
+                                                {{-- wpa edited all total amount per display --}}
+                                                @php $all_total_amount += $inv->total_amount; @endphp
+
                                                 <td><span class="badge badge-primary {{ $inv->admin_status }}">{{ $inv->admin_status }}</span></td>
                                                 <td class="action-buttons">
                                                     <a href="{{ route('income-invoice.show', $inv->id) }}"
@@ -128,6 +135,10 @@
                                                 </td>
                                             </tr>
                                         @endforeach
+                                            <tr>
+                                                <td colspan="4" style="text-align: right">Total Amount = {{number_format($all_total_amount,2)}}</td>
+                                                <td colspan="2"></td>
+                                            </tr>
                                     @else
                                         <tr>
                                             <td colspan="6" align="center">

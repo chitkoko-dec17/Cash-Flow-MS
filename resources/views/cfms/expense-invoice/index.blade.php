@@ -103,19 +103,23 @@
                                     </tr>
                                 </thead>
                                 <tbody>
+                                    @php 
+                                    $alltotal_amount = 0;
+                                    @endphp 
                                     @if (count($expense_invoices) > 0)
                                         @foreach ($expense_invoices as $inv)
                                             @php
                                                 $exp_total = $inv->total_amount;
                                                 $claimed_total = ($inv->f_claimed_total) ? $inv->f_claimed_total : 0;
                                                 $total_amount = ($inv->admin_status == "pending") ? $inv->total_amount : $inv->f_claimed_total;
+                                                $alltotal_amount += $total_amount;
                                             @endphp
                                             <tr>
                                                 <td class="fixed-column">{{ $inv->invoice_no ." (".$inv->businessUnit->shorten_code.")" }}</td>
                                                 <td>{{ $inv->invoice_date }}</td>
                                                 <td>{{ $inv->staff->name }}</td>
-                                                <td>{{ number_format($total_amount, 2); }} <br/>
-                                                    {{ "(".$exp_total ." - ". $claimed_total .")" }}
+                                                <td style="text-align:right">{{ number_format($total_amount, 2); }} <br/>
+                                                    {{ "(".$exp_total ." - ". $claimed_total}} = {{number_format($exp_total-$claimed_total)}})
                                                 </td>
                                                 <td><span class="badge badge-primary {{ $inv->admin_status }}">{{ $inv->admin_status }}</span></td>
                                                 <td class="action-buttons">
@@ -145,6 +149,10 @@
                                                 </td>
                                             </tr>
                                         @endforeach
+                                            <tr>
+                                                <td colspan="4" style="text-align:right">Total Amount = {{number_format($alltotal_amount, 2)}}</td>
+                                                <td colspan="2"></td>
+                                            </tr>
                                     @else
                                         <tr>
                                             <td colspan="6" align="center">
