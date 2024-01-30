@@ -55,11 +55,13 @@ class IncomeInvoiceController extends Controller
 
         $income_invoices = array();
         $queryIncInv = IncomeInvoice::query();
+        $queryIncInv2 = IncomeInvoice::query();
         if($this->cuser_role == "Admin"){
 
         }elseif($this->cuser_role == "Manager"){
             if($this->cuser_business_unit_id){
                 $queryIncInv->where('business_unit_id', $this->cuser_business_unit_id);
+                $queryIncInv2->where('business_unit_id', $this->cuser_business_unit_id);
 
             }else{
                 return redirect('/expense-invoice')->with('error', 'Manager should had one business unit!');
@@ -68,6 +70,7 @@ class IncomeInvoiceController extends Controller
         }elseif($this->cuser_role == "Staff"){
             if($this->cuser_business_unit_id){
                 $queryIncInv->where('business_unit_id', $this->cuser_business_unit_id)->where('upload_user_id', Auth::user()->id);
+                $queryIncInv2->where('business_unit_id', $this->cuser_business_unit_id)->where('upload_user_id', Auth::user()->id);
             }
             else{
                 return redirect('/expense-invoice')->with('error', 'Staff should had one business unit!');
@@ -78,18 +81,22 @@ class IncomeInvoiceController extends Controller
 
             if($selected_invoice_no){
                 $queryIncInv->where('invoice_no', 'like', '%' . $selected_invoice_no . '%');
+                $queryIncInv2->where('invoice_no', 'like', '%' . $selected_invoice_no . '%');
             }
 
             if($selected_from_date) {
                 $queryIncInv->whereDate('invoice_date', '>=', $selected_from_date);
+                $queryIncInv2->whereDate('invoice_date', '>=', $selected_from_date);
             }
 
             if($selected_to_date) {
                 $queryIncInv->whereDate('invoice_date', '<=', $selected_to_date);
+                $queryIncInv2->whereDate('invoice_date', '<=', $selected_to_date);
             }
 
             if($selected_status) {
                 $queryIncInv->Where('admin_status', $selected_status);
+                $queryIncInv2->Where('admin_status', $selected_status);
             }
         }
 
@@ -105,6 +112,41 @@ class IncomeInvoiceController extends Controller
         $data['selected_to_date'] = $selected_to_date;
         $data['selected_status'] = $selected_status;
         $data['selected_invoice_no'] = $selected_invoice_no;
+
+        // wpa added all total amount
+        $allIncomeInvoices = $queryIncInv2->orderBy('id','desc')->get();
+        $allTotalAmount = 0;
+        $allTotalAmountUSD = 0;
+        $allTotalAmountCNY = 0;
+        $allTotalAmountTHB = 0;
+        $allTotalAmountUSDcMMK = 0;
+        $allTotalAmountCNYcMMK = 0;
+        $allTotalAmountTHBcMMK = 0;
+
+        foreach($allIncomeInvoices as $exp){
+            if($exp->currency == 'MMK' || $exp->currency == null){
+                $allTotalAmount += $exp->total_amount;
+            }
+            else if(isset($exp->currency) && $exp->currency == 'THB'){
+                $allTotalAmountTHB += $exp->total_amount;
+                $allTotalAmountTHBcMMK = $allTotalAmountTHB * $exp->exchange_rate;
+            }
+            else if(isset($exp->currency) && $exp->currency == 'USD'){
+                $allTotalAmountUSD += $exp->total_amount;
+                $allTotalAmountUSDcMMK = $allTotalAmountUSD * $exp->exchange_rate;
+            }
+            else if(isset($exp->currency) && $exp->currency == 'CNY'){
+                $allTotalAmountCNY += $exp->total_amount;
+                $allTotalAmountCNYcMMK = $allTotalAmountCNY * $exp->exchange_rate;
+            }
+        }
+        $data['all_total_amount_of_invoices'] = $allTotalAmount;
+        $data['all_total_amount_of_invoices_USD'] = $allTotalAmountUSD;
+        $data['all_total_amount_of_invoices_THB'] = $allTotalAmountTHB;
+        $data['all_total_amount_of_invoices_CNY'] = $allTotalAmountCNY;
+        $data['all_total_amount_of_invoices_USD_MMK'] = $allTotalAmountUSDcMMK;
+        $data['all_total_amount_of_invoices_THB_MMK'] = $allTotalAmountTHBcMMK;
+        $data['all_total_amount_of_invoices_CNY_MMK'] = $allTotalAmountCNYcMMK;
 
         return view('cfms.income-invoice.index', compact('income_invoices','data'));
     }

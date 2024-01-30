@@ -92,10 +92,30 @@
                         <div class="table-container">
                             <table class="table table-hover table-bordered">
                                 <thead>
+                                    @if(isset($data['all_total_amount_of_invoices']))
+                                    <tr>
+                                        <th colspan="5" style="text-align: left; font-size: 1.2rem; font-weight: 800;">
+                                            All Total Amount - {{number_format($data['all_total_amount_of_invoices'],2)}} MMK, 
+                                            <span style="font-weight: 600; color:gray;">
+                                            {{number_format($data['all_total_amount_of_invoices_THB'],2)}} THB ({{number_format($data['all_total_amount_of_invoices_THB_MMK'],2)}} MMK), 
+                                            {{number_format($data['all_total_amount_of_invoices_USD'],2)}} USD ({{number_format($data['all_total_amount_of_invoices_USD_MMK'],2)}} MMK), 
+                                            {{number_format($data['all_total_amount_of_invoices_CNY'],2)}} CNY ({{number_format($data['all_total_amount_of_invoices_CNY_MMK'],2)}} MMK) 
+                                            </span>              
+                                            <br/>
+                                            @php 
+                                                $eIncludeTotal = $data['all_total_amount_of_invoices'] + 
+                                                                $data['all_total_amount_of_invoices_THB_MMK'] +
+                                                                $data['all_total_amount_of_invoices_USD_MMK'] +
+                                                                $data['all_total_amount_of_invoices_CNY_MMK'];
+                                            @endphp
+                                            All Total Amount - {{number_format($eIncludeTotal,2)}} MMK (Including Exchange Rate)                             
+                                        </th>
+                                    </tr>
+                                    @endif
                                     <tr>
                                         <th class="fixed-column">Invoice No.</th>
-                                        <th>Date</th>
-                                        <th>Create By</th>
+                                        <th>Date & Create By</th>
+                                        <th>Currency</th>
                                         <th>Total Amount</th>
                                         <th>Status</th>
                                         <th>Action</th>
@@ -103,18 +123,40 @@
                                 </thead>
                                 <tbody>
                                     @php 
-                                    $all_total_amount = 0;
+                                    $alltotal_amount = 0;
+                                    $alltotal_amount_usd = 0;
+                                    $alltotal_amount_thb = 0;
+                                    $alltotal_amount_cny = 0;
                                     @endphp 
                                     @if (count($income_invoices) > 0)
                                         @foreach ($income_invoices as $inv)
                                             <tr>
                                                 <td class="fixed-column">{{ $inv->invoice_no." (".$inv->businessUnit->shorten_code.")" }}</td>
-                                                <td>{{ $inv->invoice_date }}</td>
-                                                <td>{{ $inv->staff->name }}</td>
+                                                <td>{{ $inv->invoice_date }} <br/> {{ $inv->staff->name }}</td>
+                                                <td>
+                                                    @if(isset($inv->currency)) 
+                                                        {{$inv->currency}} 
+                                                    @else 
+                                                        MMK
+                                                    @endif
+                                                </td>
                                                 <td style="text-align: right">{{ number_format($inv->total_amount,2) }}</td>
 
                                                 {{-- wpa edited all total amount per display --}}
-                                                @php $all_total_amount += $inv->total_amount; @endphp
+                                                @php 
+                                                    if($inv->currency == 'MMK' || $inv->currency == null){
+                                                        $alltotal_amount += $inv->total_amount;
+                                                    }
+                                                    else if($inv->currency == 'THB'){
+                                                        $alltotal_amount_thb += $inv->total_amount;
+                                                    }
+                                                    else if($inv->currency == 'USD'){
+                                                        $alltotal_amount_usd += $inv->total_amount;
+                                                    }
+                                                    else if($inv->currency == 'CNY'){
+                                                        $alltotal_amount_cny += $inv->total_amount;
+                                                    }
+                                                @endphp
 
                                                 <td><span class="badge badge-primary {{ $inv->admin_status }}">{{ $inv->admin_status }}</span></td>
                                                 <td class="action-buttons">
@@ -136,7 +178,13 @@
                                             </tr>
                                         @endforeach
                                             <tr>
-                                                <td colspan="4" style="text-align: right">Total Amount = {{number_format($all_total_amount,2)}}</td>
+                                                <td colspan="4" style="text-align: right">
+                                                    Total Amount per Page = 
+                                                    {{number_format($alltotal_amount_cny, 2)}} CNY, 
+                                                    {{number_format($alltotal_amount_usd, 2)}} USD, 
+                                                    {{number_format($alltotal_amount_thb, 2)}} THB, 
+                                                    {{number_format($alltotal_amount, 2)}} MMK</td>
+                                                </td>
                                                 <td colspan="2"></td>
                                             </tr>
                                     @else

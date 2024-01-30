@@ -55,6 +55,7 @@ class ExpenseInvoiceController extends Controller
 
         $expense_invoices = array();
         $queryExpInv = ExpenseInvoice::query();
+        $queryExpInv2 = ExpenseInvoice::query();
         if($this->cuser_role == "Admin"){
 
         }elseif($this->cuser_role == "Manager"){
@@ -64,6 +65,7 @@ class ExpenseInvoiceController extends Controller
                 // }
 
                 $queryExpInv->where('business_unit_id', $this->cuser_business_unit_id);
+                $queryExpInv2->where('business_unit_id', $this->cuser_business_unit_id);
 
             }else{
                 return redirect('/expense-invoice')->with('error', 'Manager should had one business unit!');
@@ -74,6 +76,7 @@ class ExpenseInvoiceController extends Controller
                 // $expense_invoices = ExpenseInvoice::where('business_unit_id', $this->cuser_business_unit_id)->where('upload_user_id', Auth::user()->id )->paginate(25);
 
                 $queryExpInv->where('business_unit_id', $this->cuser_business_unit_id)->where('upload_user_id', Auth::user()->id);
+                $queryExpInv2->where('business_unit_id', $this->cuser_business_unit_id)->where('upload_user_id', Auth::user()->id);
             }
             else{
                 return redirect('/expense-invoice')->with('error', 'Staff should had one business unit!');
@@ -87,18 +90,22 @@ class ExpenseInvoiceController extends Controller
 
             if($selected_invoice_no){
                 $queryExpInv->where('invoice_no', 'like', '%' . $selected_invoice_no . '%');
+                $queryExpInv2->where('invoice_no', 'like', '%' . $selected_invoice_no . '%');
             }
 
             if($selected_from_date) {
                 $queryExpInv->whereDate('invoice_date', '>=', $selected_from_date);
+                $queryExpInv2->whereDate('invoice_date', '>=', $selected_from_date);
             }
 
             if($selected_to_date) {
                 $queryExpInv->whereDate('invoice_date', '<=', $selected_to_date);
+                $queryExpInv2->whereDate('invoice_date', '<=', $selected_to_date);
             }
 
             if($selected_status) {
                 $queryExpInv->Where('admin_status', $selected_status);
+                $queryExpInv2->Where('admin_status', $selected_status);
             }
         }
 
@@ -114,6 +121,41 @@ class ExpenseInvoiceController extends Controller
         $data['selected_to_date'] = $selected_to_date;
         $data['selected_status'] = $selected_status;
         $data['selected_invoice_no'] = $selected_invoice_no;
+
+        // wpa added all total amount
+        $allExpenseInvoices = $queryExpInv2->orderBy('id','desc')->get();
+        $allTotalAmount = 0;
+        $allTotalAmountUSD = 0;
+        $allTotalAmountCNY = 0;
+        $allTotalAmountTHB = 0;
+        $allTotalAmountUSDcMMK = 0;
+        $allTotalAmountCNYcMMK = 0;
+        $allTotalAmountTHBcMMK = 0;
+
+        foreach($allExpenseInvoices as $exp){
+            if($exp->currency == 'MMK' || $exp->currency == null){
+                $allTotalAmount += ($exp->admin_status == "pending") ? $exp->total_amount : $exp->f_claimed_total;
+            }
+            else if(isset($exp->currency) && $exp->currency == 'THB'){
+                $allTotalAmountTHB += ($exp->admin_status == "pending") ? $exp->total_amount : $exp->f_claimed_total;
+                $allTotalAmountTHBcMMK = $allTotalAmountTHB * $exp->exchange_rate;
+            }
+            else if(isset($exp->currency) && $exp->currency == 'USD'){
+                $allTotalAmountUSD += ($exp->admin_status == "pending") ? $exp->total_amount : $exp->f_claimed_total;
+                $allTotalAmountUSDcMMK = $allTotalAmountUSD * $exp->exchange_rate;
+            }
+            else if(isset($exp->currency) && $exp->currency == 'CNY'){
+                $allTotalAmountCNY += ($exp->admin_status == "pending") ? $exp->total_amount : $exp->f_claimed_total;
+                $allTotalAmountCNYcMMK = $allTotalAmountCNY * $exp->exchange_rate;
+            }
+        }
+        $data['all_total_amount_of_invoices'] = $allTotalAmount;
+        $data['all_total_amount_of_invoices_USD'] = $allTotalAmountUSD;
+        $data['all_total_amount_of_invoices_THB'] = $allTotalAmountTHB;
+        $data['all_total_amount_of_invoices_CNY'] = $allTotalAmountCNY;
+        $data['all_total_amount_of_invoices_USD_MMK'] = $allTotalAmountUSDcMMK;
+        $data['all_total_amount_of_invoices_THB_MMK'] = $allTotalAmountTHBcMMK;
+        $data['all_total_amount_of_invoices_CNY_MMK'] = $allTotalAmountCNYcMMK;
 
         return view('cfms.expense-invoice.index', compact('expense_invoices','data'));
     }
