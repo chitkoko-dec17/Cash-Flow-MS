@@ -51,6 +51,9 @@
                                         class="btn btn-primary btn-square"><i class="fa fa-filter"></i> Filter</button>
                                 </div>
                             </div>
+                            <div class="col-md form-inline float-end me-2">
+                                <a href="{{asset('/income-invoice')}}" class="btn btn-danger btn-square">Remove Filter</a>
+                            </div>
                         </div>
                     </div>
                     {{-- filter form area --}}
@@ -198,7 +201,7 @@
                             </table>
                         </div>
                         @if (count($income_invoices) > 0)
-                        {{ $income_invoices->links('cfms.laravel-pagination-links') }}
+                        {{ $income_invoices->appends(request()->query())->links('cfms.laravel-pagination-links') }}
                         @endif
                     </div>
                 </div>

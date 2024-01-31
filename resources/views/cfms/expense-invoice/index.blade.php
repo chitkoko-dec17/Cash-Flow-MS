@@ -52,6 +52,9 @@
                                         class="btn btn-primary btn-square"><i class="fa fa-filter"></i> Filter</button>
                                 </div>
                             </div>
+                            <div class="col-md form-inline float-end me-2">
+                                <a href="{{asset('/expense-invoice')}}" class="btn btn-danger btn-square">Remove Filter</a>
+                            </div>
                         </div>
                     </div>
                     {{-- filter form area --}}
@@ -95,7 +98,7 @@
                                 <thead>
                                     @if(isset($data['all_total_amount_of_invoices']))
                                     <tr>
-                                        <th colspan="5" style="text-align: left; font-size: 1.2rem; font-weight: 800;">
+                                        <th colspan="6" style="text-align: left; font-size: 1.2rem; font-weight: 800;">
                                             All Total Amount - {{number_format($data['all_total_amount_of_invoices'],2)}} MMK, 
                                             <span style="font-weight: 600; color:gray;">
                                             {{number_format($data['all_total_amount_of_invoices_THB'],2)}} THB ({{number_format($data['all_total_amount_of_invoices_THB_MMK'],2)}} MMK), 
@@ -211,7 +214,7 @@
                             </table>
                         </div>
                         @if (count($expense_invoices) > 0)
-                        {{ $expense_invoices->links('cfms.laravel-pagination-links') }}
+                        {{ $expense_invoices->appends(request()->query())->links('cfms.laravel-pagination-links') }}
                         @endif
                     </div>
                 </div>
